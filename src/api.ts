@@ -2,10 +2,6 @@ import { getPreferenceValues } from "@raycast/api";
 
 const BASE_URL = "https://uptime.betterstack.com/api/v2";
 
-interface Preferences {
-  apiToken: string;
-}
-
 function getHeaders(): Record<string, string> {
   const { apiToken } = getPreferenceValues<Preferences>();
   return {
