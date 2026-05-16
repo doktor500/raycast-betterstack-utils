@@ -94,7 +94,8 @@ export async function getOnCallCalendars(): Promise<Calendar[]> {
 }
 
 export async function getCalendarEvents(calendarId: string, from: Date, to: Date): Promise<CalendarEvent[]> {
-  const response = await fetchJson<EventsResponse>(`${BASE_URL}/on-calls/${calendarId}/events`);
+  const params = new URLSearchParams({ from: from.toISOString(), to: to.toISOString() });
+  const response = await fetchJson<EventsResponse>(`${BASE_URL}/on-calls/${calendarId}/events?${params}`);
 
   return response.events.flatMap((event) => {
     const startsAt = new Date(event.starts_at);
