@@ -4,6 +4,8 @@ import { getCurrentMonthWindow, getThreeMonthWindow } from "./utils/dates";
 import { buildCombinedScheduleSvg, exportSvgToClipboard, toSvgDataUri } from "./ui/schedule-svg";
 import { useOnCallData } from "./hooks/use-on-call-data";
 import { formatUserName, getCurrentOnCallUser } from "./domain/on-call-event";
+import { Colors } from "./utils/colors";
+import { buildScheduleSkeletonSvg } from "./ui/schedule-skeleton-svg";
 
 type TimeRange = "current-month" | "3-months";
 
@@ -42,7 +44,7 @@ export default function Command() {
         events: filteredEvents,
         today: today,
         window: scheduleWindow,
-        backgroundColor: "#1F2433",
+        backgroundColor: Colors.DARK,
         showTodayMarker: false,
         allEvents: events
       });
@@ -75,7 +77,7 @@ export default function Command() {
   };
 
   const markdown = isLoading
-    ? ""
+    ? `![schedule](${toSvgDataUri(buildScheduleSkeletonSvg())})`
     : [`![schedule](${toSvgDataUri(buildCombinedScheduleSvg(scheduleSvgProps))})`, currentlyOnCallMessage].join("\n");
 
   return (
@@ -101,7 +103,7 @@ function NoScheduleDetail() {
   return (
     <Detail
       markdown={
-        "## No 'Primary' on-call schedule found\n\nNo on-call calendar with 'Primary' in its name was found in your BetterStack account."
+        "## No 'Primary' on-call schedule found in your BetterStack account."
       }
     />
   );
