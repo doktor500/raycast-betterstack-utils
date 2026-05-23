@@ -7,8 +7,8 @@ import { buildCombinedScheduleSvg, toSvgDataUri } from "./schedule-svg";
 type TimeRange = "current-month" | "3-months";
 
 const TIME_RANGE_LABELS: Record<TimeRange, string> = {
-  "current-month": "Current Month",
-  "3-months": "3 Months",
+  "current-month": "current month only",
+  "3-months": "3 month view",
 };
 
 export default function Command() {
