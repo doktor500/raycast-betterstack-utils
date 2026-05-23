@@ -12,7 +12,7 @@ interface WeekSegment {
 
 const WIDTH = 1160;
 const ROW_HEIGHT_TOTAL = 92;
-const BLOCK_GAP = 20;
+const BLOCK_GAP = 40;
 const BLOCK_HEADER_HEIGHT = 44;
 const DAY_WIDTH = WIDTH / 7;
 const DAY_HEADER_HEIGHT = 30;
@@ -59,7 +59,8 @@ export function buildCombinedScheduleSvg(
 
   const calHeight = (g: (typeof monthGroups)[0]) => BLOCK_HEADER_HEIGHT + g.weeks.length * ROW_HEIGHT_TOTAL;
   const monthTotalHeight = (g: (typeof monthGroups)[0]) => calHeight(g) + SUMMARY_GAP + SUMMARY_BLOCK_HEIGHT;
-  const totalHeight = monthGroups.reduce((sum, g) => sum + monthTotalHeight(g), 0) + (monthGroups.length - 1) * BLOCK_GAP;
+  const totalHeight =
+    monthGroups.reduce((sum, g) => sum + monthTotalHeight(g), 0) + (monthGroups.length - 1) * BLOCK_GAP;
 
   const uniqueNames = [
     ...new Set(
@@ -75,13 +76,28 @@ export function buildCombinedScheduleSvg(
 
   let currentY = 0;
   const blocksContent = monthGroups
-    .map(({ year, month, weeks }) => {
+    .map(({ year, month, weeks }, i) => {
       const ch = calHeight({ year, month, weeks });
-      const calBlock = renderMonthBlock(weeks, currentY, ch, today, events, { year, month }, colorMap, showTodayMarker, columnBg);
+      const calBlock = renderMonthBlock(
+        weeks,
+        currentY,
+        ch,
+        today,
+        events,
+        { year, month },
+        colorMap,
+        showTodayMarker,
+        columnBg,
+      );
       const summary = computeMonthSummary(year, month, events, colorMap, today);
       const summaryBlock = renderSummaryBlock(year, month, summary, currentY + ch + SUMMARY_GAP);
+      const dividerY = currentY + monthTotalHeight({ year, month, weeks }) + BLOCK_GAP / 2;
+      const divider =
+        i < monthGroups.length - 1
+          ? `<line x1="0" y1="${dividerY}" x2="${WIDTH}" y2="${dividerY}" stroke="#4A5568" stroke-width="2"/>`
+          : "";
       currentY += monthTotalHeight({ year, month, weeks }) + BLOCK_GAP;
-      return calBlock + summaryBlock;
+      return calBlock + summaryBlock + divider;
     })
     .join("");
 
@@ -218,12 +234,20 @@ function renderWeekGroup(
   </g>`;
 }
 
-function renderDayColumn(day: Date, index: number, currentMonth: { year: number; month: number }, columnBg: string): string {
+function renderDayColumn(
+  day: Date,
+  index: number,
+  currentMonth: { year: number; month: number },
+  columnBg: string,
+): string {
   const x = index * DAY_WIDTH;
   const center = x + DAY_WIDTH / 2;
   const isWeekend = day.getDay() === 0 || day.getDay() === 6;
   const inMonth = day.getFullYear() === currentMonth.year && day.getMonth() === currentMonth.month;
-  const bgRect = columnBg !== "none" ? `<rect x="${x}" y="0" width="${DAY_WIDTH}" height="${ROW_HEIGHT_TOTAL}" fill="${columnBg}"/>` : "";
+  const bgRect =
+    columnBg !== "none"
+      ? `<rect x="${x}" y="0" width="${DAY_WIDTH}" height="${ROW_HEIGHT_TOTAL}" fill="${columnBg}"/>`
+      : "";
 
   if (!inMonth) {
     return `<g>
@@ -346,7 +370,7 @@ function computeMonthSummary(
   // Only the person on-call right now can have remaining hours.
   const currentPerson = getOnCallForDay(today, events);
   const currentPersonName = currentPerson
-    ? (`${currentPerson.first_name} ${currentPerson.last_name}`.trim() || currentPerson.email)
+    ? `${currentPerson.first_name} ${currentPerson.last_name}`.trim() || currentPerson.email
     : null;
 
   let remainingHoursForCurrent = 0;
@@ -382,7 +406,7 @@ function renderSummaryBlock(year: number, month: number, summary: SummaryEntry[]
   const midY = SUMMARY_BLOCK_HEIGHT / 2;
 
   const items = summary
-    .map(({ name, days, remainingHours, color }, i) => {
+    .map(({ name, days, color }, i) => {
       const cellX = SUMMARY_MONTH_COL_WIDTH + i * cellWidth;
       const dotCx = cellX + 20;
       const textX = dotCx + dotR + 10;
