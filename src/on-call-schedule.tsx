@@ -113,7 +113,7 @@ export default function Command() {
   const markdown = isLoading
     ? ""
     : `![schedule](${toSvgDataUri(buildCombinedScheduleSvg(filteredEvents, today, scheduleWindow, undefined, true, events))})\n` +
-      currentlyOnCallMessage;
+      currentlyOnCallMessage
 
   return (
     <Detail

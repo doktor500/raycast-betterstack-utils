@@ -344,13 +344,15 @@ function computeMonthSummary(
 
   let remainingHoursForCurrent = 0;
   if (currentPersonName && today.getFullYear() === year && today.getMonth() === month) {
-    for (let d = today.getDate() + 1; d <= daysInMonth; d++) {
-      const day = new Date(year, month, d);
-      const person = getOnCallForDay(day, events);
-      if (!person) break;
-      const name = `${person.first_name} ${person.last_name}`.trim() || person.email;
-      if (name !== currentPersonName) break;
-      remainingHoursForCurrent += 24;
+    // Only show remaining hours when today is the last day of the current shift.
+    // If the shift continues tomorrow, show just the day count with no hours suffix.
+    const nextDay = new Date(year, month, today.getDate() + 1);
+    const nextPerson = getOnCallForDay(nextDay, events);
+    const nextName = nextPerson
+      ? `${nextPerson.first_name} ${nextPerson.last_name}`.trim() || nextPerson.email
+      : null;
+    if (nextName !== currentPersonName) {
+      remainingHoursForCurrent = 23 - today.getHours();
     }
   }
 
