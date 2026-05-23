@@ -185,7 +185,7 @@ function renderWeekGroup(
     ${divider}
 
     ${days.map((day, index) => renderDayColumn(day, index, currentMonth)).join("\n    ")}
-    ${segments.map((segment, index) => renderSegment(segment, weekIndex * 100 + index)).join("\n    ")}
+    ${segments.map((segment, index) => renderSegment(segment, (currentMonth.year * 12 + currentMonth.month) * 1000 + weekIndex * 100 + index)).join("\n    ")}
     ${todayIndex >= 0 ? renderTodayMarker(todayIndex, today) : ""}
   </g>`;
 }
