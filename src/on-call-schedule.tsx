@@ -1,7 +1,7 @@
 import { Action, ActionPanel, Detail, showToast, Toast } from "@raycast/api";
 import { useEffect, useState } from "react";
 import { getOnCallCalendars, getCalendarEvents } from "./api";
-import { getCurrentMonthWindow, getThreeMonthWindow, type OnCallEvent } from "./dates";
+import { getCurrentMonthWindow, getThreeMonthWindow, getOnCallForDay, type OnCallEvent } from "./dates";
 import { buildCombinedScheduleSvg, toSvgDataUri } from "./schedule-svg";
 
 type TimeRange = "current-month" | "3-months";
@@ -77,9 +77,20 @@ export default function Command() {
 
   const nextTimeRange: TimeRange = timeRange === "current-month" ? "3-months" : "current-month";
   const window = timeRange === "current-month" ? getCurrentMonthWindow() : getThreeMonthWindow();
+
+  const currentOnCall = isLoading ? null : getOnCallForDay(today, events);
+  const onCallFooter =
+    timeRange === "current-month" && currentOnCall
+      ? [
+          "",
+          `**Currently on call:** ${currentOnCall.first_name} ${currentOnCall.last_name}`.trim(),
+          `**${currentOnCall.email}**`,
+        ].join("\n")
+      : "";
+
   const markdown = isLoading
     ? ""
-    : `![schedule](${toSvgDataUri(buildCombinedScheduleSvg(filteredEvents, today, window))})`;
+    : `![schedule](${toSvgDataUri(buildCombinedScheduleSvg(filteredEvents, today, window))}) \n ${onCallFooter}`;
 
   return (
     <Detail
