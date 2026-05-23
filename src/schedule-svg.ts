@@ -78,12 +78,8 @@ export function buildCombinedScheduleSvg(
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${totalHeight}" viewBox="0 0 ${WIDTH} ${totalHeight}">
   <defs>
-    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0" stop-color="#182033"/>
-      <stop offset="1" stop-color="#101827"/>
-    </linearGradient>
     <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(135)">
-      <path d="M 0 0 L 0 8" stroke="#33405A" stroke-width="1" opacity="0.55"/>
+      <path d="M 0 0 L 0 8" stroke="#182033" stroke-width="1" opacity="0.50"/>
     </pattern>
     <filter id="shadow" x="-10%" y="-30%" width="120%" height="170%">
       <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#050816" flood-opacity="0.3"/>
@@ -120,7 +116,7 @@ function renderMonthBlock(
     .join("");
 
   return `<g transform="translate(0, ${blockOffsetY})">
-    <rect width="${WIDTH}" height="${blockHeight}" rx="10" fill="url(#bg)"/>
+    <rect width="${WIDTH}" height="${blockHeight}" rx="10" fill="#1F2433" fill-opacity="0.2"/>
     <rect x="0.5" y="0.5" width="${WIDTH - 1}" height="${blockHeight - 1}" rx="10" fill="none" stroke="#303A50"/>
     <text x="${WIDTH / 2}" y="${BLOCK_HEADER_HEIGHT / 2 + 7}" text-anchor="middle" fill="#F3F5FA" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="17" font-weight="700">${monthLabel}</text>
     <line x1="0" y1="${BLOCK_HEADER_HEIGHT}" x2="${WIDTH}" y2="${BLOCK_HEADER_HEIGHT}" stroke="#303A50"/>
