@@ -77,7 +77,9 @@ export default function Command() {
 
   const nextTimeRange: TimeRange = timeRange === "current-month" ? "3-months" : "current-month";
   const window = timeRange === "current-month" ? getCurrentMonthWindow() : getThreeMonthWindow();
-  const markdown = isLoading ? "" : `![schedule](${toSvgDataUri(buildCombinedScheduleSvg(filteredEvents, today, window))})`;
+  const markdown = isLoading
+    ? ""
+    : `![schedule](${toSvgDataUri(buildCombinedScheduleSvg(filteredEvents, today, window))})`;
 
   return (
     <Detail

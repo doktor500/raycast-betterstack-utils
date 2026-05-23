@@ -53,16 +53,17 @@ export function buildCombinedScheduleSvg(
     weeks: allWeeks.filter((days) => days.some((d) => d.getFullYear() === year && d.getMonth() === month)),
   }));
 
-  const blockHeight = (g: typeof monthGroups[0]) => BLOCK_HEADER_HEIGHT + g.weeks.length * ROW_HEIGHT_TOTAL;
-  const totalHeight =
-    monthGroups.reduce((sum, g) => sum + blockHeight(g), 0) + (monthGroups.length - 1) * BLOCK_GAP;
+  const blockHeight = (g: (typeof monthGroups)[0]) => BLOCK_HEADER_HEIGHT + g.weeks.length * ROW_HEIGHT_TOTAL;
+  const totalHeight = monthGroups.reduce((sum, g) => sum + blockHeight(g), 0) + (monthGroups.length - 1) * BLOCK_GAP;
 
-  const uniqueNames = [...new Set(
-    events.map((e) => {
-      const fullName = `${e.user.first_name} ${e.user.last_name}`.trim();
-      return fullName || e.user.email;
-    }),
-  )].sort();
+  const uniqueNames = [
+    ...new Set(
+      events.map((e) => {
+        const fullName = `${e.user.first_name} ${e.user.last_name}`.trim();
+        return fullName || e.user.email;
+      }),
+    ),
+  ].sort();
   const colorMap = buildColorMap(uniqueNames);
 
   let currentY = 0;
@@ -107,7 +108,14 @@ function renderMonthBlock(
   const weeksContent = weeks
     .map((days, localIndex) => {
       const segments = buildWeekSegments(days, events, currentMonth, colorMap);
-      return renderWeekGroup(days, segments, today, localIndex, BLOCK_HEADER_HEIGHT + localIndex * ROW_HEIGHT_TOTAL, currentMonth);
+      return renderWeekGroup(
+        days,
+        segments,
+        today,
+        localIndex,
+        BLOCK_HEADER_HEIGHT + localIndex * ROW_HEIGHT_TOTAL,
+        currentMonth,
+      );
     })
     .join("");
 
@@ -144,14 +152,22 @@ function buildWeekSegments(
 
   while (segmentStart < assignments.length) {
     const assignment = assignments[segmentStart];
-    if (!assignment) { segmentStart += 1; continue; }
+    if (!assignment) {
+      segmentStart += 1;
+      continue;
+    }
 
     let segmentEnd = segmentStart;
     while (segmentEnd + 1 < assignments.length && assignments[segmentEnd + 1]?.label === assignment.label) {
       segmentEnd += 1;
     }
 
-    segments.push({ startDayIndex: segmentStart, endDayIndex: segmentEnd, label: assignment.label, color: assignment.color });
+    segments.push({
+      startDayIndex: segmentStart,
+      endDayIndex: segmentEnd,
+      label: assignment.label,
+      color: assignment.color,
+    });
     segmentStart = segmentEnd + 1;
   }
 
