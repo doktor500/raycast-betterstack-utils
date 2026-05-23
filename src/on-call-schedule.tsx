@@ -12,6 +12,15 @@ const TIME_RANGE_LABELS: Record<TimeRange, string> = {
   "3-months": "3 month view",
 };
 
+type ScheduleActionPanelProps = {
+  nextTimeRange: TimeRange;
+  userNames: string[];
+  selectedUser: string;
+  onTimeRangeChange: (range: TimeRange) => void;
+  onCopyAsPng: () => void;
+  onUserSelect: (user: string) => void;
+};
+
 export default function Command() {
   const { events, scheduleName, isLoading, noSchedule } = useOnCallData();
   const [timeRange, setTimeRange] = useState<TimeRange>("current-month");
@@ -20,13 +29,7 @@ export default function Command() {
   const today = new Date();
 
   if (noSchedule) {
-    return (
-      <Detail
-        markdown={
-          "## No 'Primary' on-call schedule found\n\nNo on-call calendar with 'Primary' in its name was found in your BetterStack account."
-        }
-      />
-    );
+    return <NoScheduleDetail />;
   }
 
   const userNames = [...new Set(events.map((e) => formatUserName(e.user)))].sort();
@@ -35,7 +38,14 @@ export default function Command() {
   async function copyAsPng() {
     const toast = await showToast({ style: Toast.Style.Animated, title: "Copying to clipboard…" });
     try {
-      const svg = buildCombinedScheduleSvg(filteredEvents, today, scheduleWindow, "#1F2433", false, events);
+      const svg = buildCombinedScheduleSvg({
+        events: filteredEvents,
+        today: today,
+        window: scheduleWindow,
+        backgroundColor: "#1F2433",
+        showTodayMarker: false,
+        allEvents: events
+      });
       await exportSvgToClipboard(svg, environment.supportPath);
       toast.style = Toast.Style.Success;
       toast.title = "Schedule copied";
@@ -55,10 +65,18 @@ export default function Command() {
       ? ["", `**Currently on call:** ${formatUserName(currentOnCall)}`, `**${currentOnCall.email}**`].join("\n")
       : "";
 
+  const scheduleSvgProps = {
+    events: filteredEvents,
+    today: today,
+    window: scheduleWindow,
+    backgroundColor: undefined,
+    showTodayMarker: true,
+    allEvents: events
+  };
+
   const markdown = isLoading
     ? ""
-    : `![schedule](${toSvgDataUri(buildCombinedScheduleSvg(filteredEvents, today, scheduleWindow, undefined, true, events))})\n` +
-      currentlyOnCallMessage;
+    : [`![schedule](${toSvgDataUri(buildCombinedScheduleSvg(scheduleSvgProps))})`, currentlyOnCallMessage].join("\n");
 
   return (
     <Detail
@@ -66,33 +84,63 @@ export default function Command() {
       navigationTitle={selectedUser ? `${scheduleName} — ${selectedUser}` : scheduleName}
       markdown={markdown}
       actions={
-        <ActionPanel>
-          <Action title={`Show ${TIME_RANGE_LABELS[nextTimeRange]}`} onAction={() => setTimeRange(nextTimeRange)} />
-          <Action
-            title="Copy Schedule to Clipboard"
-            shortcut={{ modifiers: ["cmd", "shift"], key: "c" }}
-            onAction={copyAsPng}
-          />
-          {userNames.length > 0 && (
-            <ActionPanel.Submenu
-              title={selectedUser ? `Filter: ${selectedUser}` : "Filter by User"}
-              shortcut={{ modifiers: ["cmd"], key: "f" }}
-            >
-              <Action title="All Users" onAction={() => setSelectedUser("")} />
-              {userNames.map((name) => (
-                <Action key={name} title={name} onAction={() => setSelectedUser(name)} />
-              ))}
-            </ActionPanel.Submenu>
-          )}
-          {selectedUser && (
-            <Action
-              title="Clear User Filter"
-              shortcut={{ modifiers: ["cmd", "shift"], key: "f" }}
-              onAction={() => setSelectedUser("")}
-            />
-          )}
-        </ActionPanel>
+        <ScheduleActionPanel
+          nextTimeRange={nextTimeRange}
+          userNames={userNames}
+          selectedUser={selectedUser}
+          onTimeRangeChange={setTimeRange}
+          onCopyAsPng={copyAsPng}
+          onUserSelect={setSelectedUser}
+        />
       }
     />
+  );
+}
+
+function NoScheduleDetail() {
+  return (
+    <Detail
+      markdown={
+        "## No 'Primary' on-call schedule found\n\nNo on-call calendar with 'Primary' in its name was found in your BetterStack account."
+      }
+    />
+  );
+}
+
+function ScheduleActionPanel({
+  nextTimeRange,
+  userNames,
+  selectedUser,
+  onTimeRangeChange,
+  onCopyAsPng,
+  onUserSelect,
+}: ScheduleActionPanelProps) {
+  return (
+    <ActionPanel>
+      <Action title={`Show ${TIME_RANGE_LABELS[nextTimeRange]}`} onAction={() => onTimeRangeChange(nextTimeRange)} />
+      <Action
+        title="Copy Schedule to Clipboard"
+        shortcut={{ modifiers: ["cmd", "shift"], key: "c" }}
+        onAction={onCopyAsPng}
+      />
+      {userNames.length > 0 && (
+        <ActionPanel.Submenu
+          title={selectedUser ? `Filter: ${selectedUser}` : "Filter by User"}
+          shortcut={{ modifiers: ["cmd"], key: "f" }}
+        >
+          <Action title="All Users" onAction={() => onUserSelect("")} />
+          {userNames.map((name) => (
+            <Action key={name} title={name} onAction={() => onUserSelect(name)} />
+          ))}
+        </ActionPanel.Submenu>
+      )}
+      {selectedUser && (
+        <Action
+          title="Clear User Filter"
+          shortcut={{ modifiers: ["cmd", "shift"], key: "f" }}
+          onAction={() => onUserSelect("")}
+        />
+      )}
+    </ActionPanel>
   );
 }

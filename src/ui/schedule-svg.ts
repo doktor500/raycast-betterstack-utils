@@ -21,14 +21,17 @@ import {
 } from "./layout";
 import { formatUserName, OnCallEvent } from "../domain/on-call-event";
 
-export function buildCombinedScheduleSvg(
+type Props = {
   events: OnCallEvent[],
   today: Date,
   window: { start: Date; end: Date },
   backgroundColor?: string,
-  showTodayMarker = true,
-  allEvents?: OnCallEvent[],
-): string {
+  showTodayMarker?: boolean,
+  allEvents?: OnCallEvent[]
+};
+
+export function buildCombinedScheduleSvg(props: Props): string {
+  const { events, today, window, backgroundColor, showTodayMarker = true, allEvents } = props;
   const { start, end } = window;
   const firstWeekStart = startOfWeek(start);
   const lastWeekStart = startOfWeek(end);
