@@ -50,8 +50,7 @@ export function getOnCallUsersForDay(date: Date, events: OnCallEvent[]): OnCallE
   for (const event of events) {
     const start = new Date(event.started_at);
     const end = new Date(event.ended_at);
-    const overlapMs =
-      Math.min(end.getTime(), dayEnd.getTime()) - Math.max(start.getTime(), dayStart.getTime());
+    const overlapMs = Math.min(end.getTime(), dayEnd.getTime()) - Math.max(start.getTime(), dayStart.getTime());
     if (overlapMs >= MIN_OVERLAP_MS) {
       const key = event.user.email;
       if (!seen.has(key)) {

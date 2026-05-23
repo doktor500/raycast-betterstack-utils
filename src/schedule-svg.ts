@@ -89,8 +89,7 @@ export function buildCombinedScheduleSvg(
     }),
   );
 
-  const calHeight = (mi: number) =>
-    BLOCK_HEADER_HEIGHT + weekRowHeightsByMonth[mi].reduce((a, b) => a + b, 0);
+  const calHeight = (mi: number) => BLOCK_HEADER_HEIGHT + weekRowHeightsByMonth[mi].reduce((a, b) => a + b, 0);
 
   const summaries = monthGroups.map(({ year, month }) => computeMonthSummary(year, month, events, colorMap));
   const monthTotalHeight = (idx: number) => calHeight(idx) + SUMMARY_GAP + summaryBlockHeight(summaries[idx].length);
@@ -293,9 +292,7 @@ function renderWeekGroup(
   const divider = weekIndex > 0 ? `<line x1="0" y1="0" x2="${WIDTH}" y2="0" stroke="#303A50"/>` : "";
 
   const baseId = (currentMonth.year * 12 + currentMonth.month) * 1000 + weekIndex * 100;
-  const allBarsMarkup = weekTimeline
-    .map((bar, barIdx) => renderSpanBar(bar, baseId + barIdx))
-    .join("\n    ");
+  const allBarsMarkup = weekTimeline.map((bar, barIdx) => renderSpanBar(bar, baseId + barIdx)).join("\n    ");
 
   return `<g transform="translate(0, ${offsetY})">
     ${divider}
@@ -318,9 +315,7 @@ function renderDayColumn(
   const isWeekend = day.getDay() === 0 || day.getDay() === 6;
   const inMonth = day.getFullYear() === currentMonth.year && day.getMonth() === currentMonth.month;
   const bgRect =
-    columnBg !== "none"
-      ? `<rect x="${x}" y="0" width="${DAY_WIDTH}" height="${rowH}" fill="${columnBg}"/>`
-      : "";
+    columnBg !== "none" ? `<rect x="${x}" y="0" width="${DAY_WIDTH}" height="${rowH}" fill="${columnBg}"/>` : "";
 
   if (!inMonth) {
     return `<g>
