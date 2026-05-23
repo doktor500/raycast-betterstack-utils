@@ -58,11 +58,6 @@ export function buildCombinedScheduleSvg(
     weeks: allWeeks.filter((days) => days.some((d) => d.getFullYear() === year && d.getMonth() === month)),
   }));
 
-  const calHeight = (g: (typeof monthGroups)[0]) => BLOCK_HEADER_HEIGHT + g.weeks.length * ROW_HEIGHT_TOTAL;
-  const monthTotalHeight = (g: (typeof monthGroups)[0]) => calHeight(g) + SUMMARY_GAP + SUMMARY_BLOCK_HEIGHT;
-  const totalHeight =
-    monthGroups.reduce((sum, g) => sum + monthTotalHeight(g), 0) + (monthGroups.length - 1) * BLOCK_GAP;
-
   const colorSourceEvents = allEvents ?? events;
   const uniqueNames = [
     ...new Set(
@@ -73,6 +68,14 @@ export function buildCombinedScheduleSvg(
     ),
   ].sort();
   const colorMap = buildColorMap(uniqueNames);
+
+  const calHeight = (g: (typeof monthGroups)[0]) => BLOCK_HEADER_HEIGHT + g.weeks.length * ROW_HEIGHT_TOTAL;
+
+  const summaries = monthGroups.map(({ year, month }) => computeMonthSummary(year, month, events, colorMap, today));
+  const monthTotalHeight = (g: (typeof monthGroups)[0], idx: number) =>
+    calHeight(g) + SUMMARY_GAP + summaryBlockHeight(summaries[idx].length);
+  const totalHeight =
+    monthGroups.reduce((sum, g, idx) => sum + monthTotalHeight(g, idx), 0) + (monthGroups.length - 1) * BLOCK_GAP;
 
   const columnBg = backgroundColor ?? "none";
 
@@ -91,14 +94,14 @@ export function buildCombinedScheduleSvg(
         showTodayMarker,
         columnBg,
       );
-      const summary = computeMonthSummary(year, month, events, colorMap, today);
+      const summary = summaries[i];
       const summaryBlock = renderSummaryBlock(year, month, summary, currentY + ch + SUMMARY_GAP);
-      const dividerY = currentY + monthTotalHeight({ year, month, weeks }) + BLOCK_GAP / 2;
+      const dividerY = currentY + monthTotalHeight({ year, month, weeks }, i) + BLOCK_GAP / 2;
       const divider =
         i < monthGroups.length - 1
           ? `<line x1="0" y1="${dividerY}" x2="${WIDTH}" y2="${dividerY}" stroke="#4A5568" stroke-width="2"/>`
           : "";
-      currentY += monthTotalHeight({ year, month, weeks }) + BLOCK_GAP;
+      currentY += monthTotalHeight({ year, month, weeks }, i) + BLOCK_GAP;
       return calBlock + summaryBlock + divider;
     })
     .join("");
@@ -304,6 +307,14 @@ const FONT = "-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
 const SUMMARY_BLOCK_HEIGHT = 100;
 const SUMMARY_MONTH_COL_WIDTH = 200;
 const SUMMARY_GAP = 12;
+const SUMMARY_COLS_THRESHOLD = 5;
+const SUMMARY_VERTICAL_ROW_HEIGHT = 36;
+const SUMMARY_VERTICAL_PADDING = 14;
+
+function summaryBlockHeight(n: number): number {
+  if (n <= SUMMARY_COLS_THRESHOLD) return SUMMARY_BLOCK_HEIGHT;
+  return n * SUMMARY_VERTICAL_ROW_HEIGHT + SUMMARY_VERTICAL_PADDING * 2;
+}
 
 function computeMonthSummary(
   year: number,
@@ -358,29 +369,50 @@ function renderSummaryBlock(year: number, month: number, summary: SummaryEntry[]
 
   const monthLabel = escapeXml(formatMonthLabel({ year, month }));
   const n = summary.length;
-  const statsAreaWidth = WIDTH - SUMMARY_MONTH_COL_WIDTH;
-  const cellWidth = statsAreaWidth / n;
-  const dotR = 7;
-  const midY = SUMMARY_BLOCK_HEIGHT / 2;
+  const height = summaryBlockHeight(n);
+  const midY = height / 2;
 
-  const items = summary
-    .map(({ name, days, remainingHours, color }, i) => {
-      const cellX = SUMMARY_MONTH_COL_WIDTH + i * cellWidth;
-      const dotCx = cellX + 20;
-      const textX = dotCx + dotR + 10;
-      const label = escapeXml(name);
-      const stats = escapeXml(remainingHours > 0 ? `${days}d · ${remainingHours}h left` : `${days}d`);
-      return `<circle cx="${dotCx}" cy="${midY - 10}" r="${dotR}" fill="${color}"/>
+  let items: string;
+
+  if (n <= SUMMARY_COLS_THRESHOLD) {
+    const statsAreaWidth = WIDTH - SUMMARY_MONTH_COL_WIDTH;
+    const cellWidth = statsAreaWidth / n;
+    const dotR = 7;
+    items = summary
+      .map(({ name, days, remainingHours, color }, i) => {
+        const cellX = SUMMARY_MONTH_COL_WIDTH + i * cellWidth;
+        const dotCx = cellX + 20;
+        const textX = dotCx + dotR + 10;
+        const label = escapeXml(name);
+        const stats = escapeXml(remainingHours > 0 ? `${days}d · ${remainingHours}h left` : `${days}d`);
+        return `<circle cx="${dotCx}" cy="${midY - 10}" r="${dotR}" fill="${color}"/>
     <text x="${textX}" y="${midY - 3}" fill="#AEB8D3" font-family="${FONT}" font-size="19" font-weight="600">${label}</text>
     <text x="${textX}" y="${midY + 20}" fill="#707B96" font-family="${FONT}" font-size="16">${stats}</text>`;
-    })
-    .join("\n  ");
+      })
+      .join("\n  ");
+  } else {
+    const dotR = 6;
+    const rowH = SUMMARY_VERTICAL_ROW_HEIGHT;
+    const padY = SUMMARY_VERTICAL_PADDING;
+    const dotX = SUMMARY_MONTH_COL_WIDTH + 20;
+    items = summary
+      .map(({ name, days, remainingHours, color }, i) => {
+        const cy = padY + i * rowH + rowH / 2;
+        const textX = dotX + dotR + 10;
+        const label = escapeXml(name);
+        const stats = escapeXml(remainingHours > 0 ? `${days}d · ${remainingHours}h left` : `${days}d`);
+        return `<circle cx="${dotX}" cy="${cy}" r="${dotR}" fill="${color}"/>
+    <text x="${textX}" y="${cy + 5}" fill="#AEB8D3" font-family="${FONT}" font-size="17" font-weight="600">${label}</text>
+    <text x="${WIDTH - 24}" y="${cy + 5}" text-anchor="end" fill="#707B96" font-family="${FONT}" font-size="15">${stats}</text>`;
+      })
+      .join("\n  ");
+  }
 
   return `<g transform="translate(0, ${offsetY})">
-  <rect width="${WIDTH}" height="${SUMMARY_BLOCK_HEIGHT}" rx="10" fill="#1F2433" fill-opacity="0.2"/>
-  <rect x="0.5" y="0.5" width="${WIDTH - 1}" height="${SUMMARY_BLOCK_HEIGHT - 1}" rx="10" fill="none" stroke="#303A50"/>
+  <rect width="${WIDTH}" height="${height}" rx="10" fill="#1F2433" fill-opacity="0.2"/>
+  <rect x="0.5" y="0.5" width="${WIDTH - 1}" height="${height - 1}" rx="10" fill="none" stroke="#303A50"/>
   <text x="24" y="${midY + 7}" fill="#F3F5FA" font-family="${FONT}" font-size="18" font-weight="700">${monthLabel}</text>
-  <line x1="${SUMMARY_MONTH_COL_WIDTH}" y1="16" x2="${SUMMARY_MONTH_COL_WIDTH}" y2="${SUMMARY_BLOCK_HEIGHT - 16}" stroke="#303A50"/>
+  <line x1="${SUMMARY_MONTH_COL_WIDTH}" y1="16" x2="${SUMMARY_MONTH_COL_WIDTH}" y2="${height - 16}" stroke="#303A50"/>
   ${items}
 </g>`;
 }
