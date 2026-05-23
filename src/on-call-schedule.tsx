@@ -2,7 +2,7 @@ import { Action, ActionPanel, Detail, showToast, Toast } from "@raycast/api";
 import { useEffect, useState } from "react";
 import { getOnCallCalendars, getCalendarEvents } from "./api";
 import { getCurrentMonthWindow, getThreeMonthWindow, type OnCallEvent } from "./dates";
-import { buildWeeklyScheduleSvgs, toSvgDataUri } from "./schedule-svg";
+import { buildCombinedScheduleSvg, toSvgDataUri } from "./schedule-svg";
 
 type TimeRange = "current-month" | "3-months";
 
@@ -77,8 +77,7 @@ export default function Command() {
 
   const nextTimeRange: TimeRange = timeRange === "current-month" ? "3-months" : "current-month";
   const window = timeRange === "current-month" ? getCurrentMonthWindow() : getThreeMonthWindow();
-  const weeks = buildWeeklyScheduleSvgs(filteredEvents, today, window);
-  const markdown = isLoading ? "" : weeks.map((week) => `![${week.label}](${toSvgDataUri(week.svg)})`).join("\n\n");
+  const markdown = isLoading ? "" : `![schedule](${toSvgDataUri(buildCombinedScheduleSvg(filteredEvents, today, window))})`;
 
   return (
     <Detail
