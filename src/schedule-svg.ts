@@ -1,3 +1,5 @@
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
 import { getOnCallForDay, type OnCallEvent } from "./dates";
 import { buildColorMap, getTextColor } from "./colors";
 
@@ -21,6 +23,8 @@ export function buildCombinedScheduleSvg(
   events: OnCallEvent[],
   today: Date,
   window: { start: Date; end: Date },
+  backgroundColor?: string,
+  showTodayMarker = true,
 ): string {
   const { start, end } = window;
   const firstWeekStart = startOfWeek(start);
@@ -66,11 +70,13 @@ export function buildCombinedScheduleSvg(
   ].sort();
   const colorMap = buildColorMap(uniqueNames);
 
+  const columnBg = backgroundColor ?? "none";
+
   let currentY = 0;
   const blocksContent = monthGroups
     .map(({ year, month, weeks }) => {
       const bh = blockHeight({ year, month, weeks });
-      const block = renderMonthBlock(weeks, currentY, bh, today, events, { year, month }, colorMap);
+      const block = renderMonthBlock(weeks, currentY, bh, today, events, { year, month }, colorMap, showTodayMarker, columnBg);
       currentY += bh + BLOCK_GAP;
       return block;
     })
@@ -79,12 +85,14 @@ export function buildCombinedScheduleSvg(
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${totalHeight}" viewBox="0 0 ${WIDTH} ${totalHeight}">
   <defs>
     <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(135)">
+      ${columnBg !== "none" ? `<rect width="8" height="8" fill="${columnBg}"/>` : ""}
       <path d="M 0 0 L 0 8" stroke="#182033" stroke-width="1" opacity="0.50"/>
     </pattern>
     <filter id="shadow" x="-10%" y="-30%" width="120%" height="170%">
       <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#050816" flood-opacity="0.3"/>
     </filter>
   </defs>
+  ${backgroundColor ? `<rect width="${WIDTH}" height="${totalHeight}" fill="${backgroundColor}"/>` : ""}
 
   ${blocksContent}
 </svg>`;
@@ -98,6 +106,8 @@ function renderMonthBlock(
   events: OnCallEvent[],
   currentMonth: { year: number; month: number },
   colorMap: Map<string, string>,
+  showTodayMarker: boolean,
+  columnBg: string,
 ): string {
   const monthLabel = escapeXml(formatMonthLabel(currentMonth));
 
@@ -111,6 +121,8 @@ function renderMonthBlock(
         localIndex,
         BLOCK_HEADER_HEIGHT + localIndex * ROW_HEIGHT_TOTAL,
         currentMonth,
+        showTodayMarker,
+        columnBg,
       );
     })
     .join("");
@@ -126,6 +138,17 @@ function renderMonthBlock(
 
 export function toSvgDataUri(svg: string): string {
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
+
+const execFileAsync = promisify(execFile);
+
+export async function svgToPng(svgPath: string, pngPath: string): Promise<void> {
+  await execFileAsync("sips", ["-s", "format", "png", svgPath, "--out", pngPath]);
+}
+
+export async function copyImageToClipboard(pngPath: string): Promise<void> {
+  const script = `set the clipboard to (read (POSIX file "${pngPath}") as «class PNGf»)`;
+  await execFileAsync("osascript", ["-e", script]);
 }
 
 function buildWeekSegments(
@@ -177,6 +200,8 @@ function renderWeekGroup(
   weekIndex: number,
   offsetY: number,
   currentMonth: { year: number; month: number },
+  showTodayMarker: boolean,
+  columnBg: string,
 ): string {
   const todayIndex = days.findIndex((day) => isSameDay(day, today));
   const divider = weekIndex > 0 ? `<line x1="0" y1="0" x2="${WIDTH}" y2="0" stroke="#303A50"/>` : "";
@@ -184,26 +209,29 @@ function renderWeekGroup(
   return `<g transform="translate(0, ${offsetY})">
     ${divider}
 
-    ${days.map((day, index) => renderDayColumn(day, index, currentMonth)).join("\n    ")}
+    ${days.map((day, index) => renderDayColumn(day, index, currentMonth, columnBg)).join("\n    ")}
     ${segments.map((segment, index) => renderSegment(segment, (currentMonth.year * 12 + currentMonth.month) * 1000 + weekIndex * 100 + index)).join("\n    ")}
-    ${todayIndex >= 0 ? renderTodayMarker(todayIndex, today) : ""}
+    ${showTodayMarker && todayIndex >= 0 ? renderTodayMarker(todayIndex, today) : ""}
   </g>`;
 }
 
-function renderDayColumn(day: Date, index: number, currentMonth: { year: number; month: number }): string {
+function renderDayColumn(day: Date, index: number, currentMonth: { year: number; month: number }, columnBg: string): string {
   const x = index * DAY_WIDTH;
   const center = x + DAY_WIDTH / 2;
   const isWeekend = day.getDay() === 0 || day.getDay() === 6;
   const inMonth = day.getFullYear() === currentMonth.year && day.getMonth() === currentMonth.month;
+  const bgRect = columnBg !== "none" ? `<rect x="${x}" y="0" width="${DAY_WIDTH}" height="${ROW_HEIGHT_TOTAL}" fill="${columnBg}"/>` : "";
 
   if (!inMonth) {
     return `<g>
-      <rect x="${x}" y="0" width="${DAY_WIDTH}" height="${ROW_HEIGHT_TOTAL}" fill="${isWeekend ? "url(#hatch)" : "transparent"}" opacity="0.3"/>
+      ${bgRect}
+      ${isWeekend ? `<rect x="${x}" y="0" width="${DAY_WIDTH}" height="${ROW_HEIGHT_TOTAL}" fill="url(#hatch)" opacity="0.3"/>` : ""}
     </g>`;
   }
 
   return `<g>
-      <rect x="${x}" y="0" width="${DAY_WIDTH}" height="${ROW_HEIGHT_TOTAL}" fill="${isWeekend ? "url(#hatch)" : "transparent"}"/>
+      ${bgRect}
+      ${isWeekend ? `<rect x="${x}" y="0" width="${DAY_WIDTH}" height="${ROW_HEIGHT_TOTAL}" fill="url(#hatch)"/>` : ""}
       <line x1="${x}" y1="0" x2="${x}" y2="${ROW_HEIGHT_TOTAL}" stroke="#2A3449"/>
       <line x1="${x}" y1="${DAY_HEADER_HEIGHT}" x2="${x + DAY_WIDTH}" y2="${DAY_HEADER_HEIGHT}" stroke="#2D374C"/>
       <text x="${center - 3}" y="22" text-anchor="end" fill="#707B96" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13" font-weight="600">${formatWeekday(day)}</text>
