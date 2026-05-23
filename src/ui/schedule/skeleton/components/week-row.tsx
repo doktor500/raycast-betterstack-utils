@@ -1,5 +1,5 @@
-import { LAYOUT } from "../../layout";
-import { skeletonColors } from "./colors/skeleton-colors";
+import { LAYOUT } from "../../../layout";
+import { skeletonColors } from "../colors/skeleton-colors";
 
 interface WeekRowProps {
   weekIndex: number;

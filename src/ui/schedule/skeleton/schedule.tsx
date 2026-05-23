@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { LAYOUT, SUMMARY, weekRowHeight, summaryBlockHeight } from "../../layout";
-import { WeekRow } from "./week-row";
+import { WeekRow } from "./components/week-row";
 import { skeletonColors } from "./colors/skeleton-colors";
 
 const NUM_WEEKS = 5;

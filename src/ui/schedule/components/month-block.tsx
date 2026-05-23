@@ -1,4 +1,4 @@
-import { type WeekSpanBar, LAYOUT, formatMonthLabel } from "../layout";
+import { type WeekSpanBar, LAYOUT, formatMonthLabel } from "../../layout";
 import { WeekGroup } from "./week-group";
 
 const FONT_FAMILY = "-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";

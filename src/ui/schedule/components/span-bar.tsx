@@ -1,5 +1,5 @@
-import { type WeekSpanBar, LAYOUT, truncateLabel } from "../layout";
-import { getTextColor } from "../../utils/colors";
+import { type WeekSpanBar, LAYOUT, truncateLabel } from "../../layout";
+import { getTextColor } from "../../../utils/colors";
 
 const FONT_FAMILY = "-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
 

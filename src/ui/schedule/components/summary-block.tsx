@@ -1,4 +1,11 @@
-import { type SummaryEntry, LAYOUT, SUMMARY, summaryBlockHeight, formatDaysHours, formatMonthLabel } from "../layout";
+import {
+  type SummaryEntry,
+  LAYOUT,
+  SUMMARY,
+  summaryBlockHeight,
+  formatDaysHours,
+  formatMonthLabel,
+} from "../../layout";
 
 interface SummaryBlockProps {
   year: number;

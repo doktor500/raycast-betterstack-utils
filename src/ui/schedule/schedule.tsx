@@ -8,8 +8,8 @@ import { startOfWeek, addDays } from "../../utils/dates";
 import { buildColorMap } from "../../utils/colors";
 import { LAYOUT, weekRowHeight, summaryBlockHeight, buildWeekSpanBars, computeMonthSummary } from "../layout";
 import { formatUserName, OnCallEvent } from "../../domain/on-call-event";
-import { MonthBlock } from "./month-block";
-import { SummaryBlock } from "./summary-block";
+import { MonthBlock } from "./components/month-block";
+import { SummaryBlock } from "./components/summary-block";
 
 type Props = {
   events: OnCallEvent[];

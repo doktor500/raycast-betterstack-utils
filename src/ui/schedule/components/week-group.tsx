@@ -1,5 +1,5 @@
-import { type WeekSpanBar, LAYOUT } from "../layout";
-import { isSameDay } from "../../utils/dates";
+import { type WeekSpanBar, LAYOUT } from "../../layout";
+import { isSameDay } from "../../../utils/dates";
 import { DayColumn } from "./day-column";
 import { SpanBar } from "./span-bar";
 import { TodayMarker } from "./today-marker";

@@ -1,11 +1,11 @@
 import { Action, ActionPanel, Detail, environment, showToast, Toast } from "@raycast/api";
 import { useState } from "react";
 import { getCurrentMonthWindow, getThreeMonthWindow } from "./utils/dates";
-import { buildCombinedScheduleSvg, exportSvgToClipboard, toSvgDataUri } from "./ui/schedule/schedule-svg";
+import { buildCombinedScheduleSvg, exportSvgToClipboard, toSvgDataUri } from "./ui/schedule/schedule";
 import { useOnCallData } from "./hooks/use-on-call-data";
 import { formatUserName, getCurrentOnCallUser, OnCallEvent } from "./domain/on-call-event";
 import { Colors } from "./utils/colors";
-import { buildScheduleSkeletonSvg } from "./ui/schedule/skeleton/schedule-svg";
+import { buildScheduleSkeletonSvg } from "./ui/schedule/skeleton/schedule";
 import * as os from "node:os";
 
 type TimeRange = "current-month" | "3-months";

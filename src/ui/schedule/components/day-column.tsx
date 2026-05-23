@@ -1,4 +1,4 @@
-import { LAYOUT, formatWeekday } from "../layout";
+import { LAYOUT, formatWeekday } from "../../layout";
 
 const FONT_FAMILY = "-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
 
