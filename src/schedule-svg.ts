@@ -57,8 +57,9 @@ export function buildCombinedScheduleSvg(
     weeks: allWeeks.filter((days) => days.some((d) => d.getFullYear() === year && d.getMonth() === month)),
   }));
 
-  const blockHeight = (g: (typeof monthGroups)[0]) => BLOCK_HEADER_HEIGHT + g.weeks.length * ROW_HEIGHT_TOTAL;
-  const totalHeight = monthGroups.reduce((sum, g) => sum + blockHeight(g), 0) + (monthGroups.length - 1) * BLOCK_GAP;
+  const calHeight = (g: (typeof monthGroups)[0]) => BLOCK_HEADER_HEIGHT + g.weeks.length * ROW_HEIGHT_TOTAL;
+  const monthTotalHeight = (g: (typeof monthGroups)[0]) => calHeight(g) + SUMMARY_GAP + SUMMARY_BLOCK_HEIGHT;
+  const totalHeight = monthGroups.reduce((sum, g) => sum + monthTotalHeight(g), 0) + (monthGroups.length - 1) * BLOCK_GAP;
 
   const uniqueNames = [
     ...new Set(
@@ -75,10 +76,12 @@ export function buildCombinedScheduleSvg(
   let currentY = 0;
   const blocksContent = monthGroups
     .map(({ year, month, weeks }) => {
-      const bh = blockHeight({ year, month, weeks });
-      const block = renderMonthBlock(weeks, currentY, bh, today, events, { year, month }, colorMap, showTodayMarker, columnBg);
-      currentY += bh + BLOCK_GAP;
-      return block;
+      const ch = calHeight({ year, month, weeks });
+      const calBlock = renderMonthBlock(weeks, currentY, ch, today, events, { year, month }, colorMap, showTodayMarker, columnBg);
+      const summary = computeMonthSummary(year, month, events, colorMap, today);
+      const summaryBlock = renderSummaryBlock(year, month, summary, currentY + ch + SUMMARY_GAP);
+      currentY += monthTotalHeight({ year, month, weeks }) + BLOCK_GAP;
+      return calBlock + summaryBlock;
     })
     .join("");
 
@@ -262,6 +265,142 @@ function renderTodayMarker(index: number, today: Date): string {
       <line x1="${x}" y1="${DAY_HEADER_HEIGHT}" x2="${x}" y2="${ROW_HEIGHT_TOTAL}" stroke="#FFFFFF" stroke-width="4" opacity="0.85"/>
       <circle cx="${x}" cy="${DAY_HEADER_HEIGHT}" r="3" fill="#FFFFFF"/>
     </g>`;
+}
+
+interface SummaryEntry {
+  name: string;
+  days: number;
+  remainingHours: number;
+  color: string;
+}
+
+const FONT = "-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
+const SUMMARY_BLOCK_HEIGHT = 100;
+const SUMMARY_MONTH_COL_WIDTH = 200;
+const SUMMARY_GAP = 12;
+
+export function buildSummarySvg(events: OnCallEvent[], today: Date, window: { start: Date; end: Date }): string {
+  const monthGroups = getMonthsInWindow(window);
+
+  const uniqueNames = [
+    ...new Set(
+      events.map((e) => {
+        const fullName = `${e.user.first_name} ${e.user.last_name}`.trim();
+        return fullName || e.user.email;
+      }),
+    ),
+  ].sort();
+  const colorMap = buildColorMap(uniqueNames);
+
+  const totalHeight = monthGroups.length * SUMMARY_BLOCK_HEIGHT + (monthGroups.length - 1) * SUMMARY_GAP;
+
+  let currentY = 0;
+  const blocks = monthGroups
+    .map(({ year, month }) => {
+      const summary = computeMonthSummary(year, month, events, colorMap, today);
+      const block = renderSummaryBlock(year, month, summary, currentY);
+      currentY += SUMMARY_BLOCK_HEIGHT + SUMMARY_GAP;
+      return block;
+    })
+    .join("");
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${totalHeight}" viewBox="0 0 ${WIDTH} ${totalHeight}">${blocks}</svg>`;
+}
+
+function getMonthsInWindow(window: { start: Date; end: Date }): Array<{ year: number; month: number }> {
+  const seen = new Set<string>();
+  const list: Array<{ year: number; month: number }> = [];
+  const cur = new Date(window.start.getFullYear(), window.start.getMonth(), 1);
+  const end = new Date(window.end.getFullYear(), window.end.getMonth(), 1);
+  while (cur <= end) {
+    const key = `${cur.getFullYear()}-${cur.getMonth()}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      list.push({ year: cur.getFullYear(), month: cur.getMonth() });
+    }
+    cur.setMonth(cur.getMonth() + 1);
+  }
+  return list;
+}
+
+function computeMonthSummary(
+  year: number,
+  month: number,
+  events: OnCallEvent[],
+  colorMap: Map<string, string>,
+  today: Date,
+): SummaryEntry[] {
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const totalCounts = new Map<string, number>();
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const day = new Date(year, month, d);
+    const person = getOnCallForDay(day, events);
+    if (!person) continue;
+    const fullName = `${person.first_name} ${person.last_name}`.trim();
+    const displayName = fullName || person.email;
+    totalCounts.set(displayName, (totalCounts.get(displayName) ?? 0) + 1);
+  }
+
+  // Remaining hours = hours left in the CURRENT running shift only.
+  // Only the person on-call right now can have remaining hours.
+  const currentPerson = getOnCallForDay(today, events);
+  const currentPersonName = currentPerson
+    ? (`${currentPerson.first_name} ${currentPerson.last_name}`.trim() || currentPerson.email)
+    : null;
+
+  let remainingHoursForCurrent = 0;
+  if (currentPersonName && today.getFullYear() === year && today.getMonth() === month) {
+    for (let d = today.getDate() + 1; d <= daysInMonth; d++) {
+      const day = new Date(year, month, d);
+      const person = getOnCallForDay(day, events);
+      if (!person) break;
+      const name = `${person.first_name} ${person.last_name}`.trim() || person.email;
+      if (name !== currentPersonName) break;
+      remainingHoursForCurrent += 24;
+    }
+  }
+
+  return [...totalCounts.entries()]
+    .map(([name, days]) => ({
+      name,
+      days,
+      remainingHours: name === currentPersonName ? remainingHoursForCurrent : 0,
+      color: colorMap.get(name) ?? "#16C77A",
+    }))
+    .sort((a, b) => b.days - a.days);
+}
+
+function renderSummaryBlock(year: number, month: number, summary: SummaryEntry[], offsetY: number): string {
+  if (summary.length === 0) return "";
+
+  const monthLabel = escapeXml(formatMonthLabel({ year, month }));
+  const n = summary.length;
+  const statsAreaWidth = WIDTH - SUMMARY_MONTH_COL_WIDTH;
+  const cellWidth = statsAreaWidth / n;
+  const dotR = 7;
+  const midY = SUMMARY_BLOCK_HEIGHT / 2;
+
+  const items = summary
+    .map(({ name, days, remainingHours, color }, i) => {
+      const cellX = SUMMARY_MONTH_COL_WIDTH + i * cellWidth;
+      const dotCx = cellX + 20;
+      const textX = dotCx + dotR + 10;
+      const label = escapeXml(name);
+      const stats = escapeXml(`${days}d`);
+      return `<circle cx="${dotCx}" cy="${midY - 10}" r="${dotR}" fill="${color}"/>
+    <text x="${textX}" y="${midY - 3}" fill="#AEB8D3" font-family="${FONT}" font-size="19" font-weight="600">${label}</text>
+    <text x="${textX}" y="${midY + 20}" fill="#707B96" font-family="${FONT}" font-size="16">${stats}</text>`;
+    })
+    .join("\n  ");
+
+  return `<g transform="translate(0, ${offsetY})">
+  <rect width="${WIDTH}" height="${SUMMARY_BLOCK_HEIGHT}" rx="10" fill="#1F2433" fill-opacity="0.2"/>
+  <rect x="0.5" y="0.5" width="${WIDTH - 1}" height="${SUMMARY_BLOCK_HEIGHT - 1}" rx="10" fill="none" stroke="#303A50"/>
+  <text x="24" y="${midY + 7}" fill="#F3F5FA" font-family="${FONT}" font-size="18" font-weight="700">${monthLabel}</text>
+  <line x1="${SUMMARY_MONTH_COL_WIDTH}" y1="16" x2="${SUMMARY_MONTH_COL_WIDTH}" y2="${SUMMARY_BLOCK_HEIGHT - 16}" stroke="#303A50"/>
+  ${items}
+</g>`;
 }
 
 function startOfWeek(date: Date): Date {

@@ -101,7 +101,7 @@ export default function Command() {
   const window = timeRange === "current-month" ? getCurrentMonthWindow() : getThreeMonthWindow();
 
   const currentOnCall = isLoading ? null : getOnCallForDay(today, events);
-  const onCallFooter =
+  const currentlyOnCallMessage =
     timeRange === "current-month" && currentOnCall
       ? [
           "",
@@ -112,7 +112,7 @@ export default function Command() {
 
   const markdown = isLoading
     ? ""
-    : `![schedule](${toSvgDataUri(buildCombinedScheduleSvg(filteredEvents, today, window))}) \n ${onCallFooter}`;
+    : `![schedule](${toSvgDataUri(buildCombinedScheduleSvg(filteredEvents, today, window))})\n` + currentlyOnCallMessage;
 
   return (
     <Detail
