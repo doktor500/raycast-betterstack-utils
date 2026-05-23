@@ -1,11 +1,11 @@
 import { Action, ActionPanel, Detail, environment, showToast, Toast } from "@raycast/api";
 import { useState } from "react";
 import { getCurrentMonthWindow, getThreeMonthWindow } from "./utils/dates";
-import { buildCombinedScheduleSvg, exportSvgToClipboard, toSvgDataUri } from "./ui/schedule-svg";
+import { buildCombinedScheduleSvg, exportSvgToClipboard, toSvgDataUri } from "./ui/schedule/schedule-svg";
 import { useOnCallData } from "./hooks/use-on-call-data";
 import { formatUserName, getCurrentOnCallUser, OnCallEvent } from "./domain/on-call-event";
 import { Colors } from "./utils/colors";
-import { buildScheduleSkeletonSvg } from "./ui/schedule-skeleton-svg";
+import { buildScheduleSkeletonSvg } from "./ui/schedule/skeleton/schedule-svg";
 import * as os from "node:os";
 
 type TimeRange = "current-month" | "3-months";
@@ -47,7 +47,7 @@ export default function Command() {
         window: scheduleWindow,
         backgroundColor: Colors.DARK,
         showTodayMarker: false,
-        allEvents: events
+        allEvents: events,
       });
       await exportSvgToClipboard(svg, environment.supportPath);
       toast.style = Toast.Style.Success;
@@ -69,7 +69,7 @@ export default function Command() {
     window: scheduleWindow,
     backgroundColor: undefined,
     showTodayMarker: true,
-    allEvents: events
+    allEvents: events,
   };
 
   const markdown = isLoading
@@ -96,13 +96,7 @@ export default function Command() {
 }
 
 function NoScheduleDetail() {
-  return (
-    <Detail
-      markdown={
-        "## No 'Primary' on-call schedule found in your BetterStack account."
-      }
-    />
-  );
+  return <Detail markdown={"## No 'Primary' on-call schedule found in your BetterStack account."} />;
 }
 
 function ScheduleActionPanel({

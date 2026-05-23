@@ -2,8 +2,8 @@ import { execFile } from "node:child_process";
 import { promises as fs } from "node:fs";
 import { promisify } from "node:util";
 import path from "node:path";
-import { startOfWeek, addDays, isSameDay } from "../utils/dates";
-import { buildColorMap, getTextColor } from "../utils/colors";
+import { startOfWeek, addDays, isSameDay } from "../../utils/dates";
+import { buildColorMap, getTextColor } from "../../utils/colors";
 import {
   type WeekSpanBar,
   type SummaryEntry,
@@ -18,16 +18,16 @@ import {
   formatMonthLabel,
   buildWeekSpanBars,
   computeMonthSummary,
-} from "./layout";
-import { formatUserName, OnCallEvent } from "../domain/on-call-event";
+} from "../layout";
+import { formatUserName, OnCallEvent } from "../../domain/on-call-event";
 
 type Props = {
-  events: OnCallEvent[],
-  today: Date,
-  window: { start: Date; end: Date },
-  backgroundColor?: string,
-  showTodayMarker?: boolean,
-  allEvents?: OnCallEvent[]
+  events: OnCallEvent[];
+  today: Date;
+  window: { start: Date; end: Date };
+  backgroundColor?: string;
+  showTodayMarker?: boolean;
+  allEvents?: OnCallEvent[];
 };
 
 export function buildCombinedScheduleSvg(props: Props): string {
