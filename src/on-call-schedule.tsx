@@ -3,16 +3,12 @@ import { useState } from "react";
 import { getCurrentMonthWindow, getThreeMonthWindow } from "./utils/dates";
 import { buildCombinedScheduleSvg, exportSvgToClipboard, toSvgDataUri } from "./ui/schedule-svg";
 import { useOnCallData } from "./hooks/use-on-call-data";
-import { formatUserName, getCurrentOnCallUser } from "./domain/on-call-event";
+import { formatUserName, getCurrentOnCallUser, OnCallEvent } from "./domain/on-call-event";
 import { Colors } from "./utils/colors";
 import { buildScheduleSkeletonSvg } from "./ui/schedule-skeleton-svg";
+import * as os from "node:os";
 
 type TimeRange = "current-month" | "3-months";
-
-const TIME_RANGE_LABELS: Record<TimeRange, string> = {
-  "current-month": "current month only",
-  "3-months": "3 month view",
-};
 
 type ScheduleActionPanelProps = {
   nextTimeRange: TimeRange;
@@ -21,6 +17,11 @@ type ScheduleActionPanelProps = {
   onTimeRangeChange: (range: TimeRange) => void;
   onCopyAsPng: () => void;
   onUserSelect: (user: string) => void;
+};
+
+const TIME_RANGE_LABELS: Record<TimeRange, string> = {
+  "current-month": "current month only",
+  "3-months": "3 month view",
 };
 
 export default function Command() {
@@ -60,12 +61,7 @@ export default function Command() {
 
   const nextTimeRange: TimeRange = timeRange === "current-month" ? "3-months" : "current-month";
   const scheduleWindow = timeRange === "current-month" ? getCurrentMonthWindow() : getThreeMonthWindow();
-
-  const currentOnCall = isLoading ? null : getCurrentOnCallUser(today, events);
-  const currentlyOnCallMessage =
-    timeRange === "current-month" && currentOnCall
-      ? ["", `**Currently on call:** ${formatUserName(currentOnCall)}`, `**${currentOnCall.email}**`].join("\n")
-      : "";
+  const currentlyOnCallMessage = getCurrentOnCallMessage(isLoading, today, events, timeRange);
 
   const scheduleSvgProps = {
     events: filteredEvents,
@@ -78,7 +74,7 @@ export default function Command() {
 
   const markdown = isLoading
     ? `![schedule](${toSvgDataUri(buildScheduleSkeletonSvg())})`
-    : [`![schedule](${toSvgDataUri(buildCombinedScheduleSvg(scheduleSvgProps))})`, currentlyOnCallMessage].join("\n");
+    : [`![schedule](${toSvgDataUri(buildCombinedScheduleSvg(scheduleSvgProps))})`, currentlyOnCallMessage].join(os.EOL);
 
   return (
     <Detail
@@ -145,4 +141,12 @@ function ScheduleActionPanel({
       )}
     </ActionPanel>
   );
+}
+
+function getCurrentOnCallMessage(isLoading: boolean, today: Date, events: OnCallEvent[], timeRange: TimeRange) {
+  const currentOnCall = isLoading ? null : getCurrentOnCallUser(today, events);
+
+  return timeRange === "current-month" && currentOnCall
+    ? ["", `**Currently on call:** ${formatUserName(currentOnCall)}`, `**${currentOnCall.email}**`].join(os.EOL)
+    : "";
 }
