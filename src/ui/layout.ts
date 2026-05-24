@@ -1,5 +1,5 @@
 import { formatUserName, OnCallEvent } from "../domain/on-call-event";
-import { Colors } from "../common/colors";
+import { RotaColors } from "../common/colors";
 import { FONT_FAMILY } from "../common/font";
 
 export interface WeekSpanBar {
@@ -37,7 +37,7 @@ export const LAYOUT = {
   DAY_MS: 24 * 3600 * 1000,
   SUMMARY_GAP: 12,
   PILL_GAP: 36,
-  ON_CALL_PILL_TOP_PADDING: 544
+  ON_CALL_PILL_TOP_PADDING: 544,
 } as const;
 
 export const SUMMARY = {
@@ -135,7 +135,7 @@ export function computeMonthSummary(
   const hoursByName = accumulateEventHours(events, monthStart, monthEnd);
 
   return [...hoursByName.entries()]
-    .map(([name, hours]) => ({ name, hours, color: colorMap.get(name) ?? Colors.GREEN }))
+    .map(([name, hours]) => ({ name, hours, color: colorMap.get(name) ?? RotaColors.GREEN }))
     .sort((a, b) => b.hours - a.hours);
 }
 
@@ -200,7 +200,14 @@ function eventToLanedBar(
   const { dayIndex: startDayIndex, fraction: startFraction } = findStartPosition(overlap.start, dayStarts, first, last);
   const { dayIndex: endDayIndex, fraction: endFraction } = findEndPosition(overlap.end, dayStarts, first, last);
 
-  return { startDayIndex, startFraction, endDayIndex, endFraction, label, color: colorMap.get(label) ?? Colors.GREEN };
+  return {
+    startDayIndex,
+    startFraction,
+    endDayIndex,
+    endFraction,
+    label,
+    color: colorMap.get(label) ?? RotaColors.GREEN,
+  };
 }
 
 function assignSpanLanes(bars: Omit<WeekSpanBar, "lane">[]): WeekSpanBar[] {

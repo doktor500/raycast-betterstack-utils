@@ -1,4 +1,4 @@
-import { getTextColor, Colors } from "../../../common/colors";
+import { getTextColor, Colors, RotaColors } from "../../../common/colors";
 import { FONT_FAMILY } from "../../../common/font";
 import { escapeXml } from "../../layout";
 
@@ -19,12 +19,26 @@ export function OnCallPill({ cy, name, color }: OnCallPillProps) {
   const initial = name.charAt(0).toUpperCase();
   return (
     <g transform={`translate(${PAD_LEFT}, ${PAD_TOP})`}>
-      <circle cx={CX} cy={cy} r={ON_CALL_PILL_CIRC_R} fill={Colors.GREEN} opacity="0.8">
-        <animate attributeName="r" values={`${ON_CALL_PILL_CIRC_R};${ON_CALL_PILL_CIRC_R + 10};${ON_CALL_PILL_CIRC_R}`} dur="2s" repeatCount="indefinite" />
+      <circle cx={CX} cy={cy} r={ON_CALL_PILL_CIRC_R} fill={RotaColors.GREEN} opacity="0.8">
+        <animate
+          attributeName="r"
+          values={`${ON_CALL_PILL_CIRC_R};${ON_CALL_PILL_CIRC_R + 10};${ON_CALL_PILL_CIRC_R}`}
+          dur="2s"
+          repeatCount="indefinite"
+        />
         <animate attributeName="opacity" values="0.8;0;0.8" dur="2s" repeatCount="indefinite" />
       </circle>
       <circle cx={CX} cy={cy} r={ON_CALL_PILL_CIRC_R} fill={color} />
-      <text x={CX} y={cy} textAnchor="middle" dy="0.35em" fontSize={14} fontWeight={700} fill={getTextColor(color)} fontFamily={FONT_FAMILY}>
+      <text
+        x={CX}
+        y={cy}
+        textAnchor="middle"
+        dy="0.35em"
+        fontSize={14}
+        fontWeight={700}
+        fill={getTextColor(color)}
+        fontFamily={FONT_FAMILY}
+      >
         {initial}
       </text>
       <text x={textX} y={cy} dy="0.35em" fontSize={17} fontWeight={500} fill={Colors.WHITE} fontFamily={FONT_FAMILY}>

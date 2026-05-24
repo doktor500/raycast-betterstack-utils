@@ -42,8 +42,20 @@ export function MonthBlock({
         {monthLabel}
       </text>
       <line x1={0.5} y1={LAYOUT.BLOCK_HEADER_HEIGHT} x2={0.5} y2={blockHeight} stroke={Colors.BORDER} />
-      <line x1={LAYOUT.WIDTH - 0.5} y1={LAYOUT.BLOCK_HEADER_HEIGHT} x2={LAYOUT.WIDTH - 0.5} y2={blockHeight} stroke={Colors.BORDER} />
-      <line x1={0} y1={LAYOUT.BLOCK_HEADER_HEIGHT} x2={LAYOUT.WIDTH} y2={LAYOUT.BLOCK_HEADER_HEIGHT} stroke={Colors.BORDER} />
+      <line
+        x1={LAYOUT.WIDTH - 0.5}
+        y1={LAYOUT.BLOCK_HEADER_HEIGHT}
+        x2={LAYOUT.WIDTH - 0.5}
+        y2={blockHeight}
+        stroke={Colors.BORDER}
+      />
+      <line
+        x1={0}
+        y1={LAYOUT.BLOCK_HEADER_HEIGHT}
+        x2={LAYOUT.WIDTH}
+        y2={LAYOUT.BLOCK_HEADER_HEIGHT}
+        stroke={Colors.BORDER}
+      />
       {weeks.map((days, localIndex) => {
         const rowHeight = weekRowHeights[localIndex];
         const offsetY = LAYOUT.BLOCK_HEADER_HEIGHT + weekRowHeights.slice(0, localIndex).reduce((a, b) => a + b, 0);

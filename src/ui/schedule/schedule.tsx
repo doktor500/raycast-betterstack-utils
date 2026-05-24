@@ -4,13 +4,13 @@ import { promises as fs } from "node:fs";
 import { promisify } from "node:util";
 import path from "node:path";
 import { Fragment } from "react";
-import { startOfWeek, addDays } from "../../common/dates";
-import { buildColorMap, Colors } from "../../common/colors";
-import { LAYOUT, weekRowHeight, summaryBlockHeight, buildWeekSpanBars, computeMonthSummary } from "../layout";
+import { addDays, startOfWeek } from "../../common/dates";
+import { buildColorMap, Colors, RotaColors } from "../../common/colors";
+import { buildWeekSpanBars, computeMonthSummary, LAYOUT, summaryBlockHeight, weekRowHeight } from "../layout";
 import { formatUserName, OnCallEvent } from "../../domain/on-call-event";
 import { MonthBlock } from "./components/month-block";
 import { SummaryBlock } from "./components/summary-block";
-import { OnCallPill, ON_CALL_PILL_CIRC_R } from "./components/on-call-pill";
+import { ON_CALL_PILL_CIRC_R, OnCallPill } from "./components/on-call-pill";
 
 type Props = {
   events: OnCallEvent[];
@@ -35,10 +35,18 @@ function findOnCallAtTime(
   );
   if (!event) return null;
   const name = formatUserName(event.user);
-  return { name, color: colorMap.get(name) ?? Colors.GREEN };
+  return { name, color: colorMap.get(name) ?? RotaColors.GREEN };
 }
 
-function CombinedScheduleSvg({ events, today, window, backgroundColor, showTodayMarker = true, showOnCallPill = true, allEvents }: Props) {
+function CombinedScheduleSvg({
+  events,
+  today,
+  window,
+  backgroundColor,
+  showTodayMarker = true,
+  showOnCallPill = true,
+  allEvents,
+}: Props) {
   const { start, end } = window;
   const firstWeekStart = startOfWeek(start);
   const lastWeekStart = startOfWeek(end);
@@ -97,9 +105,7 @@ function CombinedScheduleSvg({ events, today, window, backgroundColor, showToday
   const topBannerHeight = currentMonthOnCall ? ON_CALL_PILL_BANNER : 0;
 
   const monthTotalHeight = (monthIndex: number) =>
-    calendarHeight(monthIndex) +
-    LAYOUT.SUMMARY_GAP +
-    summaryBlockHeight(summaries[monthIndex].length);
+    calendarHeight(monthIndex) + LAYOUT.SUMMARY_GAP + summaryBlockHeight(summaries[monthIndex].length);
 
   const totalHeight =
     topBannerHeight +
@@ -133,7 +139,11 @@ function CombinedScheduleSvg({ events, today, window, backgroundColor, showToday
       </defs>
       {backgroundColor && <rect width={LAYOUT.WIDTH} height={totalHeight} fill={backgroundColor} />}
       {currentMonthOnCall && (
-        <OnCallPill cy={Math.round(topBannerHeight / 2)} name={currentMonthOnCall.name} color={currentMonthOnCall.color} />
+        <OnCallPill
+          cy={Math.round(topBannerHeight / 2)}
+          name={currentMonthOnCall.name}
+          color={currentMonthOnCall.color}
+        />
       )}
       {monthGroups.map(({ year, month, weeks }, monthIndex) => (
         <Fragment key={monthIndex}>

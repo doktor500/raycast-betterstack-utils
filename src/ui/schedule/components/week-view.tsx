@@ -1,11 +1,11 @@
 import React, { Fragment } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { isSameDay, getCurrentWeekDays } from "../../../common/dates";
-import { buildColorMap, Colors, getTextColor } from "../../../common/colors";
+import { getCurrentWeekDays, isSameDay } from "../../../common/dates";
+import { buildColorMap, Colors, getTextColor, RotaColors } from "../../../common/colors";
 import { formatUserName, OnCallEvent } from "../../../domain/on-call-event";
-import { formatWeekday, escapeXml, truncateLabel, LAYOUT } from "../../layout";
+import { escapeXml, formatWeekday, truncateLabel } from "../../layout";
 import { FONT_FAMILY, MONO_FONT_FAMILY } from "../../../common/font";
-import { OnCallPill, ON_CALL_PILL_CIRC_R } from "./on-call-pill";
+import { ON_CALL_PILL_CIRC_R, OnCallPill } from "./on-call-pill";
 
 const GRID_COLOR = Colors.GRID;
 const TEXT_DIM = Colors.DIM;
@@ -31,17 +31,9 @@ export interface DaySegment {
   color: string;
 }
 
-export function getDaySegments(
-  events: OnCallEvent[],
-  dayStart: Date,
-  colorMap: Map<string, string>,
-): DaySegment[] {
+export function getDaySegments(events: OnCallEvent[], dayStart: Date, colorMap: Map<string, string>): DaySegment[] {
   const DAY_MS = 24 * 3600 * 1000;
-  const dayStartMs = new Date(
-    dayStart.getFullYear(),
-    dayStart.getMonth(),
-    dayStart.getDate(),
-  ).getTime();
+  const dayStartMs = new Date(dayStart.getFullYear(), dayStart.getMonth(), dayStart.getDate()).getTime();
   const dayEndMs = dayStartMs + DAY_MS;
 
   return events.flatMap((event) => {
@@ -56,7 +48,7 @@ export function getDaySegments(
         startFraction: (segStart - dayStartMs) / DAY_MS,
         endFraction: (segEnd - dayStartMs) / DAY_MS,
         label: name,
-        color: colorMap.get(name) ?? Colors.GREEN,
+        color: colorMap.get(name) ?? RotaColors.GREEN,
       },
     ];
   });
@@ -72,7 +64,15 @@ interface WeekViewProps {
   onCallColor?: string;
 }
 
-function WeekViewSvg({ events, today, anchorDate, backgroundColor, allEvents, onCallName, onCallColor }: WeekViewProps) {
+function WeekViewSvg({
+  events,
+  today,
+  anchorDate,
+  backgroundColor,
+  allEvents,
+  onCallName,
+  onCallColor,
+}: WeekViewProps) {
   const weekAnchor = anchorDate ?? today;
   const days = getCurrentWeekDays(weekAnchor);
   const colorSourceEvents = allEvents ?? events;
@@ -85,10 +85,7 @@ function WeekViewSvg({ events, today, anchorDate, backgroundColor, allEvents, on
   const gridTop = bannerHeight + WEEK.HEADER_HEIGHT;
   const totalHeight = WEEK.TOTAL_HEIGHT + bannerHeight;
 
-  const todayStartMs =
-    todayIndex >= 0
-      ? new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()
-      : 0;
+  const todayStartMs = todayIndex >= 0 ? new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime() : 0;
   const nowFraction = todayIndex >= 0 ? (today.getTime() - todayStartMs) / (24 * 3600 * 1000) : 0;
   const markerY = gridTop + nowFraction * WEEK.TIMELINE_HEIGHT;
 
@@ -138,14 +135,7 @@ function WeekViewSvg({ events, today, anchorDate, backgroundColor, allEvents, on
         const centerX = colX + WEEK.DAY_WIDTH / 2;
         return (
           <Fragment key={`col${i}`}>
-            <line
-              x1={colX}
-              y1={gridTop}
-              x2={colX}
-              y2={totalHeight}
-              stroke={GRID_COLOR}
-              strokeWidth={1}
-            />
+            <line x1={colX} y1={gridTop} x2={colX} y2={totalHeight} stroke={GRID_COLOR} strokeWidth={1} />
             {isToday && (
               <rect
                 x={colX}
@@ -157,13 +147,7 @@ function WeekViewSvg({ events, today, anchorDate, backgroundColor, allEvents, on
                 fillOpacity={0.5}
               />
             )}
-            <text
-              x={centerX}
-              y={headerTop + 27}
-              textAnchor="middle"
-              fontFamily={WEEK.FONT}
-              fill={Colors.WHITE}
-            >
+            <text x={centerX} y={headerTop + 27} textAnchor="middle" fontFamily={WEEK.FONT} fill={Colors.WHITE}>
               <tspan fontSize={13} fontWeight={600} fillOpacity={isToday ? 1 : 0.65}>
                 {`${formatWeekday(day)} `}
               </tspan>
@@ -182,24 +166,14 @@ function WeekViewSvg({ events, today, anchorDate, backgroundColor, allEvents, on
         const colWidth = WEEK.DAY_WIDTH - 4;
         return segs.map((seg, segIndex) => {
           const y = gridTop + seg.startFraction * WEEK.TIMELINE_HEIGHT;
-          const height = Math.max(
-            WEEK.MIN_EVENT_HEIGHT,
-            (seg.endFraction - seg.startFraction) * WEEK.TIMELINE_HEIGHT,
-          );
+          const height = Math.max(WEEK.MIN_EVENT_HEIGHT, (seg.endFraction - seg.startFraction) * WEEK.TIMELINE_HEIGHT);
           const textColor = getTextColor(seg.color);
           const showName = height >= WEEK.LABEL_MIN_HEIGHT;
           return (
             <Fragment key={`ev${dayIndex}-${segIndex}`}>
               <rect x={colX} y={y} width={colWidth} height={height} fill={seg.color} rx={3} />
               {showName && (
-                <text
-                  x={colX + 12}
-                  y={y + 20}
-                  fontSize={16}
-                  fontWeight={600}
-                  fill={textColor}
-                  fontFamily={WEEK.FONT}
-                >
+                <text x={colX + 12} y={y + 20} fontSize={16} fontWeight={600} fill={textColor} fontFamily={WEEK.FONT}>
                   {escapeXml(truncateLabel(seg.label, colWidth - 22, 16))}
                 </text>
               )}
@@ -211,12 +185,7 @@ function WeekViewSvg({ events, today, anchorDate, backgroundColor, allEvents, on
       {/* Current time marker */}
       {todayIndex >= 0 && (
         <g>
-          <circle
-            cx={WEEK.SIDEBAR_WIDTH + todayIndex * WEEK.DAY_WIDTH + 4}
-            cy={markerY}
-            r={3}
-            fill={Colors.WHITE}
-          />
+          <circle cx={WEEK.SIDEBAR_WIDTH + todayIndex * WEEK.DAY_WIDTH + 4} cy={markerY} r={3} fill={Colors.WHITE} />
           <line
             x1={WEEK.SIDEBAR_WIDTH + todayIndex * WEEK.DAY_WIDTH + 4}
             y1={markerY}
@@ -230,7 +199,9 @@ function WeekViewSvg({ events, today, anchorDate, backgroundColor, allEvents, on
       )}
 
       {/* On-call pill — banner row above table */}
-      {onCallName && onCallColor && <OnCallPill cy={Math.round(bannerHeight / 2)} name={onCallName} color={onCallColor} />}
+      {onCallName && onCallColor && (
+        <OnCallPill cy={Math.round(bannerHeight / 2)} name={onCallName} color={onCallColor} />
+      )}
     </svg>
   );
 }

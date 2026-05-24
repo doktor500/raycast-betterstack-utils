@@ -4,7 +4,7 @@ import { getCurrentMonthWindow, addDays } from "./common/dates";
 import { buildCombinedScheduleSvg, exportSvgToClipboard, toSvgDataUri } from "./ui/schedule/schedule";
 import { useOnCallData } from "./hooks/use-on-call-data";
 import { formatUserName, getCurrentOnCallUser } from "./domain/on-call-event";
-import { buildColorMap, Colors } from "./common/colors";
+import { buildColorMap, Colors, RotaColors } from "./common/colors";
 import { buildScheduleSkeletonSvg } from "./ui/schedule/skeleton/schedule";
 import { buildWeekViewSvg } from "./ui/schedule/components/week-view";
 
@@ -56,14 +56,22 @@ export default function Command() {
 
   const currentOnCall = getCurrentOnCallUser(today, events);
   const onCallName = currentOnCall ? formatUserName(currentOnCall) : undefined;
-  const onCallColor = onCallName ? (colorMap.get(onCallName) ?? Colors.GREEN) : undefined;
+  const onCallColor = onCallName ? (colorMap.get(onCallName) ?? RotaColors.GREEN) : undefined;
 
   async function copyAsPng() {
     const toast = await showToast({ style: Toast.Style.Animated, title: "Copying to clipboard…" });
     try {
       const svg =
         timeRange === "week"
-          ? buildWeekViewSvg({ events: filteredEvents, today, anchorDate: weekAnchorDate, backgroundColor: Colors.DARK, allEvents: events, onCallName, onCallColor })
+          ? buildWeekViewSvg({
+              events: filteredEvents,
+              today,
+              anchorDate: weekAnchorDate,
+              backgroundColor: Colors.DARK,
+              allEvents: events,
+              onCallName,
+              onCallColor,
+            })
           : buildCombinedScheduleSvg({
               events: filteredEvents,
               today: today,

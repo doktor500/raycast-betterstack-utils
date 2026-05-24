@@ -25,7 +25,15 @@ export const Colors = {
   FROST: "#F3F5FA",
 };
 
-const SVG_PALETTE = [RotaColors.GREEN, RotaColors.RED, RotaColors.BLUE, RotaColors.PURPLE, RotaColors.ORANGE, RotaColors.INDIGO, RotaColors.YELLOW];
+const SVG_PALETTE = [
+  RotaColors.GREEN,
+  RotaColors.RED,
+  RotaColors.BLUE,
+  RotaColors.PURPLE,
+  RotaColors.ORANGE,
+  RotaColors.INDIGO,
+  RotaColors.YELLOW,
+];
 
 export function buildColorMap(names: string[]): Map<string, string> {
   return new Map(names.map((name, index) => [name, SVG_PALETTE[index % SVG_PALETTE.length]]));
