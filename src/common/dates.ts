@@ -27,3 +27,9 @@ export function getThreeMonthWindow(): { start: Date; end: Date } {
     end: now.plus({ months: 1 }).endOf("month").toJSDate(),
   };
 }
+
+export function getCurrentWeekDays(date?: Date): Date[] {
+  const dateTime = date ? DateTime.fromJSDate(date) : DateTime.now();
+  const monday = dateTime.minus({ days: dateTime.weekday - 1 }).startOf("day");
+  return Array.from({ length: 7 }, (_, i) => monday.plus({ days: i }).toJSDate());
+}

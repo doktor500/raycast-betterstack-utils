@@ -1,14 +1,14 @@
 import { Action, ActionPanel, Detail, environment, showToast, Toast } from "@raycast/api";
 import { useState } from "react";
-import { getCurrentMonthWindow, getThreeMonthWindow } from "./utils/dates";
+import { getCurrentMonthWindow, getThreeMonthWindow } from "./common/dates";
 import { buildCombinedScheduleSvg, exportSvgToClipboard, toSvgDataUri } from "./ui/schedule/schedule";
 import { useOnCallData } from "./hooks/use-on-call-data";
-import { formatUserName, getCurrentOnCallUser, OnCallEvent } from "./domain/on-call-event";
-import { Colors } from "./utils/colors";
+import { formatUserName, getCurrentOnCallUser } from "./domain/on-call-event";
+import { buildColorMap, Colors } from "./common/colors";
 import { buildScheduleSkeletonSvg } from "./ui/schedule/skeleton/schedule";
-import * as os from "node:os";
+import { buildWeekViewSvg } from "./ui/schedule/components/week-view";
 
-type TimeRange = "current-month" | "3-months";
+type TimeRange = "current-week" | "current-month" | "3-months";
 
 type ScheduleActionPanelProps = {
   nextTimeRange: TimeRange;
@@ -19,8 +19,15 @@ type ScheduleActionPanelProps = {
   onUserSelect: (user: string) => void;
 };
 
+const NEXT_TIME_RANGE: Record<TimeRange, TimeRange> = {
+  "current-month": "current-week",
+  "current-week": "3-months",
+  "3-months": "current-month",
+};
+
 const TIME_RANGE_LABELS: Record<TimeRange, string> = {
-  "current-month": "current month only",
+  "current-week": "current week",
+  "current-month": "current month",
   "3-months": "3 month view",
 };
 
@@ -36,19 +43,23 @@ export default function Command() {
   }
 
   const userNames = [...new Set(events.map((e) => formatUserName(e.user)))].sort();
+  const colorMap = buildColorMap(userNames);
   const filteredEvents = selectedUser ? events.filter((e) => formatUserName(e.user) === selectedUser) : events;
 
   async function copyAsPng() {
     const toast = await showToast({ style: Toast.Style.Animated, title: "Copying to clipboard…" });
     try {
-      const svg = buildCombinedScheduleSvg({
-        events: filteredEvents,
-        today: today,
-        window: scheduleWindow,
-        backgroundColor: Colors.DARK,
-        showTodayMarker: false,
-        allEvents: events,
-      });
+      const svg =
+        timeRange === "current-week"
+          ? buildWeekViewSvg({ events: filteredEvents, today, backgroundColor: Colors.DARK, allEvents: events })
+          : buildCombinedScheduleSvg({
+              events: filteredEvents,
+              today: today,
+              window: scheduleWindow,
+              backgroundColor: Colors.DARK,
+              showTodayMarker: false,
+              allEvents: events,
+            });
       await exportSvgToClipboard(svg, environment.supportPath);
       toast.style = Toast.Style.Success;
       toast.title = "Schedule copied";
@@ -59,9 +70,8 @@ export default function Command() {
     }
   }
 
-  const nextTimeRange: TimeRange = timeRange === "current-month" ? "3-months" : "current-month";
-  const scheduleWindow = timeRange === "current-month" ? getCurrentMonthWindow() : getThreeMonthWindow();
-  const currentlyOnCallMessage = getCurrentOnCallMessage(isLoading, today, events, timeRange);
+  const nextTimeRange: TimeRange = NEXT_TIME_RANGE[timeRange];
+  const scheduleWindow = timeRange === "3-months" ? getThreeMonthWindow() : getCurrentMonthWindow();
 
   const scheduleSvgProps = {
     events: filteredEvents,
@@ -69,12 +79,22 @@ export default function Command() {
     window: scheduleWindow,
     backgroundColor: undefined,
     showTodayMarker: true,
+    showOnCallPill: true,
     allEvents: events,
   };
 
-  const markdown = isLoading
-    ? `![schedule](${toSvgDataUri(buildScheduleSkeletonSvg())})`
-    : [`![schedule](${toSvgDataUri(buildCombinedScheduleSvg(scheduleSvgProps))})`, currentlyOnCallMessage].join(os.EOL);
+  function buildScheduleMarkdown(): string {
+    if (isLoading) return `![schedule](${toSvgDataUri(buildScheduleSkeletonSvg())})`;
+    if (timeRange === "current-week") {
+      const currentOnCall = getCurrentOnCallUser(today, events);
+      const onCallName = currentOnCall ? formatUserName(currentOnCall) : undefined;
+      const onCallColor = onCallName ? (colorMap.get(onCallName) ?? Colors.GREEN) : undefined;
+      return `![schedule](${toSvgDataUri(buildWeekViewSvg({ events: filteredEvents, today, allEvents: events, onCallName, onCallColor }))})`;
+    }
+    return `![schedule](${toSvgDataUri(buildCombinedScheduleSvg(scheduleSvgProps))})`;
+  }
+
+  const markdown = buildScheduleMarkdown();
 
   return (
     <Detail
@@ -137,10 +157,3 @@ function ScheduleActionPanel({
   );
 }
 
-function getCurrentOnCallMessage(isLoading: boolean, today: Date, events: OnCallEvent[], timeRange: TimeRange) {
-  const currentOnCall = isLoading ? null : getCurrentOnCallUser(today, events);
-
-  return timeRange === "current-month" && currentOnCall
-    ? ["", `**Currently on call:** ${formatUserName(currentOnCall)}`, `**${currentOnCall.email}**`].join(os.EOL)
-    : "";
-}
