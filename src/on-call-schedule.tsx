@@ -1,6 +1,6 @@
 import { Action, ActionPanel, Detail, environment, showToast, Toast } from "@raycast/api";
 import { useState } from "react";
-import { getCurrentMonthWindow, getThreeMonthWindow } from "./common/dates";
+import { getCurrentMonthWindow, addDays } from "./common/dates";
 import { buildCombinedScheduleSvg, exportSvgToClipboard, toSvgDataUri } from "./ui/schedule/schedule";
 import { useOnCallData } from "./hooks/use-on-call-data";
 import { formatUserName, getCurrentOnCallUser } from "./domain/on-call-event";
@@ -8,33 +8,38 @@ import { buildColorMap, Colors } from "./common/colors";
 import { buildScheduleSkeletonSvg } from "./ui/schedule/skeleton/schedule";
 import { buildWeekViewSvg } from "./ui/schedule/components/week-view";
 
-type TimeRange = "current-week" | "current-month" | "3-months";
+type TimeRange = "week" | "month";
 
 type ScheduleActionPanelProps = {
   nextTimeRange: TimeRange;
+  currentTimeRange: TimeRange;
+  monthOffset: number;
+  weekOffset: number;
   userNames: string[];
   selectedUser: string;
   onTimeRangeChange: (range: TimeRange) => void;
+  onMonthOffsetChange: (offset: number) => void;
+  onWeekOffsetChange: (offset: number) => void;
   onCopyAsPng: () => void;
   onUserSelect: (user: string) => void;
 };
 
 const NEXT_TIME_RANGE: Record<TimeRange, TimeRange> = {
-  "current-month": "current-week",
-  "current-week": "3-months",
-  "3-months": "current-month",
+  month: "week",
+  week: "month",
 };
 
 const TIME_RANGE_LABELS: Record<TimeRange, string> = {
-  "current-week": "current week",
-  "current-month": "current month",
-  "3-months": "3 month view",
+  week: "week",
+  month: "month",
 };
 
 export default function Command() {
   const { events, scheduleName, isLoading, noSchedule } = useOnCallData();
-  const [timeRange, setTimeRange] = useState<TimeRange>("current-month");
+  const [timeRange, setTimeRange] = useState<TimeRange>("month");
   const [selectedUser, setSelectedUser] = useState<string>("");
+  const [monthOffset, setMonthOffset] = useState<number>(0);
+  const [weekOffset, setWeekOffset] = useState<number>(0);
 
   const today = new Date();
 
@@ -46,12 +51,19 @@ export default function Command() {
   const colorMap = buildColorMap(userNames);
   const filteredEvents = selectedUser ? events.filter((e) => formatUserName(e.user) === selectedUser) : events;
 
+  const scheduleWindow = getCurrentMonthWindow(monthOffset);
+  const weekAnchorDate = addDays(today, weekOffset * 7);
+
+  const currentOnCall = getCurrentOnCallUser(today, events);
+  const onCallName = currentOnCall ? formatUserName(currentOnCall) : undefined;
+  const onCallColor = onCallName ? (colorMap.get(onCallName) ?? Colors.GREEN) : undefined;
+
   async function copyAsPng() {
     const toast = await showToast({ style: Toast.Style.Animated, title: "Copying to clipboard…" });
     try {
       const svg =
-        timeRange === "current-week"
-          ? buildWeekViewSvg({ events: filteredEvents, today, backgroundColor: Colors.DARK, allEvents: events })
+        timeRange === "week"
+          ? buildWeekViewSvg({ events: filteredEvents, today, anchorDate: weekAnchorDate, backgroundColor: Colors.DARK, allEvents: events, onCallName, onCallColor })
           : buildCombinedScheduleSvg({
               events: filteredEvents,
               today: today,
@@ -70,8 +82,11 @@ export default function Command() {
     }
   }
 
-  const nextTimeRange: TimeRange = NEXT_TIME_RANGE[timeRange];
-  const scheduleWindow = timeRange === "3-months" ? getThreeMonthWindow() : getCurrentMonthWindow();
+  function handleTimeRangeChange(range: TimeRange) {
+    setTimeRange(range);
+    setMonthOffset(0);
+    setWeekOffset(0);
+  }
 
   const scheduleSvgProps = {
     events: filteredEvents,
@@ -85,11 +100,8 @@ export default function Command() {
 
   function buildScheduleMarkdown(): string {
     if (isLoading) return `![schedule](${toSvgDataUri(buildScheduleSkeletonSvg())})`;
-    if (timeRange === "current-week") {
-      const currentOnCall = getCurrentOnCallUser(today, events);
-      const onCallName = currentOnCall ? formatUserName(currentOnCall) : undefined;
-      const onCallColor = onCallName ? (colorMap.get(onCallName) ?? Colors.GREEN) : undefined;
-      return `![schedule](${toSvgDataUri(buildWeekViewSvg({ events: filteredEvents, today, allEvents: events, onCallName, onCallColor }))})`;
+    if (timeRange === "week") {
+      return `![schedule](${toSvgDataUri(buildWeekViewSvg({ events: filteredEvents, today, anchorDate: weekAnchorDate, allEvents: events, onCallName, onCallColor }))})`;
     }
     return `![schedule](${toSvgDataUri(buildCombinedScheduleSvg(scheduleSvgProps))})`;
   }
@@ -103,10 +115,15 @@ export default function Command() {
       markdown={markdown}
       actions={
         <ScheduleActionPanel
-          nextTimeRange={nextTimeRange}
+          nextTimeRange={NEXT_TIME_RANGE[timeRange]}
+          currentTimeRange={timeRange}
+          monthOffset={monthOffset}
+          weekOffset={weekOffset}
           userNames={userNames}
           selectedUser={selectedUser}
-          onTimeRangeChange={setTimeRange}
+          onTimeRangeChange={handleTimeRangeChange}
+          onMonthOffsetChange={setMonthOffset}
+          onWeekOffsetChange={setWeekOffset}
           onCopyAsPng={copyAsPng}
           onUserSelect={setSelectedUser}
         />
@@ -121,15 +138,62 @@ function NoScheduleDetail() {
 
 function ScheduleActionPanel({
   nextTimeRange,
+  currentTimeRange,
+  monthOffset,
+  weekOffset,
   userNames,
   selectedUser,
   onTimeRangeChange,
+  onMonthOffsetChange,
+  onWeekOffsetChange,
   onCopyAsPng,
   onUserSelect,
 }: ScheduleActionPanelProps) {
   return (
     <ActionPanel>
       <Action title={`Show ${TIME_RANGE_LABELS[nextTimeRange]}`} onAction={() => onTimeRangeChange(nextTimeRange)} />
+      {currentTimeRange === "month" && (
+        <Action
+          title="Previous Month"
+          shortcut={{ modifiers: [], key: "arrowLeft" }}
+          onAction={() => onMonthOffsetChange(monthOffset - 1)}
+        />
+      )}
+      {currentTimeRange === "month" && (
+        <Action
+          title="Next Month"
+          shortcut={{ modifiers: [], key: "arrowRight" }}
+          onAction={() => onMonthOffsetChange(monthOffset + 1)}
+        />
+      )}
+      {currentTimeRange === "month" && monthOffset !== 0 && (
+        <Action
+          title="Back to Current Month"
+          shortcut={{ modifiers: [], key: "0" }}
+          onAction={() => onMonthOffsetChange(0)}
+        />
+      )}
+      {currentTimeRange === "week" && (
+        <Action
+          title="Previous Week"
+          shortcut={{ modifiers: [], key: "arrowLeft" }}
+          onAction={() => onWeekOffsetChange(weekOffset - 1)}
+        />
+      )}
+      {currentTimeRange === "week" && (
+        <Action
+          title="Next Week"
+          shortcut={{ modifiers: [], key: "arrowRight" }}
+          onAction={() => onWeekOffsetChange(weekOffset + 1)}
+        />
+      )}
+      {currentTimeRange === "week" && weekOffset !== 0 && (
+        <Action
+          title="Back to Current Week"
+          shortcut={{ modifiers: [], key: "0" }}
+          onAction={() => onWeekOffsetChange(0)}
+        />
+      )}
       <Action
         title="Copy Schedule to Clipboard"
         shortcut={{ modifiers: ["cmd", "shift"], key: "c" }}
@@ -156,4 +220,3 @@ function ScheduleActionPanel({
     </ActionPanel>
   );
 }
-

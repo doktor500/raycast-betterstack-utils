@@ -88,8 +88,8 @@ function CombinedScheduleSvg({ events, today, window, backgroundColor, showToday
 
   const summaries = monthGroups.map(({ year, month }) => computeMonthSummary(year, month, events, colorMap));
 
-  const monthOnCall = monthGroups.map(({ year, month }) => {
-    if (!showOnCallPill || today.getFullYear() !== year || today.getMonth() !== month) return null;
+  const monthOnCall = monthGroups.map(() => {
+    if (!showOnCallPill) return null;
     return findOnCallAtTime(today, events, colorMap);
   });
 

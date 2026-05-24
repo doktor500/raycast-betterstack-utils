@@ -65,14 +65,16 @@ export function getDaySegments(
 interface WeekViewProps {
   events: OnCallEvent[];
   today: Date;
+  anchorDate?: Date;
   backgroundColor?: string;
   allEvents?: OnCallEvent[];
   onCallName?: string;
   onCallColor?: string;
 }
 
-function WeekViewSvg({ events, today, backgroundColor, allEvents, onCallName, onCallColor }: WeekViewProps) {
-  const days = getCurrentWeekDays(today);
+function WeekViewSvg({ events, today, anchorDate, backgroundColor, allEvents, onCallName, onCallColor }: WeekViewProps) {
+  const weekAnchor = anchorDate ?? today;
+  const days = getCurrentWeekDays(weekAnchor);
   const colorSourceEvents = allEvents ?? events;
   const uniqueNames = [...new Set(colorSourceEvents.map((e) => formatUserName(e.user)))].sort();
   const colorMap = buildColorMap(uniqueNames);
