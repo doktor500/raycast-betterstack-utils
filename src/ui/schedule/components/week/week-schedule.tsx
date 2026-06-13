@@ -7,7 +7,7 @@ import { ON_CALL_PILL_CIRC_R, OnCallPill } from "../on-call-pill";
 import { WEEK } from "./constants";
 import { HourGridLines } from "./hour-grid-lines";
 import { HourLabels } from "./hour-labels";
-import { DayColumns } from "./day-columns";
+import { DayColumn } from "./day-column";
 import { WeekEvents } from "./week-events";
 import { CurrentTimeMarker } from "./current-time-marker";
 
@@ -48,7 +48,17 @@ function WeekViewSvg({ events, today, anchorDate, backgroundColor, allEvents, on
       <rect width={WEEK.WIDTH} height={totalHeight} fill={backgroundColor ?? "transparent"} />
       <HourGridLines gridTop={gridTop} />
       <HourLabels gridTop={gridTop} />
-      <DayColumns days={days} today={today} gridTop={gridTop} headerTop={headerTop} totalHeight={totalHeight} />
+      {days.map((day, dayIndex) => (
+        <DayColumn
+          key={dayIndex}
+          day={day}
+          dayIndex={dayIndex}
+          isToday={isSameDay(day, today)}
+          gridTop={gridTop}
+          headerTop={headerTop}
+          totalHeight={totalHeight}
+        />
+      ))}
       <WeekEvents days={days} events={events} colorMap={colorMap} gridTop={gridTop} />
       {todayIndex >= 0 && <CurrentTimeMarker todayIndex={todayIndex} markerY={markerY} />}
       {onCallName && onCallColor && <OnCallPill cy={Math.round(bannerHeight / 2)} name={onCallName} color={onCallColor} />}
