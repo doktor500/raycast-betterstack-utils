@@ -1,5 +1,5 @@
 import { Colors } from "../../../../common/colors";
-import { LAYOUT } from "../../../layout";
+import { MONTH } from "./constants";
 
 interface TodayMarkerProps {
   index: number;
@@ -9,20 +9,20 @@ interface TodayMarkerProps {
 
 export function TodayMarker({ index, today, rowHeight }: TodayMarkerProps) {
   const fraction = (today.getHours() * 60 + today.getMinutes()) / (24 * 60);
-  const x = index * LAYOUT.DAY_WIDTH + fraction * LAYOUT.DAY_WIDTH;
+  const x = index * MONTH.DAY_WIDTH + fraction * MONTH.DAY_WIDTH;
 
   return (
     <g>
       <line
         x1={x}
-        y1={LAYOUT.DAY_HEADER_HEIGHT}
+        y1={MONTH.DAY_HEADER_HEIGHT}
         x2={x}
         y2={rowHeight}
         stroke={Colors.WHITE}
         strokeWidth={4}
         opacity={0.85}
       />
-      <circle cx={x} cy={LAYOUT.DAY_HEADER_HEIGHT} r={3} fill={Colors.WHITE} />
+      <circle cx={x} cy={MONTH.DAY_HEADER_HEIGHT} r={3} fill={Colors.WHITE} />
     </g>
   );
 }

@@ -3,11 +3,12 @@ import path from "node:path";
 import { Fragment } from "react";
 import { addDays, startOfWeek } from "../../../../common/dates";
 import { buildColorMap, Colors, RotaColors } from "../../../../common/colors";
-import { buildWeekSpanBars, computeMonthSummary, LAYOUT, summaryBlockHeight, weekRowHeight } from "../../../layout";
+import { buildWeekSpanBars, computeMonthSummary, summaryBlockHeight, weekRowHeight, formatMonthLabel } from "../../../layout";
 import { formatUserName, OnCallEvent } from "../../../../domain/on-call-event";
 import { MonthBlock } from "./month-block";
 import { SummaryBlock } from "./summary-block";
 import { ON_CALL_PILL_CIRC_R, OnCallPill } from "../on-call-pill";
+import { MONTH } from "./constants";
 
 type Props = {
   events: OnCallEvent[];
@@ -90,7 +91,7 @@ function CombinedScheduleSvg({
   );
 
   const calendarHeight = (monthIndex: number) =>
-    LAYOUT.BLOCK_HEADER_HEIGHT + weekRowHeightsByMonth[monthIndex].reduce((sum, height) => sum + height, 0);
+    MONTH.BLOCK_HEADER_HEIGHT + weekRowHeightsByMonth[monthIndex].reduce((sum, height) => sum + height, 0);
 
   const summaries = monthGroups.map(({ year, month }) => computeMonthSummary(year, month, events, colorMap));
 
@@ -103,28 +104,28 @@ function CombinedScheduleSvg({
   const topBannerHeight = currentMonthOnCall ? ON_CALL_PILL_BANNER : 0;
 
   const monthTotalHeight = (monthIndex: number) =>
-    calendarHeight(monthIndex) + LAYOUT.SUMMARY_GAP + summaryBlockHeight(summaries[monthIndex].length);
+    calendarHeight(monthIndex) + MONTH.SUMMARY_GAP + summaryBlockHeight(summaries[monthIndex].length);
 
   const totalHeight =
     topBannerHeight +
     monthGroups.reduce((sum, _group, monthIndex) => sum + monthTotalHeight(monthIndex), 0) +
-    (monthGroups.length - 1) * LAYOUT.BLOCK_GAP;
+    (monthGroups.length - 1) * MONTH.BLOCK_GAP;
 
   const columnBg = backgroundColor ?? "none";
 
   let currentY = topBannerHeight;
   const monthOffsets = monthGroups.map((_, monthIndex) => {
     const offsetY = currentY;
-    currentY += monthTotalHeight(monthIndex) + LAYOUT.BLOCK_GAP;
+    currentY += monthTotalHeight(monthIndex) + MONTH.BLOCK_GAP;
     return offsetY;
   });
 
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width={LAYOUT.WIDTH}
+      width={MONTH.WIDTH}
       height={totalHeight}
-      viewBox={`0 0 ${LAYOUT.WIDTH} ${totalHeight}`}
+      viewBox={`0 0 ${MONTH.WIDTH} ${totalHeight}`}
     >
       <defs>
         <pattern id="hatch" width={8} height={8} patternUnits="userSpaceOnUse" patternTransform="rotate(135)">
@@ -135,7 +136,7 @@ function CombinedScheduleSvg({
           <feDropShadow dx={0} dy={2} stdDeviation={2} floodColor={Colors.VOID} floodOpacity={0.3} />
         </filter>
       </defs>
-      {backgroundColor && <rect width={LAYOUT.WIDTH} height={totalHeight} fill={backgroundColor} />}
+      {backgroundColor && <rect width={MONTH.WIDTH} height={totalHeight} fill={backgroundColor} />}
       {currentMonthOnCall && (
         <OnCallPill
           cy={Math.round(topBannerHeight / 2)}
@@ -160,14 +161,14 @@ function CombinedScheduleSvg({
             year={year}
             month={month}
             summary={summaries[monthIndex]}
-            offsetY={monthOffsets[monthIndex] + calendarHeight(monthIndex) + LAYOUT.SUMMARY_GAP}
+            offsetY={monthOffsets[monthIndex] + calendarHeight(monthIndex) + MONTH.SUMMARY_GAP}
           />
           {monthIndex < monthGroups.length - 1 && (
             <line
               x1={0}
-              y1={monthOffsets[monthIndex] + monthTotalHeight(monthIndex) + LAYOUT.BLOCK_GAP / 2}
-              x2={LAYOUT.WIDTH}
-              y2={monthOffsets[monthIndex] + monthTotalHeight(monthIndex) + LAYOUT.BLOCK_GAP / 2}
+              y1={monthOffsets[monthIndex] + monthTotalHeight(monthIndex) + MONTH.BLOCK_GAP / 2}
+              x2={MONTH.WIDTH}
+              y2={monthOffsets[monthIndex] + monthTotalHeight(monthIndex) + MONTH.BLOCK_GAP / 2}
               stroke={Colors.SEPARATOR}
               strokeWidth={2}
             />

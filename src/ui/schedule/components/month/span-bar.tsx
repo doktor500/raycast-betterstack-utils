@@ -1,6 +1,7 @@
-import { type WeekSpanBar, LAYOUT, truncateLabel } from "../../../layout";
+import { type WeekSpanBar, truncateLabel } from "../../../layout";
 import { FONT_FAMILY } from "../../../../common/font";
 import { getTextColor } from "../../../../common/colors";
+import { MONTH } from "./constants";
 
 interface SpanBarProps {
   bar: WeekSpanBar;
@@ -8,11 +9,11 @@ interface SpanBarProps {
 }
 
 export function SpanBar({ bar, clipId }: SpanBarProps) {
-  const leftX = bar.startDayIndex * LAYOUT.DAY_WIDTH + bar.startFraction * LAYOUT.DAY_WIDTH;
-  const rightX = bar.endDayIndex * LAYOUT.DAY_WIDTH + bar.endFraction * LAYOUT.DAY_WIDTH;
-  const barX = leftX + LAYOUT.H_GAP;
-  const barWidth = Math.max(rightX - leftX - 2 * LAYOUT.H_GAP, 2);
-  const barY = LAYOUT.ROW_TOP + bar.lane * (LAYOUT.ROW_HEIGHT + LAYOUT.BAR_GAP);
+  const leftX = bar.startDayIndex * MONTH.DAY_WIDTH + bar.startFraction * MONTH.DAY_WIDTH;
+  const rightX = bar.endDayIndex * MONTH.DAY_WIDTH + bar.endFraction * MONTH.DAY_WIDTH;
+  const barX = leftX + MONTH.H_GAP;
+  const barWidth = Math.max(rightX - leftX - 2 * MONTH.H_GAP, 2);
+  const barY = MONTH.ROW_TOP + bar.lane * (MONTH.ROW_HEIGHT + MONTH.BAR_GAP);
   const id = `bar-${clipId}`;
   const textColor = getTextColor(bar.color);
   const fontSize = 19;
@@ -23,13 +24,13 @@ export function SpanBar({ bar, clipId }: SpanBarProps) {
   return (
     <g>
       <clipPath id={id}>
-        <rect x={barX + 10} y={barY} width={Math.max(barWidth - 20, 1)} height={LAYOUT.ROW_HEIGHT} />
+        <rect x={barX + 10} y={barY} width={Math.max(barWidth - 20, 1)} height={MONTH.ROW_HEIGHT} />
       </clipPath>
       <rect
         x={barX}
         y={barY}
         width={barWidth}
-        height={LAYOUT.ROW_HEIGHT}
+        height={MONTH.ROW_HEIGHT}
         rx={rx}
         fill={bar.color}
         filter="url(#shadow)"
@@ -38,7 +39,7 @@ export function SpanBar({ bar, clipId }: SpanBarProps) {
         x={barX + 1}
         y={barY + 1}
         width={barWidth - 2}
-        height={LAYOUT.ROW_HEIGHT - 2}
+        height={MONTH.ROW_HEIGHT - 2}
         rx={Math.max(rx - 1, 0)}
         fill="none"
         stroke={textColor}

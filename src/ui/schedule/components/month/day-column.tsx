@@ -1,6 +1,7 @@
-import { LAYOUT, formatWeekday } from "../../../layout";
+import { formatWeekday } from "../../../layout";
 import { FONT_FAMILY } from "../../../../common/font";
 import { Colors } from "../../../../common/colors";
+import { MONTH } from "./constants";
 
 interface DayColumnProps {
   day: Date;
@@ -11,18 +12,18 @@ interface DayColumnProps {
 }
 
 export function DayColumn({ day, index, currentMonth, columnBg, rowHeight }: DayColumnProps) {
-  const x = index * LAYOUT.DAY_WIDTH;
-  const center = x + LAYOUT.DAY_WIDTH / 2;
+  const x = index * MONTH.DAY_WIDTH;
+  const center = x + MONTH.DAY_WIDTH / 2;
   const isWeekend = day.getDay() === 0 || day.getDay() === 6;
   const inMonth = day.getFullYear() === currentMonth.year && day.getMonth() === currentMonth.month;
   const bgRect =
-    columnBg !== "none" ? <rect x={x} y={0} width={LAYOUT.DAY_WIDTH} height={rowHeight} fill={columnBg} /> : null;
+    columnBg !== "none" ? <rect x={x} y={0} width={MONTH.DAY_WIDTH} height={rowHeight} fill={columnBg} /> : null;
 
   if (!inMonth) {
     return (
       <g>
         {bgRect}
-        {isWeekend && <rect x={x} y={0} width={LAYOUT.DAY_WIDTH} height={rowHeight} fill="url(#hatch)" opacity={0.3} />}
+        {isWeekend && <rect x={x} y={0} width={MONTH.DAY_WIDTH} height={rowHeight} fill="url(#hatch)" opacity={0.3} />}
       </g>
     );
   }
@@ -30,13 +31,13 @@ export function DayColumn({ day, index, currentMonth, columnBg, rowHeight }: Day
   return (
     <g>
       {bgRect}
-      {isWeekend && <rect x={x} y={0} width={LAYOUT.DAY_WIDTH} height={rowHeight} fill="url(#hatch)" />}
+      {isWeekend && <rect x={x} y={0} width={MONTH.DAY_WIDTH} height={rowHeight} fill="url(#hatch)" />}
       <line x1={x} y1={0} x2={x} y2={rowHeight} stroke={Colors.DIVIDER} />
       <line
         x1={x}
-        y1={LAYOUT.DAY_HEADER_HEIGHT}
-        x2={x + LAYOUT.DAY_WIDTH}
-        y2={LAYOUT.DAY_HEADER_HEIGHT}
+        y1={MONTH.DAY_HEADER_HEIGHT}
+        x2={x + MONTH.DAY_WIDTH}
+        y2={MONTH.DAY_HEADER_HEIGHT}
         stroke={Colors.HEADER_LINE}
       />
       <text
