@@ -1,15 +1,9 @@
-import { Fragment } from "react";
-import { getTextColor, RotaColors } from "../../../../common/colors";
+import { RotaColors } from "../../../../common/colors";
 import { formatUserName, OnCallEvent } from "../../../../domain/on-call-event";
-import { truncateLabel } from "../../../layout";
 import { WEEK } from "./constants";
+import { EventSegment, type DaySegment } from "./event-segment";
 
-export interface DaySegment {
-  startFraction: number;
-  endFraction: number;
-  label: string;
-  color: string;
-}
+export type { DaySegment } from "./event-segment";
 
 export function getDaySegments(events: OnCallEvent[], dayStart: Date, colorMap: Map<string, string>): DaySegment[] {
   const DAY_MS = 24 * 3600 * 1000;
@@ -48,22 +42,15 @@ export function WeekEvents({ days, events, colorMap, gridTop }: WeekEventsProps)
         const segments = getDaySegments(events, day, colorMap);
         const colX = WEEK.SIDEBAR_WIDTH + dayIndex * WEEK.DAY_WIDTH + 2;
         const colWidth = WEEK.DAY_WIDTH - 4;
-        return segments.map((segment, segmentIndex) => {
-          const y = gridTop + segment.startFraction * WEEK.TIMELINE_HEIGHT;
-          const height = Math.max(WEEK.MIN_EVENT_HEIGHT, (segment.endFraction - segment.startFraction) * WEEK.TIMELINE_HEIGHT);
-          const textColor = getTextColor(segment.color);
-          const showName = height >= WEEK.LABEL_MIN_HEIGHT;
-          return (
-            <Fragment key={`ev${dayIndex}-${segmentIndex}`}>
-              <rect x={colX} y={y} width={colWidth} height={height} fill={segment.color} rx={3} />
-              {showName && (
-                <text x={colX + 12} y={y + 20} fontSize={16} fontWeight={600} fill={textColor} fontFamily={WEEK.FONT}>
-                  {truncateLabel(segment.label, colWidth - 22, 16)}
-                </text>
-              )}
-            </Fragment>
-          );
-        });
+        return segments.map((segment, segmentIndex) => (
+          <EventSegment
+            key={`ev${dayIndex}-${segmentIndex}`}
+            segment={segment}
+            colX={colX}
+            colWidth={colWidth}
+            gridTop={gridTop}
+          />
+        ));
       })}
     </>
   );
