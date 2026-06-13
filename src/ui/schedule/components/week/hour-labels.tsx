@@ -1,5 +1,5 @@
 import { Colors } from "../../../../common/colors";
-import { MONO_FONT_FAMILY } from "../../../../common/font";
+import { MONO_FONT_FAMILY } from "../../../../common/fonts";
 import { WEEK } from "./constants";
 
 export function HourLabels({ gridTop }: { gridTop: number }) {

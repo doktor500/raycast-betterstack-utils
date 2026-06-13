@@ -1,4 +1,4 @@
-import { FONT_FAMILY } from "../../../../common/font";
+import { FONT_FAMILY } from "../../../../common/fonts";
 
 export const WEEK = {
   WIDTH: 1160,

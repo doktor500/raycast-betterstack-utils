@@ -1,6 +1,6 @@
 import { formatUserName, OnCallEvent } from "../domain/on-call-event";
 import { RotaColors } from "../common/colors";
-import { FONT_FAMILY } from "../common/font";
+import { FONT_FAMILY } from "../common/fonts";
 
 export interface WeekSpanBar {
   startDayIndex: number;

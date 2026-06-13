@@ -1,5 +1,5 @@
 import { type WeekSpanBar, formatMonthLabel } from "../../../layout";
-import { FONT_FAMILY } from "../../../../common/font";
+import { FONT_FAMILY } from "../../../../common/fonts";
 import { Colors } from "../../../../common/colors";
 import { WeekGroup } from "./week-group";
 import { MONTH } from "./constants";

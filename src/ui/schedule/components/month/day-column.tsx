@@ -1,5 +1,5 @@
 import { formatWeekday } from "../../../layout";
-import { FONT_FAMILY } from "../../../../common/font";
+import { FONT_FAMILY } from "../../../../common/fonts";
 import { Colors } from "../../../../common/colors";
 import { MONTH } from "./constants";
 
