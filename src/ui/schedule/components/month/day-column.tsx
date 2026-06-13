@@ -1,6 +1,6 @@
-import { LAYOUT, formatWeekday } from "../../layout";
-import { FONT_FAMILY } from "../../../common/font";
-import { Colors } from "../../../common/colors";
+import { LAYOUT, formatWeekday } from "../../../layout";
+import { FONT_FAMILY } from "../../../../common/font";
+import { Colors } from "../../../../common/colors";
 
 interface DayColumnProps {
   day: Date;

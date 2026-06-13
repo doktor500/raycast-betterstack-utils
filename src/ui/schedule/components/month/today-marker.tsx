@@ -1,5 +1,5 @@
-import { Colors } from "../../../common/colors";
-import { LAYOUT } from "../../layout";
+import { Colors } from "../../../../common/colors";
+import { LAYOUT } from "../../../layout";
 
 interface TodayMarkerProps {
   index: number;

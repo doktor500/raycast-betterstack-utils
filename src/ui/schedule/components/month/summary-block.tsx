@@ -5,9 +5,9 @@ import {
   summaryBlockHeight,
   formatDaysHours,
   formatMonthLabel,
-} from "../../layout";
-import { FONT_FAMILY } from "../../../common/font";
-import { Colors } from "../../../common/colors";
+} from "../../../layout";
+import { FONT_FAMILY } from "../../../../common/font";
+import { Colors } from "../../../../common/colors";
 
 interface SummaryBlockProps {
   year: number;

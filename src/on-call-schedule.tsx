@@ -1,12 +1,13 @@
 import { Action, ActionPanel, Detail, environment, showToast, Toast } from "@raycast/api";
 import { useState } from "react";
 import { getCurrentMonthWindow, addDays } from "./common/dates";
-import { buildCombinedScheduleSvg, exportSvgToClipboard, toSvgDataUri } from "./ui/schedule/schedule";
+import { buildMonthViewSvg } from "./ui/schedule/components/month/month-schedule";
 import { useOnCallData } from "./hooks/use-on-call-data";
 import { formatUserName, getCurrentOnCallUser } from "./domain/on-call-event";
 import { buildColorMap, Colors, RotaColors } from "./common/colors";
 import { buildScheduleSkeletonSvg } from "./ui/schedule/skeleton/schedule";
-import { buildWeekViewSvg } from "./ui/schedule/components/week-view";
+import { buildWeekViewSvg } from "./ui/schedule/components/week/week-schedule";
+import { exportSvgToClipboard, toSvgDataUri } from "./ui/schedule/svgUtils";
 
 type TimeRange = "week" | "month";
 
@@ -80,7 +81,7 @@ export default function Command() {
               backgroundColor: Colors.DARK,
               allEvents: events,
             })
-          : buildCombinedScheduleSvg({
+          : buildMonthViewSvg({
               events: filteredEvents,
               today: today,
               window: scheduleWindow,
@@ -105,7 +106,7 @@ export default function Command() {
     setWeekOffset(0);
   }
 
-  const scheduleSvgProps = {
+  const monthViewProps = {
     events: filteredEvents,
     today: today,
     window: scheduleWindow,
@@ -115,12 +116,20 @@ export default function Command() {
     allEvents: events,
   };
 
+  const weekViewProps = {
+    events: filteredEvents,
+    today,
+    anchorDate: weekAnchorDate,
+    allEvents: events,
+    onCallName, onCallColor
+  };
+
   function buildScheduleMarkdown(): string {
     if (isLoading) return `![schedule](${toSvgDataUri(buildScheduleSkeletonSvg())})`;
-    if (timeRange === "week") {
-      return `![schedule](${toSvgDataUri(buildWeekViewSvg({ events: filteredEvents, today, anchorDate: weekAnchorDate, allEvents: events, onCallName, onCallColor }))})`;
-    }
-    return `![schedule](${toSvgDataUri(buildCombinedScheduleSvg(scheduleSvgProps))})`;
+
+    return timeRange === "week" ?
+      `![schedule](${toSvgDataUri(buildWeekViewSvg(weekViewProps))})` :
+      `![schedule](${toSvgDataUri(buildMonthViewSvg(monthViewProps))})`;
   }
 
   const markdown = buildScheduleMarkdown();

@@ -1,6 +1,6 @@
-import { type WeekSpanBar, LAYOUT, formatMonthLabel } from "../../layout";
-import { FONT_FAMILY } from "../../../common/font";
-import { Colors } from "../../../common/colors";
+import { type WeekSpanBar, LAYOUT, formatMonthLabel } from "../../../layout";
+import { FONT_FAMILY } from "../../../../common/font";
+import { Colors } from "../../../../common/colors";
 import { WeekGroup } from "./week-group";
 
 interface MonthBlockProps {

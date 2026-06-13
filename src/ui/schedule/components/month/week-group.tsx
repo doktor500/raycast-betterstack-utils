@@ -1,6 +1,6 @@
-import { type WeekSpanBar, LAYOUT } from "../../layout";
-import { isSameDay } from "../../../common/dates";
-import { Colors } from "../../../common/colors";
+import { type WeekSpanBar, LAYOUT } from "../../../layout";
+import { isSameDay } from "../../../../common/dates";
+import { Colors } from "../../../../common/colors";
 import { DayColumn } from "./day-column";
 import { SpanBar } from "./span-bar";
 import { TodayMarker } from "./today-marker";

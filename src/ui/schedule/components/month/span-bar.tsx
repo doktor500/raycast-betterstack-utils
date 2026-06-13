@@ -1,6 +1,6 @@
-import { type WeekSpanBar, LAYOUT, truncateLabel } from "../../layout";
-import { FONT_FAMILY } from "../../../common/font";
-import { getTextColor } from "../../../common/colors";
+import { type WeekSpanBar, LAYOUT, truncateLabel } from "../../../layout";
+import { FONT_FAMILY } from "../../../../common/font";
+import { getTextColor } from "../../../../common/colors";
 
 interface SpanBarProps {
   bar: WeekSpanBar;

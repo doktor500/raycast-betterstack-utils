@@ -1,16 +1,13 @@
 import { renderToStaticMarkup } from "react-dom/server";
-import { execFile } from "node:child_process";
-import { promises as fs } from "node:fs";
-import { promisify } from "node:util";
 import path from "node:path";
 import { Fragment } from "react";
-import { addDays, startOfWeek } from "../../common/dates";
-import { buildColorMap, Colors, RotaColors } from "../../common/colors";
-import { buildWeekSpanBars, computeMonthSummary, LAYOUT, summaryBlockHeight, weekRowHeight } from "../layout";
-import { formatUserName, OnCallEvent } from "../../domain/on-call-event";
-import { MonthBlock } from "./components/month-block";
-import { SummaryBlock } from "./components/summary-block";
-import { ON_CALL_PILL_CIRC_R, OnCallPill } from "./components/on-call-pill";
+import { addDays, startOfWeek } from "../../../../common/dates";
+import { buildColorMap, Colors, RotaColors } from "../../../../common/colors";
+import { buildWeekSpanBars, computeMonthSummary, LAYOUT, summaryBlockHeight, weekRowHeight } from "../../../layout";
+import { formatUserName, OnCallEvent } from "../../../../domain/on-call-event";
+import { MonthBlock } from "./month-block";
+import { SummaryBlock } from "./summary-block";
+import { ON_CALL_PILL_CIRC_R, OnCallPill } from "../on-call-pill";
 
 type Props = {
   events: OnCallEvent[];
@@ -58,6 +55,7 @@ function CombinedScheduleSvg({
 
   const monthsSeen = new Set<string>();
   const monthList: Array<{ year: number; month: number }> = [];
+
   for (const week of allWeeks) {
     for (const day of week) {
       if (day >= start && day <= end) {
@@ -180,31 +178,6 @@ function CombinedScheduleSvg({
   );
 }
 
-export function buildCombinedScheduleSvg(props: Props): string {
+export function buildMonthViewSvg(props: Props): string {
   return renderToStaticMarkup(<CombinedScheduleSvg {...props} />);
 }
-
-export function toSvgDataUri(svg: string): string {
-  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
-}
-
-export async function svgToPng(svgPath: string, pngPath: string): Promise<void> {
-  await execFileAsync("sips", ["-s", "format", "png", svgPath, "--out", pngPath]);
-}
-
-export async function copyImageToClipboard(pngPath: string): Promise<void> {
-  const script = `set the clipboard to (read (POSIX file "${pngPath}") as «class PNGf»)`;
-  await execFileAsync("osascript", ["-e", script]);
-}
-
-export async function exportSvgToClipboard(svg: string, supportPath: string): Promise<void> {
-  const svgPath = path.join(supportPath, "schedule.svg");
-  const pngPath = path.join(supportPath, "schedule.png");
-  await fs.writeFile(svgPath, svg);
-  await svgToPng(svgPath, pngPath);
-  await copyImageToClipboard(pngPath);
-  void fs.unlink(svgPath).catch(() => {});
-  void fs.unlink(pngPath).catch(() => {});
-}
-
-const execFileAsync = promisify(execFile);
