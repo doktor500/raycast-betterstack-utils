@@ -3,7 +3,7 @@ import { isSameDay } from "../../../../common/dates";
 import { Colors } from "../../../../common/colors";
 import { DayColumn } from "./day-column";
 import { SpanBar } from "./span-bar";
-import { TodayMarker } from "./today-marker";
+import { CurrentTimeMarker } from "./current-time-marker";
 import { MONTH } from "./constants";
 
 interface WeekGroupProps {
@@ -49,7 +49,7 @@ export function WeekGroup({
       {weekTimeline.map((bar, index) => (
         <SpanBar key={index} bar={bar} clipId={baseId + index} />
       ))}
-      {showTodayMarker && todayIndex >= 0 && <TodayMarker index={todayIndex} today={today} rowHeight={rowHeight} />}
+      {showTodayMarker && todayIndex >= 0 && <CurrentTimeMarker index={todayIndex} today={today} rowHeight={rowHeight} />}
     </g>
   );
 }

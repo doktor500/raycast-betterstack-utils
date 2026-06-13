@@ -1,13 +1,13 @@
 import { Colors } from "../../../../common/colors";
 import { MONTH } from "./constants";
 
-interface TodayMarkerProps {
+interface CurrentTimeMarkerProps {
   index: number;
   today: Date;
   rowHeight: number;
 }
 
-export function TodayMarker({ index, today, rowHeight }: TodayMarkerProps) {
+export function CurrentTimeMarker({ index, today, rowHeight }: CurrentTimeMarkerProps) {
   const fraction = (today.getHours() * 60 + today.getMinutes()) / (24 * 60);
   const x = index * MONTH.DAY_WIDTH + fraction * MONTH.DAY_WIDTH;
 
