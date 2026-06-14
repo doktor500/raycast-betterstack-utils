@@ -1,5 +1,4 @@
 import { SUMMARY, summaryBlockHeight, formatDaysHours, formatMonthLabel } from "@/ui/layout";
-import { FONT_FAMILY } from "@/common/fonts";
 import { Colors } from "@/common/colors";
 import { MONTH } from "@/ui/schedule/components/month/constants";
 import { OnCallSummary } from "@/domain/on-call-summary";
@@ -8,64 +7,78 @@ interface SummaryBlockProps {
   year: number;
   month: number;
   summary: OnCallSummary[];
-  offsetY: number;
 }
 
-interface VerticalItemsProps {
-  summary: OnCallSummary[];
-}
-
-function VerticalSummaryItems({ summary }: VerticalItemsProps) {
-  const dotRadius = 6;
-  const rowHeight = SUMMARY.VERTICAL_ROW_HEIGHT;
-  const paddingY = SUMMARY.VERTICAL_PADDING;
-  const dotX = SUMMARY.MONTH_COL_WIDTH + 20;
-
-  return (
-    <>
-      {summary.map(({ teamMember, email, hours, color }, index) => {
-        const cy = paddingY + index * rowHeight + rowHeight / 2;
-        const textX = dotX + dotRadius + 10;
-        return (
-          <g key={index}>
-            <circle cx={dotX} cy={cy} r={dotRadius} fill={color} />
-            <text x={textX} y={cy + 5} fill={Colors.SUBTLE} fontFamily={FONT_FAMILY} fontSize={17} fontWeight={600}>
-              {teamMember} - {email}
-            </text>
-            <text
-              x={MONTH.WIDTH - 24}
-              y={cy + 5}
-              textAnchor="end"
-              fill={Colors.DIM}
-              fontFamily={FONT_FAMILY}
-              fontSize={15}
-            >
-              {formatDaysHours(hours)}
-            </text>
-          </g>
-        );
-      })}
-    </>
-  );
-}
-
-export function SummaryBlock({ year, month, summary, offsetY }: SummaryBlockProps) {
+export function SummaryBlock({ year, month, summary }: SummaryBlockProps) {
   if (summary.length === 0) return null;
 
   const monthLabel = formatMonthLabel({ year, month });
-  const count = summary.length;
-  const height = summaryBlockHeight(count);
-  const midY = height / 2;
+  const height = summaryBlockHeight(summary.length);
 
   return (
-    <g transform={`translate(0, ${offsetY})`}>
-      <rect width={MONTH.WIDTH} height={height} rx={10} fill={Colors.DARK} fillOpacity={0.2} />
-      <rect x={0.5} y={0.5} width={MONTH.WIDTH - 1} height={height - 1} rx={10} fill="none" stroke={Colors.SLATE} />
-      <text x={24} y={midY + 7} fill={Colors.FROST} fontFamily={FONT_FAMILY} fontSize={18} fontWeight={700}>
-        {monthLabel}
-      </text>
-      <line x1={SUMMARY.MONTH_COL_WIDTH} y1={16} x2={SUMMARY.MONTH_COL_WIDTH} y2={height - 16} stroke={Colors.SLATE} />
-      <VerticalSummaryItems summary={summary} />
-    </g>
+    <div
+      tw="flex"
+      style={{
+        width: MONTH.WIDTH,
+        height,
+        borderRadius: 10,
+        border: `1px solid ${Colors.SLATE}`,
+        backgroundColor: Colors.DARK,
+        overflow: "hidden",
+      }}
+    >
+      <div
+        tw="flex items-center"
+        style={{
+          width: SUMMARY.MONTH_COL_WIDTH,
+          paddingLeft: 24,
+          borderRight: `1px solid ${Colors.SLATE}`,
+        }}
+      >
+        <span style={{ fontSize: 18, fontWeight: 700, color: Colors.FROST, fontFamily: "Inter" }}>
+          {monthLabel}
+        </span>
+      </div>
+      <div
+        tw="flex flex-col justify-center"
+        style={{
+          flex: 1,
+          paddingTop: SUMMARY.VERTICAL_PADDING,
+          paddingBottom: SUMMARY.VERTICAL_PADDING,
+        }}
+      >
+        {summary.map(({ teamMember, email, hours, color }, index) => (
+          <div
+            key={index}
+            tw="flex items-center"
+            style={{ height: SUMMARY.VERTICAL_ROW_HEIGHT, paddingLeft: 20 }}
+          >
+            <div
+              style={{
+                width: 12,
+                height: 12,
+                borderRadius: "50%",
+                backgroundColor: color,
+                marginRight: 10,
+              }}
+            />
+            <span
+              style={{
+                fontSize: 17,
+                fontWeight: 600,
+                color: Colors.SUBTLE,
+                flex: 1,
+                fontFamily: "Inter",
+              }}
+            >
+              {`${teamMember} - ${email}`}
+            </span>
+            <span style={{ fontSize: 15, color: Colors.DIM, paddingRight: 24, fontFamily: "Inter" }}>
+              {formatDaysHours(hours)}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
