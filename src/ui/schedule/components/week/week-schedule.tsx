@@ -10,7 +10,7 @@ import { DayColumn } from "@/ui/schedule/components/week/day-column";
 import { WeekEvents } from "@/ui/schedule/components/week/week-events";
 import { CurrentTimeMarker } from "@/ui/schedule/components/week/current-time-marker";
 import { Colors } from "@/common/colors";
-import { renderToSvg } from "@/ui/schedule/satori-renderer";
+import { renderToSvg } from "@/components/satori-renderer";
 
 interface WeekViewProps {
   events: OnCallEvent[];

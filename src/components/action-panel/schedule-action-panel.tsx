@@ -1,12 +1,12 @@
 import { TimeRange } from "@/domain/time-range";
 import { ActionPanel } from "@raycast/api";
-import { ToggleTimeRangeAction } from "@/ui/schedule/action-panel/actions/toggle-time-range-action";
-import { PreviousPeriodAction } from "@/ui/schedule/action-panel/actions/previous-period-action";
-import { NextPeriodAction } from "@/ui/schedule/action-panel/actions/next-period-action";
-import { BackToCurrentAction } from "@/ui/schedule/action-panel/actions/back-to-current-action";
-import { CopyScheduleAction } from "@/ui/schedule/action-panel/actions/copy-schedule-action";
-import { FilterByUserSubmenu } from "@/ui/schedule/action-panel/filter-by-user-submenu";
-import { ClearUserFilterAction } from "@/ui/schedule/action-panel/actions/clear-user-filter-action";
+import { ToggleTimeRangeAction } from "@/components/action-panel/actions/toggle-time-range-action";
+import { PreviousPeriodAction } from "@/components/action-panel/actions/previous-period-action";
+import { NextPeriodAction } from "@/components/action-panel/actions/next-period-action";
+import { BackToCurrentAction } from "@/components/action-panel/actions/back-to-current-action";
+import { CopyScheduleAction } from "@/components/action-panel/actions/copy-schedule-action";
+import { FilterByUserSubmenu } from "@/components/action-panel/filter-by-user-submenu";
+import { ClearUserFilterAction } from "@/components/action-panel/actions/clear-user-filter-action";
 
 type ScheduleActionPanelProps = {
   currentTimeRange: TimeRange;

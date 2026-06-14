@@ -9,7 +9,7 @@ import { ON_CALL_PILL_CIRC_R, OnCallPill } from "@/ui/schedule/components/on-cal
 import { MONTH } from "@/ui/schedule/components/month/constants";
 import { OnCallUser } from "@/domain/user";
 import { computeOnCallSummary } from "@/domain/on-call-summary";
-import { renderToSvg } from "@/ui/schedule/satori-renderer";
+import { renderToSvg } from "@/components/satori-renderer";
 
 type Props = {
   events: OnCallEvent[];

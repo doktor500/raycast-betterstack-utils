@@ -3,7 +3,7 @@ import { LAYOUT, SUMMARY, weekRowHeight, summaryBlockHeight } from "@/ui/layout"
 import { ON_CALL_PILL_CIRC_R } from "@/ui/schedule/components/on-call-pill";
 import { WeekRow } from "@/ui/schedule/components/week/week-row";
 import { SKELETON_COLOR } from "@/ui/schedule/skeleton/colors/skeleton-colors";
-import { renderToSvg } from "@/ui/schedule/satori-renderer";
+import { renderToSvg } from "@/components/satori-renderer";
 
 const ON_CALL_PILL_BANNER = ON_CALL_PILL_CIRC_R * 2;
 

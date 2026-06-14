@@ -10,8 +10,8 @@ import { exportSvgToClipboard } from "@/common/utils/svg-utils";
 import { formatUserName } from "@/domain/user";
 import { TimeRange } from "@/domain/time-range";
 import { getOnCallUser, OnCallEvent } from "@/domain/on-call-event";
-import { renderSchedule } from "@/ui/schedule/schedule-renderer";
-import { ScheduleActionPanel } from "@/ui/schedule/action-panel/schedule-action-panel";
+import { renderSchedule } from "@/components/schedule-renderer";
+import { ScheduleActionPanel } from "@/components/action-panel/schedule-action-panel";
 
 const { WEEK } = TimeRange;
 
