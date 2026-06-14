@@ -3,9 +3,9 @@ import { User } from "@/domain/user";
 import { mergeIntervals, subtractIntervals } from "@/domain/time-interval";
 
 export interface OnCallEvent {
+  user: User;
   started_at: string;
   ended_at: string;
-  user: User;
   override: boolean;
 }
 

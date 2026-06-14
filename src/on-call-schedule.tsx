@@ -1,5 +1,6 @@
 import { Action, ActionPanel, Detail, environment, showToast, Toast } from "@raycast/api";
 import { useState } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { getCurrentMonthWindow, addDays } from "@/common/utils/date-utils";
 import { buildMonthViewSvg } from "@/ui/schedule/components/month/month-schedule";
 import { useOnCallData } from "@/hooks/use-on-call-data";
@@ -36,7 +37,17 @@ const TIME_RANGE_LABELS: Record<TimeRange, string> = {
   month: "month",
 };
 
+const queryClient = new QueryClient();
+
 export default function Command() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <OnCallSchedule />
+    </QueryClientProvider>
+  );
+}
+
+function OnCallSchedule() {
   const { events, scheduleName, isLoading, noSchedule, hasError } = useOnCallData();
   const [timeRange, setTimeRange] = useState<TimeRange>("month");
   const [selectedUser, setSelectedUser] = useState<string>("");

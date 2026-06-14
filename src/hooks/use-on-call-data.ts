@@ -1,9 +1,15 @@
 import { showToast, Toast } from "@raycast/api";
-import { useEffect, useState } from "react";
-import { getOnCallCalendars, getCalendarEvents, type Calendar } from "@/api/betterstack-api";
+import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getRota, getOnCallEvents } from "@/api/betterstack-api";
 import { OnCallEvent, resolveOverrideConflicts } from "@/domain/on-call-event";
+import { Calendar } from "@/domain/calendar";
+import { toList } from "@/common/utils/collection-utils";
+import { toString } from "@/common/utils/string-utils";
 
-export interface OnCallData {
+const PRIMARY_SCHEDULE_NAME = "Primary";
+
+interface OnCallData {
   events: OnCallEvent[];
   scheduleName: string;
   isLoading: boolean;
@@ -11,47 +17,39 @@ export interface OnCallData {
   hasError: boolean;
 }
 
+type ScheduleData = { scheduleName: string; events: OnCallEvent[] } | undefined;
+
 export function useOnCallData(): OnCallData {
-  const [isLoading, setIsLoading] = useState(true);
-  const [events, setEvents] = useState<OnCallEvent[]>([]);
-  const [scheduleName, setScheduleName] = useState("");
-  const [noSchedule, setNoSchedule] = useState(false);
-  const [hasError, setHasError] = useState(false);
+  const { data, isLoading, isError, error } = useQuery({ queryKey: ["on-call-data"], queryFn: fetchScheduleData });
 
   useEffect(() => {
-    async function load() {
-      try {
-        const { calendars, usersByEmail } = await getOnCallCalendars();
-        const primary = findPrimarySchedule(calendars);
-
-        if (!primary) {
-          setNoSchedule(true);
-          setIsLoading(false);
-          return;
-        }
-
-        setScheduleName(primary.attributes.name ?? "Primary");
-
-        const calEvents = await getCalendarEvents(primary.id, usersByEmail);
-
-        setEvents(resolveOverrideConflicts(calEvents));
-      } catch (error) {
-        setHasError(true);
-        void showToast({
-          style: Toast.Style.Failure,
-          title: "Failed to load on-call schedule",
-          message: error instanceof Error ? error.message : String(error),
-        });
-      } finally {
-        setIsLoading(false);
-      }
+    if (isError) {
+      const message = error instanceof Error ? error.message : String(error);
+      void showToast({ style: Toast.Style.Failure, title: "Failed to load on-call schedule", message });
     }
-    void load();
-  }, []);
+  }, [isError, error]);
 
-  return { events, scheduleName, isLoading, noSchedule, hasError };
+  return {
+    events: toList(data?.events),
+    scheduleName: toString(data?.scheduleName),
+    isLoading,
+    noSchedule: !isLoading && !isError && data === null,
+    hasError: isError,
+  };
+}
+
+async function fetchScheduleData(): Promise<ScheduleData> {
+  const { calendars, teamMembers } = await getRota();
+  const primaryCalendar = findPrimarySchedule(calendars);
+  if (!primaryCalendar) return undefined;
+
+  const scheduleName = primaryCalendar.name ?? PRIMARY_SCHEDULE_NAME;
+  const calendarEvents = await getOnCallEvents(primaryCalendar.id, teamMembers);
+  const events = resolveOverrideConflicts(calendarEvents);
+
+  return { scheduleName, events };
 }
 
 function findPrimarySchedule(calendars: Calendar[]): Calendar | undefined {
-  return calendars.find((calendar) => calendar.attributes.name?.toLowerCase().includes("primary"));
+  return calendars.find((calendar) => calendar.name?.toLowerCase().includes(PRIMARY_SCHEDULE_NAME.toLowerCase()));
 }
