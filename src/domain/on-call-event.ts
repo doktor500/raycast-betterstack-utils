@@ -1,6 +1,6 @@
-import { isDateInInterval } from "../common/utils/date-utils";
-import { User } from "./user";
-import { mergeIntervals, subtractIntervals } from "./time-interval";
+import { isDateInInterval } from "@/common/utils/date-utils";
+import { User } from "@/domain/user";
+import { mergeIntervals, subtractIntervals } from "@/domain/time-interval";
 
 export interface OnCallEvent {
   started_at: string;

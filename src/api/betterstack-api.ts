@@ -1,7 +1,7 @@
 import { getPreferenceValues } from "@raycast/api";
-import { toList } from "../common/utils/collection-utils";
-import { buildUserFromEmail, User } from "../domain/user";
-import { asOptional } from "../common/utils/optional-utils";
+import { toList } from "@/common/utils/collection-utils";
+import { buildUserFromEmail, User } from "@/domain/user";
+import { asOptional } from "@/common/utils/optional-utils";
 
 const BASE_URL = "https://uptime.betterstack.com/api/v2";
 

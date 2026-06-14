@@ -1,6 +1,6 @@
-import { Colors } from "../../../../common/colors";
-import { MONO_FONT_FAMILY } from "../../../../common/fonts";
-import { WEEK } from "./constants";
+import { Colors } from "@/common/colors";
+import { MONO_FONT_FAMILY } from "@/common/fonts";
+import { WEEK } from "@/ui/schedule/components/week/constants";
 
 export function HourLabels({ gridTop }: { gridTop: number }) {
   return (

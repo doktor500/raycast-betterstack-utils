@@ -1,7 +1,7 @@
-import { formatWeekday } from "../../../layout";
-import { FONT_FAMILY } from "../../../../common/fonts";
-import { Colors } from "../../../../common/colors";
-import { MONTH } from "./constants";
+import { formatWeekday } from "@/ui/layout";
+import { FONT_FAMILY } from "@/common/fonts";
+import { Colors } from "@/common/colors";
+import { MONTH } from "@/ui/schedule/components/month/constants";
 
 interface DayColumnProps {
   day: Date;

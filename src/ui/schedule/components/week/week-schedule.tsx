@@ -1,16 +1,16 @@
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { getCurrentWeekDays, isSameDay } from "../../../../common/utils/date-utils";
-import { buildColorMap } from "../../../../common/colors";
-import { OnCallEvent } from "../../../../domain/on-call-event";
-import { ON_CALL_PILL_CIRC_R, OnCallPill } from "../on-call-pill";
-import { WEEK } from "./constants";
-import { HourGridLines } from "./hour-grid-lines";
-import { HourLabels } from "./hour-labels";
-import { DayColumn } from "./day-column";
-import { WeekEvents } from "./week-events";
-import { CurrentTimeMarker } from "./current-time-marker";
-import { formatUserName } from "../../../../domain/user";
+import { getCurrentWeekDays, isSameDay } from "@/common/utils/date-utils";
+import { buildColorMap } from "@/common/colors";
+import { OnCallEvent } from "@/domain/on-call-event";
+import { ON_CALL_PILL_CIRC_R, OnCallPill } from "@/ui/schedule/components/on-call-pill";
+import { WEEK } from "@/ui/schedule/components/week/constants";
+import { HourGridLines } from "@/ui/schedule/components/week/hour-grid-lines";
+import { HourLabels } from "@/ui/schedule/components/week/hour-labels";
+import { DayColumn } from "@/ui/schedule/components/week/day-column";
+import { WeekEvents } from "@/ui/schedule/components/week/week-events";
+import { CurrentTimeMarker } from "@/ui/schedule/components/week/current-time-marker";
+import { formatUserName } from "@/domain/user";
 
 interface WeekViewProps {
   events: OnCallEvent[];

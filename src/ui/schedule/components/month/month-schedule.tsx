@@ -1,14 +1,14 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { Fragment } from "react";
-import { addDays, startOfWeek } from "../../../../common/utils/date-utils";
-import { buildColorMap, Colors, RotaColors } from "../../../../common/colors";
-import { buildWeekSpanBars, computeMonthSummary, summaryBlockHeight, weekRowHeight } from "../../../layout";
-import { OnCallEvent } from "../../../../domain/on-call-event";
-import { MonthBlock } from "./month-block";
-import { SummaryBlock } from "./summary-block";
-import { ON_CALL_PILL_CIRC_R, OnCallPill } from "../on-call-pill";
-import { MONTH } from "./constants";
-import { formatUserName } from "../../../../domain/user";
+import { addDays, startOfWeek } from "@/common/utils/date-utils";
+import { buildColorMap, Colors, RotaColors } from "@/common/colors";
+import { buildWeekSpanBars, computeMonthSummary, summaryBlockHeight, weekRowHeight } from "@/ui/layout";
+import { OnCallEvent } from "@/domain/on-call-event";
+import { MonthBlock } from "@/ui/schedule/components/month/month-block";
+import { SummaryBlock } from "@/ui/schedule/components/month/summary-block";
+import { ON_CALL_PILL_CIRC_R, OnCallPill } from "@/ui/schedule/components/on-call-pill";
+import { MONTH } from "@/ui/schedule/components/month/constants";
+import { formatUserName } from "@/domain/user";
 
 type Props = {
   events: OnCallEvent[];

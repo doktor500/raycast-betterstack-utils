@@ -1,8 +1,8 @@
-import { type WeekSpanBar, formatMonthLabel } from "../../../layout";
-import { FONT_FAMILY } from "../../../../common/fonts";
-import { Colors } from "../../../../common/colors";
-import { WeekGroup } from "./week-group";
-import { MONTH } from "./constants";
+import { type WeekSpanBar, formatMonthLabel } from "@/ui/layout";
+import { FONT_FAMILY } from "@/common/fonts";
+import { Colors } from "@/common/colors";
+import { WeekGroup } from "@/ui/schedule/components/month/week-group";
+import { MONTH } from "@/ui/schedule/components/month/constants";
 
 interface MonthBlockProps {
   weeks: Date[][];

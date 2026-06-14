@@ -1,8 +1,8 @@
 import { renderToStaticMarkup } from "react-dom/server";
-import { LAYOUT, SUMMARY, weekRowHeight, summaryBlockHeight } from "../../layout";
-import { ON_CALL_PILL_CIRC_R } from "../components/on-call-pill";
-import { WeekRow } from "../components/week/week-row";
-import { SKELETON_COLOR } from "./colors/skeleton-colors";
+import { LAYOUT, SUMMARY, weekRowHeight, summaryBlockHeight } from "@/ui/layout";
+import { ON_CALL_PILL_CIRC_R } from "@/ui/schedule/components/on-call-pill";
+import { WeekRow } from "@/ui/schedule/components/week/week-row";
+import { SKELETON_COLOR } from "@/ui/schedule/skeleton/colors/skeleton-colors";
 
 const ON_CALL_PILL_BANNER = ON_CALL_PILL_CIRC_R * 2;
 

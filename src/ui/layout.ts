@@ -1,7 +1,7 @@
-import { OnCallEvent } from "../domain/on-call-event";
-import { RotaColors } from "../common/colors";
-import { FONT_FAMILY } from "../common/fonts";
-import { formatUserName } from "../domain/user";
+import { OnCallEvent } from "@/domain/on-call-event";
+import { RotaColors } from "@/common/colors";
+import { FONT_FAMILY } from "@/common/fonts";
+import { formatUserName } from "@/domain/user";
 
 export interface WeekSpanBar {
   startDayIndex: number;

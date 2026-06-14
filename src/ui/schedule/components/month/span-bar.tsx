@@ -1,7 +1,7 @@
-import { type WeekSpanBar, truncateLabel } from "../../../layout";
-import { FONT_FAMILY } from "../../../../common/fonts";
-import { getThemeColor } from "../../../../common/colors";
-import { MONTH } from "./constants";
+import { type WeekSpanBar, truncateLabel } from "@/ui/layout";
+import { FONT_FAMILY } from "@/common/fonts";
+import { getThemeColor } from "@/common/colors";
+import { MONTH } from "@/ui/schedule/components/month/constants";
 
 interface SpanBarProps {
   bar: WeekSpanBar;

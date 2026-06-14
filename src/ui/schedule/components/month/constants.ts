@@ -1,4 +1,4 @@
-import { LAYOUT } from "../../../layout";
+import { LAYOUT } from "@/ui/layout";
 
 export const MONTH = {
   WIDTH: LAYOUT.WIDTH,

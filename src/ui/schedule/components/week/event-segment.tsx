@@ -1,6 +1,6 @@
-import { getThemeColor } from "../../../../common/colors";
-import { truncateLabel } from "../../../layout";
-import { WEEK } from "./constants";
+import { getThemeColor } from "@/common/colors";
+import { truncateLabel } from "@/ui/layout";
+import { WEEK } from "@/ui/schedule/components/week/constants";
 
 export interface DaySegment {
   startFraction: number;

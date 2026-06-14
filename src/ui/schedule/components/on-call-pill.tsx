@@ -1,5 +1,5 @@
-import { getThemeColor, Colors, RotaColors } from "../../../common/colors";
-import { FONT_FAMILY } from "../../../common/fonts";
+import { getThemeColor, Colors, RotaColors } from "@/common/colors";
+import { FONT_FAMILY } from "@/common/fonts";
 
 export const ON_CALL_PILL_CIRC_R = 16;
 const CX = ON_CALL_PILL_CIRC_R;

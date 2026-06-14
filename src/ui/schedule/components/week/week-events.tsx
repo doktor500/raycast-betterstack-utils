@@ -1,10 +1,10 @@
-import { RotaColors } from "../../../../common/colors";
-import { OnCallEvent } from "../../../../domain/on-call-event";
-import { WEEK } from "./constants";
-import { EventSegment, type DaySegment } from "./event-segment";
-import { formatUserName } from "../../../../domain/user";
+import { RotaColors } from "@/common/colors";
+import { OnCallEvent } from "@/domain/on-call-event";
+import { WEEK } from "@/ui/schedule/components/week/constants";
+import { EventSegment, type DaySegment } from "@/ui/schedule/components/week/event-segment";
+import { formatUserName } from "@/domain/user";
 
-export type { DaySegment } from "./event-segment";
+export type { DaySegment } from "@/ui/schedule/components/week/event-segment";
 
 export function getDaySegments(events: OnCallEvent[], dayStart: Date, colorMap: Map<string, string>): DaySegment[] {
   const DAY_MS = 24 * 3600 * 1000;

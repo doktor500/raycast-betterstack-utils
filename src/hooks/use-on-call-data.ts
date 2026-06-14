@@ -1,7 +1,7 @@
 import { showToast, Toast } from "@raycast/api";
 import { useEffect, useState } from "react";
-import { getOnCallCalendars, getCalendarEvents, type Calendar } from "../api/betterstack-api";
-import { OnCallEvent, resolveOverrideConflicts } from "../domain/on-call-event";
+import { getOnCallCalendars, getCalendarEvents, type Calendar } from "@/api/betterstack-api";
+import { OnCallEvent, resolveOverrideConflicts } from "@/domain/on-call-event";
 
 export interface OnCallData {
   events: OnCallEvent[];

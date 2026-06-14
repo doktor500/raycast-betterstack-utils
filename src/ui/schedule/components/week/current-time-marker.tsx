@@ -1,5 +1,5 @@
-import { Colors } from "../../../../common/colors";
-import { WEEK } from "./constants";
+import { Colors } from "@/common/colors";
+import { WEEK } from "@/ui/schedule/components/week/constants";
 
 interface CurrentTimeMarkerProps {
   todayIndex: number;

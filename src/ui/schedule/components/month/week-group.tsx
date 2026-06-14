@@ -1,10 +1,10 @@
-import { type WeekSpanBar } from "../../../layout";
-import { isSameDay } from "../../../../common/utils/date-utils";
-import { Colors } from "../../../../common/colors";
-import { DayColumn } from "./day-column";
-import { SpanBar } from "./span-bar";
-import { CurrentTimeMarker } from "./current-time-marker";
-import { MONTH } from "./constants";
+import { type WeekSpanBar } from "@/ui/layout";
+import { isSameDay } from "@/common/utils/date-utils";
+import { Colors } from "@/common/colors";
+import { DayColumn } from "@/ui/schedule/components/month/day-column";
+import { SpanBar } from "@/ui/schedule/components/month/span-bar";
+import { CurrentTimeMarker } from "@/ui/schedule/components/month/current-time-marker";
+import { MONTH } from "@/ui/schedule/components/month/constants";
 
 interface WeekGroupProps {
   days: Date[];
