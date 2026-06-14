@@ -25,9 +25,3 @@ declare namespace Arguments {
   export type OnCallSchedule = {}
 }
 
-declare namespace React {
-  interface HTMLAttributes<T> {
-    tw?: string;
-  }
-}
-
