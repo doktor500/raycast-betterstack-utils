@@ -5,14 +5,16 @@ export function HourGridLines({ gridTop }: { gridTop: number }) {
   return (
     <>
       {Array.from({ length: WEEK.HOURS }, (_, hourIndex) => (
-        <line
+        <div
           key={`hg${hourIndex}`}
-          x1={WEEK.SIDEBAR_WIDTH}
-          y1={gridTop + hourIndex * WEEK.HOUR_HEIGHT}
-          x2={WEEK.WIDTH}
-          y2={gridTop + hourIndex * WEEK.HOUR_HEIGHT}
-          stroke={Colors.SLATE}
-          strokeWidth={1}
+          style={{
+            position: "absolute",
+            left: WEEK.SIDEBAR_WIDTH,
+            top: gridTop + hourIndex * WEEK.HOUR_HEIGHT,
+            width: WEEK.WIDTH - WEEK.SIDEBAR_WIDTH,
+            height: 1,
+            backgroundColor: Colors.SLATE,
+          }}
         />
       ))}
     </>

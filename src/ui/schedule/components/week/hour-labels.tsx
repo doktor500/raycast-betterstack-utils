@@ -1,23 +1,26 @@
 import { Colors } from "@/common/colors";
-import { MONO_FONT_FAMILY } from "@/common/fonts";
 import { WEEK } from "@/ui/schedule/components/week/constants";
 
 export function HourLabels({ gridTop }: { gridTop: number }) {
   return (
     <>
       {Array.from({ length: WEEK.HOURS }, (_, hourIndex) => (
-        <text
+        <div
           key={`hl${hourIndex}`}
-          x={WEEK.SIDEBAR_WIDTH - 4}
-          y={gridTop + hourIndex * WEEK.HOUR_HEIGHT + WEEK.HOUR_HEIGHT / 2}
-          textAnchor="end"
-          dominantBaseline="central"
-          fontSize={10}
-          fill={Colors.DIM}
-          fontFamily={MONO_FONT_FAMILY}
+          tw="flex items-center justify-end"
+          style={{
+            position: "absolute",
+            left: 0,
+            top: gridTop + hourIndex * WEEK.HOUR_HEIGHT,
+            width: WEEK.SIDEBAR_WIDTH - 2,
+            height: WEEK.HOUR_HEIGHT,
+            fontSize: 10,
+            color: Colors.DIM,
+            fontFamily: "JetBrainsMono",
+          }}
         >
           {hourIndex}
-        </text>
+        </div>
       ))}
     </>
   );
