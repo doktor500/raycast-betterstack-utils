@@ -27,9 +27,10 @@ function ScheduleSkeletonRoot() {
     <div tw="flex flex-col" style={{ display: "flex", flexDirection: "column", width: LAYOUT.WIDTH }}>
       <div style={{ height: ON_CALL_PILL_BANNER }} />
       <div style={{ display: "flex", position: "relative", width: LAYOUT.WIDTH, height: calendarHeight, borderRadius: 10, border: `1px solid ${SKELETON_COLOR}` }}>
-        <div style={{ position: "absolute", inset: 0, borderRadius: 10, backgroundColor: "rgba(40,53,78,0.2)" }} />
+        <div style={{ display: "flex", position: "absolute", inset: 0, borderRadius: 10, backgroundColor: "rgba(40,53,78,0.2)" }} />
         <div
           style={{
+            display: "flex",
             position: "absolute",
             left: LAYOUT.WIDTH / 2 - 80,
             top: 13,
@@ -41,6 +42,7 @@ function ScheduleSkeletonRoot() {
         />
         <div
           style={{
+            display: "flex",
             position: "absolute",
             top: LAYOUT.BLOCK_HEADER_HEIGHT,
             left: 0,
@@ -53,6 +55,7 @@ function ScheduleSkeletonRoot() {
           <div
             key={weekIndex}
             style={{
+              display: "flex",
               position: "absolute",
               top: LAYOUT.BLOCK_HEADER_HEIGHT + weekIndex * rowHeight,
               left: 0,
@@ -62,11 +65,12 @@ function ScheduleSkeletonRoot() {
           </div>
         ))}
       </div>
-      <div style={{ height: LAYOUT.SUMMARY_GAP }} />
+      <div style={{ display: "flex", height: LAYOUT.SUMMARY_GAP }} />
       <div style={{ display: "flex", position: "relative", width: LAYOUT.WIDTH, height: summaryHeight, borderRadius: 10, border: `1px solid ${SKELETON_COLOR}` }}>
-        <div style={{ position: "absolute", inset: 0, borderRadius: 10, backgroundColor: "rgba(40,53,78,0.2)" }} />
+        <div style={{ display: "flex", position: "absolute", inset: 0, borderRadius: 10, backgroundColor: "rgba(40,53,78,0.2)" }} />
         <div
           style={{
+            display: "flex",
             position: "absolute",
             left: 24,
             top: summaryHeight / 2 - 5,
@@ -78,6 +82,7 @@ function ScheduleSkeletonRoot() {
         />
         <div
           style={{
+            display: "flex",
             position: "absolute",
             left: SUMMARY.MONTH_COL_WIDTH,
             top: 16,

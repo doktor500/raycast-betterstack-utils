@@ -21,6 +21,8 @@ export function SpanBar({ bar }: SpanBarProps) {
     <div
       tw="flex items-center"
       style={{
+        display: "flex",
+        alignItems: "center",
         position: "absolute",
         left: barLeft,
         top: barTop,

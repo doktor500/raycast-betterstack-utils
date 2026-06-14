@@ -11,7 +11,7 @@ export function WeekRow({ weekIndex, spans, rowHeight }: WeekRowProps) {
   return (
     <div style={{ display: "flex", position: "relative", width: LAYOUT.WIDTH, height: rowHeight }}>
       {weekIndex > 0 && (
-        <div style={{ position: "absolute", top: 0, left: 0, width: LAYOUT.WIDTH, height: 1, backgroundColor: SKELETON_COLOR }} />
+        <div style={{ display: "flex", position: "absolute", top: 0, left: 0, width: LAYOUT.WIDTH, height: 1, backgroundColor: SKELETON_COLOR }} />
       )}
       {Array.from({ length: 7 }, (_, dayIndex) => {
         const left = dayIndex * LAYOUT.DAY_WIDTH;
@@ -19,6 +19,7 @@ export function WeekRow({ weekIndex, spans, rowHeight }: WeekRowProps) {
           <div key={dayIndex} style={{ display: "flex" }}>
             <div
               style={{
+                display: "flex",
                 position: "absolute",
                 left,
                 top: 0,
@@ -29,6 +30,7 @@ export function WeekRow({ weekIndex, spans, rowHeight }: WeekRowProps) {
             />
             <div
               style={{
+                display: "flex",
                 position: "absolute",
                 left,
                 top: LAYOUT.DAY_HEADER_HEIGHT,
@@ -39,6 +41,7 @@ export function WeekRow({ weekIndex, spans, rowHeight }: WeekRowProps) {
             />
             <div
               style={{
+                display: "flex",
                 position: "absolute",
                 left: left + LAYOUT.DAY_WIDTH / 2 - 20,
                 top: 5,
@@ -58,6 +61,7 @@ export function WeekRow({ weekIndex, spans, rowHeight }: WeekRowProps) {
           <div
             key={index}
             style={{
+              display: "flex",
               position: "absolute",
               left: barLeft,
               top: LAYOUT.ROW_TOP,

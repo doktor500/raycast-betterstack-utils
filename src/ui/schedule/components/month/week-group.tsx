@@ -34,6 +34,7 @@ export function WeekGroup({
       {weekIndex > 0 && (
         <div
           style={{
+            display: "flex",
             position: "absolute",
             top: 0,
             left: 0,

@@ -21,11 +21,12 @@ export function DayColumn({ day, index, currentMonth, columnBg, rowHeight }: Day
   return (
     <div style={{ display: "flex", position: "absolute", left, top: 0, width: MONTH.DAY_WIDTH, height: rowHeight }}>
       {columnBg !== "none" && (
-        <div style={{ position: "absolute", inset: 0, backgroundColor: columnBg }} />
+        <div style={{ display: "flex", position: "absolute", inset: 0, backgroundColor: columnBg }} />
       )}
       {isWeekend && (
         <div
           style={{
+            display: "flex",
             position: "absolute",
             inset: 0,
             backgroundImage: WEEKEND_STRIPES,
@@ -37,6 +38,7 @@ export function DayColumn({ day, index, currentMonth, columnBg, rowHeight }: Day
         <>
           <div
             style={{
+              display: "flex",
               position: "absolute",
               left: 0,
               top: 0,
@@ -47,6 +49,7 @@ export function DayColumn({ day, index, currentMonth, columnBg, rowHeight }: Day
           />
           <div
             style={{
+              display: "flex",
               position: "absolute",
               left: 0,
               top: MONTH.DAY_HEADER_HEIGHT,
@@ -58,6 +61,9 @@ export function DayColumn({ day, index, currentMonth, columnBg, rowHeight }: Day
           <div
             tw="flex items-center justify-end"
             style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
               position: "absolute",
               left: 0,
               top: 4,
@@ -72,6 +78,8 @@ export function DayColumn({ day, index, currentMonth, columnBg, rowHeight }: Day
           <div
             tw="flex items-center"
             style={{
+              display: "flex",
+              alignItems: "center",
               position: "absolute",
               left: MONTH.DAY_WIDTH / 2 + 3,
               top: 4,

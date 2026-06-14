@@ -9,6 +9,9 @@ export function HourLabels({ gridTop }: { gridTop: number }) {
           key={`hl${hourIndex}`}
           tw="flex items-center justify-end"
           style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
             position: "absolute",
             left: 0,
             top: gridTop + hourIndex * WEEK.HOUR_HEIGHT,

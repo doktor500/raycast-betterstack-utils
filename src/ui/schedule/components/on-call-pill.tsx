@@ -20,6 +20,9 @@ export function OnCallPill({ name, color }: OnCallPillProps) {
       <div
         tw="flex items-center justify-center"
         style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           width: diameter,
           height: diameter,
           borderRadius: "50%",

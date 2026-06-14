@@ -110,13 +110,13 @@ function CombinedScheduleRoot({ events, window, onCallUser }: Props) {
             columnBg={columnBg}
             weekRowHeights={weekRowHeightsByMonth[monthIndex]}
           />
-          <div style={{ height: MONTH.SUMMARY_GAP }} />
+          <div style={{ display: "flex", height: MONTH.SUMMARY_GAP }} />
           <SummaryBlock year={year} month={month} summary={summaries[monthIndex]} />
           {monthIndex < monthGroups.length - 1 && (
             <>
-              <div style={{ height: MONTH.BLOCK_GAP / 2 }} />
-              <div style={{ width: MONTH.WIDTH, height: 2, backgroundColor: Colors.SLATE }} />
-              <div style={{ height: MONTH.BLOCK_GAP / 2 }} />
+              <div style={{ display: "flex", height: MONTH.BLOCK_GAP / 2 }} />
+              <div style={{ display: "flex", width: MONTH.WIDTH, height: 2, backgroundColor: Colors.SLATE }} />
+              <div style={{ display: "flex", height: MONTH.BLOCK_GAP / 2 }} />
             </>
           )}
         </Fragment>

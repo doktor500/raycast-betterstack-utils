@@ -14,6 +14,7 @@ export function CurrentTimeMarker({ index, today, rowHeight }: CurrentTimeMarker
   return (
     <div
       style={{
+        display: "flex",
         position: "absolute",
         left,
         top: MONTH.DAY_HEADER_HEIGHT,

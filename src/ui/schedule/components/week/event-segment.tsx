@@ -25,6 +25,7 @@ export function EventSegment({ segment, colLeft, colWidth, gridTop }: EventSegme
   return (
     <div
       style={{
+        display: "flex",
         position: "absolute",
         left: colLeft,
         top,

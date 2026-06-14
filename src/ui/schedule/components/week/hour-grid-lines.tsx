@@ -8,6 +8,7 @@ export function HourGridLines({ gridTop }: { gridTop: number }) {
         <div
           key={`hg${hourIndex}`}
           style={{
+            display: "flex",
             position: "absolute",
             left: WEEK.SIDEBAR_WIDTH,
             top: gridTop + hourIndex * WEEK.HOUR_HEIGHT,

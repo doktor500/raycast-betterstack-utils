@@ -18,6 +18,7 @@ export function DayColumn({ day, dayIndex, isToday, gridTop, headerTop, totalHei
     <>
       <div
         style={{
+          display: "flex",
           position: "absolute",
           left: colLeft,
           top: gridTop,
@@ -29,6 +30,7 @@ export function DayColumn({ day, dayIndex, isToday, gridTop, headerTop, totalHei
       {isToday && (
         <div
           style={{
+            display: "flex",
             position: "absolute",
             left: colLeft,
             top: headerTop,

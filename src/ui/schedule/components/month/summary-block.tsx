@@ -31,6 +31,8 @@ export function SummaryBlock({ year, month, summary }: SummaryBlockProps) {
       <div
         tw="flex items-center"
         style={{
+          display: "flex",
+          alignItems: "center",
           width: SUMMARY.MONTH_COL_WIDTH,
           paddingLeft: 24,
           borderRight: `1px solid ${Colors.SLATE}`,
@@ -59,6 +61,7 @@ export function SummaryBlock({ year, month, summary }: SummaryBlockProps) {
           >
             <div
               style={{
+                display: "flex",
                 width: 12,
                 height: 12,
                 borderRadius: "50%",

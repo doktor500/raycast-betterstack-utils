@@ -12,6 +12,7 @@ export function CurrentTimeMarker({ todayIndex, markerY }: CurrentTimeMarkerProp
   return (
     <div
       style={{
+        display: "flex",
         position: "absolute",
         left,
         top: markerY - 2,

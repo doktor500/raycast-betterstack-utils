@@ -41,6 +41,9 @@ export function MonthBlock({
       <div
         tw="flex items-center justify-center"
         style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           height: MONTH.BLOCK_HEADER_HEIGHT,
           borderBottom: `1px solid ${Colors.SLATE}`,
         }}
