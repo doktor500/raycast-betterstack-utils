@@ -11,25 +11,46 @@ export interface DaySegment {
 
 interface EventSegmentProps {
   segment: DaySegment;
-  colX: number;
+  colLeft: number;
   colWidth: number;
   gridTop: number;
 }
 
-export function EventSegment({ segment, colX, colWidth, gridTop }: EventSegmentProps) {
-  const y = gridTop + segment.startFraction * WEEK.TIMELINE_HEIGHT;
+export function EventSegment({ segment, colLeft, colWidth, gridTop }: EventSegmentProps) {
+  const top = gridTop + segment.startFraction * WEEK.TIMELINE_HEIGHT;
   const height = Math.max(WEEK.MIN_EVENT_HEIGHT, (segment.endFraction - segment.startFraction) * WEEK.TIMELINE_HEIGHT);
   const themeColor = getThemeColor(segment.color);
   const showName = height >= WEEK.LABEL_MIN_HEIGHT;
 
   return (
-    <g>
-      <rect x={colX} y={y} width={colWidth} height={height} fill={segment.color} rx={3} />
+    <div
+      style={{
+        position: "absolute",
+        left: colLeft,
+        top,
+        width: colWidth,
+        height,
+        backgroundColor: segment.color,
+        borderRadius: 3,
+        overflow: "hidden",
+      }}
+    >
       {showName && (
-        <text x={colX + 12} y={y + 20} fontSize={16} fontWeight={600} fill={themeColor} fontFamily={WEEK.FONT}>
-          {truncateLabel(segment.label, colWidth - 22, 16)}
-        </text>
+        <span
+          style={{
+            position: "absolute",
+            left: 12,
+            top: 4,
+            fontSize: 14,
+            fontWeight: 600,
+            color: themeColor,
+            fontFamily: "Inter",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {truncateLabel(segment.label, colWidth - 22, 14)}
+        </span>
       )}
-    </g>
+    </div>
   );
 }

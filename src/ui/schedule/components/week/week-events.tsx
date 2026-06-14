@@ -17,13 +17,13 @@ export function WeekEvents({ days, events, gridTop }: WeekEventsProps) {
     <>
       {days.map((day, dayIndex) => {
         const segments = getDaySegments(events, day);
-        const colX = WEEK.SIDEBAR_WIDTH + dayIndex * WEEK.DAY_WIDTH + 2;
+        const colLeft = WEEK.SIDEBAR_WIDTH + dayIndex * WEEK.DAY_WIDTH + 2;
         const colWidth = WEEK.DAY_WIDTH - 4;
         return segments.map((segment, segmentIndex) => (
           <EventSegment
             key={`ev${dayIndex}-${segmentIndex}`}
             segment={segment}
-            colX={colX}
+            colLeft={colLeft}
             colWidth={colWidth}
             gridTop={gridTop}
           />
