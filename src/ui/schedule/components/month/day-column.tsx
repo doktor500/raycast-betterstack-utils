@@ -1,7 +1,9 @@
 import { formatWeekday } from "@/ui/layout";
-import { FONT_FAMILY } from "@/common/fonts";
 import { Colors } from "@/common/colors";
 import { MONTH } from "@/ui/schedule/components/month/constants";
+
+const WEEKEND_STRIPES =
+  "repeating-linear-gradient(135deg, transparent, transparent 3px, rgba(45,55,76,0.5) 3px, rgba(45,55,76,0.5) 4px)";
 
 interface DayColumnProps {
   day: Date;
@@ -12,56 +14,76 @@ interface DayColumnProps {
 }
 
 export function DayColumn({ day, index, currentMonth, columnBg, rowHeight }: DayColumnProps) {
-  const x = index * MONTH.DAY_WIDTH;
-  const center = x + MONTH.DAY_WIDTH / 2;
+  const left = index * MONTH.DAY_WIDTH;
   const isWeekend = day.getDay() === 0 || day.getDay() === 6;
   const inMonth = day.getFullYear() === currentMonth.year && day.getMonth() === currentMonth.month;
-  const bgRect =
-    columnBg !== "none" ? <rect x={x} y={0} width={MONTH.DAY_WIDTH} height={rowHeight} fill={columnBg} /> : null;
-
-  if (!inMonth) {
-    return (
-      <g>
-        {bgRect}
-        {isWeekend && <rect x={x} y={0} width={MONTH.DAY_WIDTH} height={rowHeight} fill="url(#hatch)" opacity={0.3} />}
-      </g>
-    );
-  }
 
   return (
-    <g>
-      {bgRect}
-      {isWeekend && <rect x={x} y={0} width={MONTH.DAY_WIDTH} height={rowHeight} fill="url(#hatch)" />}
-      <line x1={x} y1={0} x2={x} y2={rowHeight} stroke={Colors.SLATE} />
-      <line
-        x1={x}
-        y1={MONTH.DAY_HEADER_HEIGHT}
-        x2={x + MONTH.DAY_WIDTH}
-        y2={MONTH.DAY_HEADER_HEIGHT}
-        stroke={Colors.SLATE}
-      />
-      <text
-        x={center - 3}
-        y={22}
-        textAnchor="end"
-        fill={Colors.DIM}
-        fontFamily={FONT_FAMILY}
-        fontSize={13}
-        fontWeight={600}
-      >
-        {formatWeekday(day)}
-      </text>
-      <text
-        x={center + 3}
-        y={22}
-        textAnchor="start"
-        fill={Colors.SUBTLE}
-        fontFamily={FONT_FAMILY}
-        fontSize={16}
-        fontWeight={600}
-      >
-        {day.getDate()}
-      </text>
-    </g>
+    <div style={{ position: "absolute", left, top: 0, width: MONTH.DAY_WIDTH, height: rowHeight }}>
+      {columnBg !== "none" && (
+        <div style={{ position: "absolute", inset: 0, backgroundColor: columnBg }} />
+      )}
+      {isWeekend && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage: WEEKEND_STRIPES,
+            opacity: inMonth ? 1 : 0.3,
+          }}
+        />
+      )}
+      {inMonth && (
+        <>
+          <div
+            style={{
+              position: "absolute",
+              left: 0,
+              top: 0,
+              width: 1,
+              height: rowHeight,
+              backgroundColor: Colors.SLATE,
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              left: 0,
+              top: MONTH.DAY_HEADER_HEIGHT,
+              width: MONTH.DAY_WIDTH,
+              height: 1,
+              backgroundColor: Colors.SLATE,
+            }}
+          />
+          <div
+            tw="flex items-center justify-end"
+            style={{
+              position: "absolute",
+              left: 0,
+              top: 4,
+              width: MONTH.DAY_WIDTH / 2 - 3,
+              height: MONTH.DAY_HEADER_HEIGHT - 4,
+            }}
+          >
+            <span style={{ fontSize: 13, fontWeight: 600, color: Colors.DIM, fontFamily: "Inter" }}>
+              {formatWeekday(day)}
+            </span>
+          </div>
+          <div
+            tw="flex items-center"
+            style={{
+              position: "absolute",
+              left: MONTH.DAY_WIDTH / 2 + 3,
+              top: 4,
+              height: MONTH.DAY_HEADER_HEIGHT - 4,
+            }}
+          >
+            <span style={{ fontSize: 16, fontWeight: 600, color: Colors.SUBTLE, fontFamily: "Inter" }}>
+              {day.getDate()}
+            </span>
+          </div>
+        </>
+      )}
+    </div>
   );
 }
