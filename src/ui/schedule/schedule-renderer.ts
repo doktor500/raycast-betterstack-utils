@@ -15,10 +15,13 @@ type ScheduleData = {
   isLoading: boolean;
 };
 
-export function renderSchedule({ events, onCallUser, window, timeRange, isLoading }: ScheduleData): string {
-  if (isLoading) return `![schedule](${toSvgDataUri(buildScheduleSkeletonSvg())})`;
+export async function renderSchedule({ events, onCallUser, window, timeRange, isLoading }: ScheduleData): Promise<string> {
+  if (isLoading) return `![schedule](${toSvgDataUri(await buildScheduleSkeletonSvg())})`;
 
-  return timeRange === TimeRange.WEEK
-    ? `![schedule](${toSvgDataUri(buildWeekViewSvg({ events, window, onCallUser }))})`
-    : `![schedule](${toSvgDataUri(buildMonthViewSvg({ events, window, onCallUser }))})`;
+  const svg =
+    timeRange === TimeRange.WEEK
+      ? await buildWeekViewSvg({ events, window, onCallUser })
+      : await buildMonthViewSvg({ events, window, onCallUser });
+
+  return `![schedule](${toSvgDataUri(svg)})`;
 }
