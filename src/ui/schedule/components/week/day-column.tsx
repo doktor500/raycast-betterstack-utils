@@ -12,30 +12,68 @@ interface DayColumnProps {
 }
 
 export function DayColumn({ day, dayIndex, isToday, gridTop, headerTop, totalHeight }: DayColumnProps) {
-  const colX = WEEK.SIDEBAR_WIDTH + dayIndex * WEEK.DAY_WIDTH;
-  const centerX = colX + WEEK.DAY_WIDTH / 2;
+  const colLeft = WEEK.SIDEBAR_WIDTH + dayIndex * WEEK.DAY_WIDTH;
+
   return (
-    <g>
-      <line x1={colX} y1={gridTop} x2={colX} y2={totalHeight} stroke={Colors.SLATE} strokeWidth={1} />
+    <>
+      <div
+        style={{
+          position: "absolute",
+          left: colLeft,
+          top: gridTop,
+          width: 1,
+          height: totalHeight - gridTop,
+          backgroundColor: Colors.SLATE,
+        }}
+      />
       {isToday && (
-        <rect
-          x={colX}
-          y={headerTop}
-          width={WEEK.DAY_WIDTH}
-          height={WEEK.HEADER_HEIGHT}
-          rx={6}
-          fill={Colors.DEEP_DARK}
-          fillOpacity={0.5}
+        <div
+          style={{
+            position: "absolute",
+            left: colLeft,
+            top: headerTop,
+            width: WEEK.DAY_WIDTH,
+            height: WEEK.HEADER_HEIGHT,
+            borderRadius: 6,
+            backgroundColor: Colors.DEEP_DARK,
+            opacity: 0.5,
+          }}
         />
       )}
-      <text x={centerX} y={headerTop + 27} textAnchor="middle" fontFamily={WEEK.FONT} fill={Colors.WHITE}>
-        <tspan fontSize={13} fontWeight={600} fillOpacity={isToday ? 1 : 0.65}>
+      <div
+        tw="flex items-center justify-center"
+        style={{
+          position: "absolute",
+          left: colLeft,
+          top: headerTop,
+          width: WEEK.DAY_WIDTH,
+          height: WEEK.HEADER_HEIGHT,
+          gap: 4,
+        }}
+      >
+        <span
+          style={{
+            fontSize: 13,
+            fontWeight: 600,
+            color: Colors.WHITE,
+            opacity: isToday ? 1 : 0.65,
+            fontFamily: "Inter",
+          }}
+        >
           {`${formatWeekday(day)} `}
-        </tspan>
-        <tspan fontSize={16} fontWeight={600} fillOpacity={isToday ? 1 : 0.75}>
+        </span>
+        <span
+          style={{
+            fontSize: 16,
+            fontWeight: 600,
+            color: Colors.WHITE,
+            opacity: isToday ? 1 : 0.75,
+            fontFamily: "Inter",
+          }}
+        >
           {`${day.getDate()}/${day.getMonth() + 1}`}
-        </tspan>
-      </text>
-    </g>
+        </span>
+      </div>
+    </>
   );
 }
