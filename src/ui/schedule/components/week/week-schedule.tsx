@@ -36,6 +36,7 @@ function WeekViewRoot({ events, window, onCallUser }: WeekViewProps) {
   return (
     <div
       style={{
+        display: "flex",
         position: "relative",
         width: WEEK.WIDTH,
         height: totalHeight,

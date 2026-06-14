@@ -9,14 +9,14 @@ interface WeekRowProps {
 
 export function WeekRow({ weekIndex, spans, rowHeight }: WeekRowProps) {
   return (
-    <div style={{ position: "relative", width: LAYOUT.WIDTH, height: rowHeight }}>
+    <div style={{ display: "flex", position: "relative", width: LAYOUT.WIDTH, height: rowHeight }}>
       {weekIndex > 0 && (
         <div style={{ position: "absolute", top: 0, left: 0, width: LAYOUT.WIDTH, height: 1, backgroundColor: SKELETON_COLOR }} />
       )}
       {Array.from({ length: 7 }, (_, dayIndex) => {
         const left = dayIndex * LAYOUT.DAY_WIDTH;
         return (
-          <div key={dayIndex}>
+          <div key={dayIndex} style={{ display: "flex" }}>
             <div
               style={{
                 position: "absolute",

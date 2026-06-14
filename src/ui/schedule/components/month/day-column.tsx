@@ -19,7 +19,7 @@ export function DayColumn({ day, index, currentMonth, columnBg, rowHeight }: Day
   const inMonth = day.getFullYear() === currentMonth.year && day.getMonth() === currentMonth.month;
 
   return (
-    <div style={{ position: "absolute", left, top: 0, width: MONTH.DAY_WIDTH, height: rowHeight }}>
+    <div style={{ display: "flex", position: "absolute", left, top: 0, width: MONTH.DAY_WIDTH, height: rowHeight }}>
       {columnBg !== "none" && (
         <div style={{ position: "absolute", inset: 0, backgroundColor: columnBg }} />
       )}

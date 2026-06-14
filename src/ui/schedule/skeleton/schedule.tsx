@@ -26,7 +26,7 @@ function ScheduleSkeletonRoot() {
   return (
     <div tw="flex flex-col" style={{ width: LAYOUT.WIDTH }}>
       <div style={{ height: ON_CALL_PILL_BANNER }} />
-      <div style={{ position: "relative", width: LAYOUT.WIDTH, height: calendarHeight, borderRadius: 10, border: `1px solid ${SKELETON_COLOR}` }}>
+      <div style={{ display: "flex", position: "relative", width: LAYOUT.WIDTH, height: calendarHeight, borderRadius: 10, border: `1px solid ${SKELETON_COLOR}` }}>
         <div style={{ position: "absolute", inset: 0, borderRadius: 10, backgroundColor: "rgba(40,53,78,0.2)" }} />
         <div
           style={{
@@ -63,7 +63,7 @@ function ScheduleSkeletonRoot() {
         ))}
       </div>
       <div style={{ height: LAYOUT.SUMMARY_GAP }} />
-      <div style={{ position: "relative", width: LAYOUT.WIDTH, height: summaryHeight, borderRadius: 10, border: `1px solid ${SKELETON_COLOR}` }}>
+      <div style={{ display: "flex", position: "relative", width: LAYOUT.WIDTH, height: summaryHeight, borderRadius: 10, border: `1px solid ${SKELETON_COLOR}` }}>
         <div style={{ position: "absolute", inset: 0, borderRadius: 10, backgroundColor: "rgba(40,53,78,0.2)" }} />
         <div
           style={{

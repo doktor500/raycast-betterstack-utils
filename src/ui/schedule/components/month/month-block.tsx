@@ -29,6 +29,8 @@ export function MonthBlock({
   return (
     <div
       style={{
+        display: "flex",
+        flexDirection: "column",
         position: "relative",
         width: MONTH.WIDTH,
         height: blockHeight,
