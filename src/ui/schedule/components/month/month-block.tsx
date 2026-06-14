@@ -1,12 +1,10 @@
 import { type WeekSpanBar, formatMonthLabel } from "@/ui/layout";
-import { FONT_FAMILY } from "@/common/fonts";
 import { Colors } from "@/common/colors";
 import { WeekGroup } from "@/ui/schedule/components/month/week-group";
 import { MONTH } from "@/ui/schedule/components/month/constants";
 
 interface MonthBlockProps {
   weeks: Date[][];
-  blockOffsetY: number;
   blockHeight: number;
   today: Date;
   weekTimelines: WeekSpanBar[][];
@@ -18,7 +16,6 @@ interface MonthBlockProps {
 
 export function MonthBlock({
   weeks,
-  blockOffsetY,
   blockHeight,
   today,
   weekTimelines,
@@ -30,53 +27,39 @@ export function MonthBlock({
   const monthLabel = formatMonthLabel(currentMonth);
 
   return (
-    <g transform={`translate(0, ${blockOffsetY})`}>
-      <text
-        x={MONTH.WIDTH / 2}
-        y={MONTH.BLOCK_HEADER_HEIGHT / 2 + 7}
-        textAnchor="middle"
-        fill={Colors.FROST}
-        fontFamily={FONT_FAMILY}
-        fontSize={17}
-        fontWeight={700}
+    <div
+      style={{
+        position: "relative",
+        width: MONTH.WIDTH,
+        height: blockHeight,
+        border: `1px solid ${Colors.SLATE}`,
+        overflow: "hidden",
+      }}
+    >
+      <div
+        tw="flex items-center justify-center"
+        style={{
+          height: MONTH.BLOCK_HEADER_HEIGHT,
+          borderBottom: `1px solid ${Colors.SLATE}`,
+        }}
       >
-        {monthLabel}
-      </text>
-      <line x1={0.5} y1={MONTH.BLOCK_HEADER_HEIGHT} x2={0.5} y2={blockHeight} stroke={Colors.SLATE} />
-      <line
-        x1={MONTH.WIDTH - 0.5}
-        y1={MONTH.BLOCK_HEADER_HEIGHT}
-        x2={MONTH.WIDTH - 0.5}
-        y2={blockHeight}
-        stroke={Colors.SLATE}
-      />
-      <line
-        x1={0}
-        y1={MONTH.BLOCK_HEADER_HEIGHT}
-        x2={MONTH.WIDTH}
-        y2={MONTH.BLOCK_HEADER_HEIGHT}
-        stroke={Colors.SLATE}
-      />
-      {weeks.map((days, localIndex) => {
-        const rowHeight = weekRowHeights[localIndex];
-        const offsetY = MONTH.BLOCK_HEADER_HEIGHT + weekRowHeights.slice(0, localIndex).reduce((a, b) => a + b, 0);
-        const baseId = (currentMonth.year * 12 + currentMonth.month) * 1000 + localIndex * 100;
-        return (
-          <WeekGroup
-            key={localIndex}
-            days={days}
-            weekTimeline={weekTimelines[localIndex]}
-            today={today}
-            weekIndex={localIndex}
-            offsetY={offsetY}
-            currentMonth={currentMonth}
-            showTodayMarker={showTodayMarker}
-            columnBg={columnBg}
-            rowHeight={rowHeight}
-            baseId={baseId}
-          />
-        );
-      })}
-    </g>
+        <span style={{ fontSize: 17, fontWeight: 700, color: Colors.FROST, fontFamily: "Inter" }}>
+          {monthLabel}
+        </span>
+      </div>
+      {weeks.map((days, localIndex) => (
+        <WeekGroup
+          key={localIndex}
+          days={days}
+          weekTimeline={weekTimelines[localIndex]}
+          today={today}
+          weekIndex={localIndex}
+          currentMonth={currentMonth}
+          showTodayMarker={showTodayMarker}
+          columnBg={columnBg}
+          rowHeight={weekRowHeights[localIndex]}
+        />
+      ))}
+    </div>
   );
 }
