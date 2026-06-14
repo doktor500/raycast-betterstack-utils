@@ -11,12 +11,10 @@ interface WeekGroupProps {
   weekTimeline: WeekSpanBar[];
   today: Date;
   weekIndex: number;
-  offsetY: number;
   currentMonth: { year: number; month: number };
   showTodayMarker: boolean;
   columnBg: string;
   rowHeight: number;
-  baseId: number;
 }
 
 export function WeekGroup({
@@ -24,18 +22,27 @@ export function WeekGroup({
   weekTimeline,
   today,
   weekIndex,
-  offsetY,
   currentMonth,
   showTodayMarker,
   columnBg,
   rowHeight,
-  baseId,
 }: WeekGroupProps) {
   const todayIndex = days.findIndex((day) => isSameDay(day, today));
 
   return (
-    <g transform={`translate(0, ${offsetY})`}>
-      {weekIndex > 0 && <line x1={0} y1={0} x2={MONTH.WIDTH} y2={0} stroke={Colors.SLATE} />}
+    <div style={{ position: "relative", width: MONTH.WIDTH, height: rowHeight }}>
+      {weekIndex > 0 && (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: MONTH.WIDTH,
+            height: 1,
+            backgroundColor: Colors.SLATE,
+          }}
+        />
+      )}
       {days.map((day, index) => (
         <DayColumn
           key={index}
@@ -47,11 +54,11 @@ export function WeekGroup({
         />
       ))}
       {weekTimeline.map((bar, index) => (
-        <SpanBar key={index} bar={bar} clipId={baseId + index} />
+        <SpanBar key={index} bar={bar} />
       ))}
       {showTodayMarker && todayIndex >= 0 && (
         <CurrentTimeMarker index={todayIndex} today={today} rowHeight={rowHeight} />
       )}
-    </g>
+    </div>
   );
 }
