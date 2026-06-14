@@ -53,8 +53,8 @@ export async function getOnCallEvents(calendarId: string, teamMembers: Map<strin
 
   return events.flatMap((event) =>
     event.users.map((email) => ({
-      started_at: event.starts_at,
-      ended_at: event.ends_at,
+      startedAt: event.starts_at,
+      endedAt: event.ends_at,
       override: event.override,
       user: teamMembers.get(email.toLowerCase()) ?? buildUserFromEmail(email),
     })),

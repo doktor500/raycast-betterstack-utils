@@ -105,8 +105,8 @@ export function buildWeekSpanBars(
 
   const bars = events
     .map((event) => {
-      const eventStart = new Date(event.started_at).getTime();
-      const eventEnd = new Date(event.ended_at).getTime();
+      const eventStart = new Date(event.startedAt).getTime();
+      const eventEnd = new Date(event.endedAt).getTime();
       const overlap = clampToWindow(eventStart, eventEnd, windowStart, windowEnd);
 
       return overlap ? eventToLanedBar(event, overlap, dayStarts, first, last, colorMap) : null;
@@ -222,8 +222,8 @@ function accumulateEventHours(
   monthEnd: Date,
 ): Map<string, { hours: number; email: string }> {
   return events.reduce((totalHours, event) => {
-    const overlapStart = Math.max(new Date(event.started_at).getTime(), monthStart.getTime());
-    const overlapEnd = Math.min(new Date(event.ended_at).getTime(), monthEnd.getTime());
+    const overlapStart = Math.max(new Date(event.startedAt).getTime(), monthStart.getTime());
+    const overlapEnd = Math.min(new Date(event.endedAt).getTime(), monthEnd.getTime());
     const hours = (overlapEnd - overlapStart) / (3600 * 1000);
     const name = formatUserName(event.user);
     const { email } = event.user;

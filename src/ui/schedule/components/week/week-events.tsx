@@ -12,8 +12,8 @@ export function getDaySegments(events: OnCallEvent[], dayStart: Date, colorMap: 
   const dayEndMs = dayStartMs + DAY_MS;
 
   return events.flatMap((event) => {
-    const eventStart = new Date(event.started_at).getTime();
-    const eventEnd = new Date(event.ended_at).getTime();
+    const eventStart = new Date(event.startedAt).getTime();
+    const eventEnd = new Date(event.endedAt).getTime();
     const segStart = Math.max(eventStart, dayStartMs);
     const segEnd = Math.min(eventEnd, dayEndMs);
     if (segEnd <= segStart) return [];

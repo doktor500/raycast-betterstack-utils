@@ -4,13 +4,13 @@ import { mergeIntervals, subtractIntervals } from "@/domain/time-interval";
 
 export interface OnCallEvent {
   user: User;
-  started_at: string;
-  ended_at: string;
+  startedAt: string;
+  endedAt: string;
   override: boolean;
 }
 
 export function getCurrentOnCallUser(date: Date, events: OnCallEvent[]): User | undefined {
-  const active = events.filter((event) => isDateInInterval(date, new Date(event.started_at), new Date(event.ended_at)));
+  const active = events.filter((event) => isDateInInterval(date, new Date(event.startedAt), new Date(event.endedAt)));
   const override = active.find((event) => event.override);
   if (override) return override.user;
 
@@ -24,13 +24,13 @@ export function resolveOverrideConflicts(events: OnCallEvent[]): OnCallEvent[] {
 
   const overrideIntervals = mergeIntervals(
     overrideEvents.map((event) => ({
-      start: new Date(event.started_at).getTime(),
-      end: new Date(event.ended_at).getTime(),
+      start: new Date(event.startedAt).getTime(),
+      end: new Date(event.endedAt).getTime(),
     })),
   );
 
   const regularEventFragments = regularEvents.flatMap((event) => {
-    const interval = { start: new Date(event.started_at).getTime(), end: new Date(event.ended_at).getTime() };
+    const interval = { start: new Date(event.startedAt).getTime(), end: new Date(event.endedAt).getTime() };
     return subtractIntervals(interval, overrideIntervals).map((fragment) => ({
       ...event,
       started_at: new Date(fragment.start).toISOString(),

@@ -29,7 +29,7 @@ function findOnCallAtTime(
 ): { name: string; color: string } | null {
   const dateMs = date.getTime();
   const event = events.find(
-    (e) => new Date(e.started_at).getTime() <= dateMs && new Date(e.ended_at).getTime() > dateMs,
+    (e) => new Date(e.startedAt).getTime() <= dateMs && new Date(e.endedAt).getTime() > dateMs,
   );
   if (!event) return null;
   const name = formatUserName(event.user);
