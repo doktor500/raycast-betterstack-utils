@@ -1,8 +1,8 @@
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { getCurrentWeekDays, isSameDay } from "../../../../common/dates";
+import { getCurrentWeekDays, isSameDay } from "../../../../common/utils/date-utils";
 import { buildColorMap } from "../../../../common/colors";
-import { formatUserName, OnCallEvent } from "../../../../domain/on-call-event";
+import { OnCallEvent } from "../../../../domain/on-call-event";
 import { ON_CALL_PILL_CIRC_R, OnCallPill } from "../on-call-pill";
 import { WEEK } from "./constants";
 import { HourGridLines } from "./hour-grid-lines";
@@ -10,6 +10,7 @@ import { HourLabels } from "./hour-labels";
 import { DayColumn } from "./day-column";
 import { WeekEvents } from "./week-events";
 import { CurrentTimeMarker } from "./current-time-marker";
+import { formatUserName } from "../../../../domain/user";
 
 interface WeekViewProps {
   events: OnCallEvent[];
@@ -21,11 +22,19 @@ interface WeekViewProps {
   onCallColor?: string;
 }
 
-function WeekViewSvg({ events, today, anchorDate, backgroundColor, allEvents, onCallName, onCallColor }: WeekViewProps) {
+function WeekViewSvg({
+  events,
+  today,
+  anchorDate,
+  backgroundColor,
+  allEvents,
+  onCallName,
+  onCallColor,
+}: WeekViewProps) {
   const weekAnchor = anchorDate ?? today;
   const days = getCurrentWeekDays(weekAnchor);
   const colorSourceEvents = allEvents ?? events;
-  const uniqueNames = [...new Set(colorSourceEvents.map((e) => formatUserName(e.user)))].sort();
+  const uniqueNames = [...new Set(colorSourceEvents.map((e) => formatUserName(e.user)))].toSorted();
   const colorMap = buildColorMap(uniqueNames);
   const todayIndex = days.findIndex((d) => isSameDay(d, today));
 
@@ -61,7 +70,9 @@ function WeekViewSvg({ events, today, anchorDate, backgroundColor, allEvents, on
       ))}
       <WeekEvents days={days} events={events} colorMap={colorMap} gridTop={gridTop} />
       {todayIndex >= 0 && <CurrentTimeMarker todayIndex={todayIndex} markerY={markerY} />}
-      {onCallName && onCallColor && <OnCallPill cy={Math.round(bannerHeight / 2)} name={onCallName} color={onCallColor} />}
+      {onCallName && onCallColor && (
+        <OnCallPill cy={Math.round(bannerHeight / 2)} name={onCallName} color={onCallColor} />
+      )}
     </svg>
   );
 }

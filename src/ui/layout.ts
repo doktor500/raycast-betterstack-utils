@@ -1,6 +1,7 @@
-import { formatUserName, OnCallEvent } from "../domain/on-call-event";
+import { OnCallEvent } from "../domain/on-call-event";
 import { RotaColors } from "../common/colors";
 import { FONT_FAMILY } from "../common/fonts";
+import { formatUserName } from "../domain/user";
 
 export interface WeekSpanBar {
   startDayIndex: number;
@@ -110,7 +111,7 @@ export function buildWeekSpanBars(
       return overlap ? eventToLanedBar(event, overlap, dayStarts, first, last, colorMap) : null;
     })
     .filter((bar): bar is Omit<WeekSpanBar, "lane"> => bar !== null)
-    .sort((a, b) => a.startDayIndex + a.startFraction - (b.startDayIndex + b.startFraction));
+    .toSorted((a, b) => a.startDayIndex + a.startFraction - (b.startDayIndex + b.startFraction));
 
   return assignSpanLanes(bars);
 }
@@ -127,7 +128,7 @@ export function computeMonthSummary(
 
   return [...hoursByName.entries()]
     .map(([name, hours]) => ({ name, hours, color: colorMap.get(name) ?? RotaColors.GREEN }))
-    .sort((a, b) => b.hours - a.hours);
+    .toSorted((a, b) => b.hours - a.hours);
 }
 
 function toDayStarts(days: Date[]): number[] {

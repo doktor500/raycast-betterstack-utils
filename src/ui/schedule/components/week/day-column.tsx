@@ -16,7 +16,7 @@ export function DayColumn({ day, dayIndex, isToday, gridTop, headerTop, totalHei
   const centerX = colX + WEEK.DAY_WIDTH / 2;
   return (
     <g>
-      <line x1={colX} y1={gridTop} x2={colX} y2={totalHeight} stroke={Colors.GRID} strokeWidth={1} />
+      <line x1={colX} y1={gridTop} x2={colX} y2={totalHeight} stroke={Colors.SLATE} strokeWidth={1} />
       {isToday && (
         <rect
           x={colX}

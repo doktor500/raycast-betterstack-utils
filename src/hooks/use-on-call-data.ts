@@ -53,11 +53,5 @@ export function useOnCallData(): OnCallData {
 }
 
 function findPrimarySchedule(calendars: Calendar[]): Calendar | undefined {
-  const exactPrimary = calendars.find((calendar) => calendar.attributes.name?.trim().toLowerCase() === "primary");
-  if (exactPrimary) return exactPrimary;
-
-  const defaultCalendar = calendars.find((calendar) => calendar.attributes.default_calendar);
-  if (defaultCalendar) return defaultCalendar;
-
   return calendars.find((calendar) => calendar.attributes.name?.toLowerCase().includes("primary"));
 }

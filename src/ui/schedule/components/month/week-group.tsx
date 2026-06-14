@@ -1,5 +1,5 @@
 import { type WeekSpanBar } from "../../../layout";
-import { isSameDay } from "../../../../common/dates";
+import { isSameDay } from "../../../../common/utils/date-utils";
 import { Colors } from "../../../../common/colors";
 import { DayColumn } from "./day-column";
 import { SpanBar } from "./span-bar";
@@ -35,7 +35,7 @@ export function WeekGroup({
 
   return (
     <g transform={`translate(0, ${offsetY})`}>
-      {weekIndex > 0 && <line x1={0} y1={0} x2={MONTH.WIDTH} y2={0} stroke={Colors.BORDER} />}
+      {weekIndex > 0 && <line x1={0} y1={0} x2={MONTH.WIDTH} y2={0} stroke={Colors.SLATE} />}
       {days.map((day, index) => (
         <DayColumn
           key={index}
@@ -49,7 +49,9 @@ export function WeekGroup({
       {weekTimeline.map((bar, index) => (
         <SpanBar key={index} bar={bar} clipId={baseId + index} />
       ))}
-      {showTodayMarker && todayIndex >= 0 && <CurrentTimeMarker index={todayIndex} today={today} rowHeight={rowHeight} />}
+      {showTodayMarker && todayIndex >= 0 && (
+        <CurrentTimeMarker index={todayIndex} today={today} rowHeight={rowHeight} />
+      )}
     </g>
   );
 }

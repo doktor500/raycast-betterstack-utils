@@ -42,20 +42,20 @@ export function MonthBlock({
       >
         {monthLabel}
       </text>
-      <line x1={0.5} y1={MONTH.BLOCK_HEADER_HEIGHT} x2={0.5} y2={blockHeight} stroke={Colors.BORDER} />
+      <line x1={0.5} y1={MONTH.BLOCK_HEADER_HEIGHT} x2={0.5} y2={blockHeight} stroke={Colors.SLATE} />
       <line
         x1={MONTH.WIDTH - 0.5}
         y1={MONTH.BLOCK_HEADER_HEIGHT}
         x2={MONTH.WIDTH - 0.5}
         y2={blockHeight}
-        stroke={Colors.BORDER}
+        stroke={Colors.SLATE}
       />
       <line
         x1={0}
         y1={MONTH.BLOCK_HEADER_HEIGHT}
         x2={MONTH.WIDTH}
         y2={MONTH.BLOCK_HEADER_HEIGHT}
-        stroke={Colors.BORDER}
+        stroke={Colors.SLATE}
       />
       {weeks.map((days, localIndex) => {
         const rowHeight = weekRowHeights[localIndex];

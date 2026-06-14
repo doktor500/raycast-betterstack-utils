@@ -11,7 +11,7 @@ export function HourGridLines({ gridTop }: { gridTop: number }) {
           y1={gridTop + hourIndex * WEEK.HOUR_HEIGHT}
           x2={WEEK.WIDTH}
           y2={gridTop + hourIndex * WEEK.HOUR_HEIGHT}
-          stroke={Colors.GRID}
+          stroke={Colors.SLATE}
           strokeWidth={1}
         />
       ))}

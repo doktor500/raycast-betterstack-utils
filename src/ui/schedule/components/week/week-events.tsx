@@ -1,7 +1,8 @@
 import { RotaColors } from "../../../../common/colors";
-import { formatUserName, OnCallEvent } from "../../../../domain/on-call-event";
+import { OnCallEvent } from "../../../../domain/on-call-event";
 import { WEEK } from "./constants";
 import { EventSegment, type DaySegment } from "./event-segment";
+import { formatUserName } from "../../../../domain/user";
 
 export type { DaySegment } from "./event-segment";
 

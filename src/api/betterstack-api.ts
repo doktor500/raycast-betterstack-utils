@@ -1,5 +1,7 @@
 import { getPreferenceValues } from "@raycast/api";
-import type { User } from "../domain/on-call-event";
+import { toList } from "../common/utils/collection-utils";
+import { buildUserFromEmail, User } from "../domain/user";
+import { asOptional } from "../common/utils/optional-utils";
 
 const BASE_URL = "https://uptime.betterstack.com/api/v2";
 
@@ -52,15 +54,12 @@ export interface OnCallCalendarsResult {
 
 export async function getOnCallCalendars(): Promise<OnCallCalendarsResult> {
   const result = await fetchAllPages<Calendar>(`${BASE_URL}/on-calls`);
-  const usersByEmail = new Map<string, User>();
 
-  for (const included of result.included ?? []) {
-    if (included.type === "user") {
-      usersByEmail.set(included.attributes.email.toLowerCase(), included.attributes);
-    }
-  }
+  const usersByEmail = toList(result.included)
+    .filter((included): included is IncludedUser => included.type === "user")
+    .map((included) => [included.attributes.email.toLowerCase(), included.attributes] as const);
 
-  return { calendars: result.data, usersByEmail };
+  return { calendars: result.data, usersByEmail: new Map(usersByEmail) };
 }
 
 export async function getCalendarEvents(
@@ -80,17 +79,18 @@ export async function getCalendarEvents(
 }
 
 async function fetchAllPages<T>(url: string): Promise<ApiResponse<T>> {
-  let currentUrl: string | null | undefined = url;
-  const result: ApiResponse<T> = { data: [], included: [] };
+  const pages = await collectPages<T>(url);
+  return {
+    data: pages.flatMap((page) => page.data),
+    included: pages.flatMap((page) => page.included ?? []),
+  };
+}
 
-  while (currentUrl) {
-    const json: ApiResponse<T> = await fetchJson<ApiResponse<T>>(currentUrl);
-    result.data.push(...json.data);
-    result.included = [...(result.included ?? []), ...(json.included ?? [])];
-    currentUrl = json.pagination?.next;
-  }
-
-  return result;
+async function collectPages<T>(currentUrl: string | undefined): Promise<ApiResponse<T>[]> {
+  if (!currentUrl) return [];
+  const page = await fetchJson<ApiResponse<T>>(currentUrl);
+  const pages = await collectPages<T>(asOptional(page.pagination?.next));
+  return [page, ...pages];
 }
 
 async function fetchJson<T>(url: string): Promise<T> {
@@ -103,20 +103,6 @@ async function fetchJson<T>(url: string): Promise<T> {
   }
 
   return (await response.json()) as T;
-}
-
-function buildUserFromEmail(email: string): User {
-  const name = email.split("@")[0] ?? email;
-  const [firstName = name, ...lastNameParts] = name
-    .split(/[._-]/)
-    .filter(Boolean)
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1));
-
-  return {
-    first_name: firstName,
-    last_name: lastNameParts.join(" "),
-    email,
-  };
 }
 
 function getHeaders(): Record<string, string> {

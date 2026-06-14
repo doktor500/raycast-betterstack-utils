@@ -32,19 +32,19 @@ export function DayColumn({ day, index, currentMonth, columnBg, rowHeight }: Day
     <g>
       {bgRect}
       {isWeekend && <rect x={x} y={0} width={MONTH.DAY_WIDTH} height={rowHeight} fill="url(#hatch)" />}
-      <line x1={x} y1={0} x2={x} y2={rowHeight} stroke={Colors.DIVIDER} />
+      <line x1={x} y1={0} x2={x} y2={rowHeight} stroke={Colors.SLATE} />
       <line
         x1={x}
         y1={MONTH.DAY_HEADER_HEIGHT}
         x2={x + MONTH.DAY_WIDTH}
         y2={MONTH.DAY_HEADER_HEIGHT}
-        stroke={Colors.HEADER_LINE}
+        stroke={Colors.SLATE}
       />
       <text
         x={center - 3}
         y={22}
         textAnchor="end"
-        fill={Colors.MUTED}
+        fill={Colors.DIM}
         fontFamily={FONT_FAMILY}
         fontSize={13}
         fontWeight={600}

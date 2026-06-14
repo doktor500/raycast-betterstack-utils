@@ -1,10 +1,4 @@
-import {
-  type SummaryEntry,
-  SUMMARY,
-  summaryBlockHeight,
-  formatDaysHours,
-  formatMonthLabel,
-} from "../../../layout";
+import { type SummaryEntry, SUMMARY, summaryBlockHeight, formatDaysHours, formatMonthLabel } from "../../../layout";
 import { FONT_FAMILY } from "../../../../common/fonts";
 import { Colors } from "../../../../common/colors";
 import { MONTH } from "./constants";
@@ -41,7 +35,7 @@ function VerticalSummaryItems({ summary }: VerticalItemsProps) {
               x={MONTH.WIDTH - 24}
               y={cy + 5}
               textAnchor="end"
-              fill={Colors.MUTED}
+              fill={Colors.DIM}
               fontFamily={FONT_FAMILY}
               fontSize={15}
             >
@@ -65,11 +59,11 @@ export function SummaryBlock({ year, month, summary, offsetY }: SummaryBlockProp
   return (
     <g transform={`translate(0, ${offsetY})`}>
       <rect width={MONTH.WIDTH} height={height} rx={10} fill={Colors.DARK} fillOpacity={0.2} />
-      <rect x={0.5} y={0.5} width={MONTH.WIDTH - 1} height={height - 1} rx={10} fill="none" stroke={Colors.BORDER} />
+      <rect x={0.5} y={0.5} width={MONTH.WIDTH - 1} height={height - 1} rx={10} fill="none" stroke={Colors.SLATE} />
       <text x={24} y={midY + 7} fill={Colors.FROST} fontFamily={FONT_FAMILY} fontSize={18} fontWeight={700}>
         {monthLabel}
       </text>
-      <line x1={SUMMARY.MONTH_COL_WIDTH} y1={16} x2={SUMMARY.MONTH_COL_WIDTH} y2={height - 16} stroke={Colors.BORDER} />
+      <line x1={SUMMARY.MONTH_COL_WIDTH} y1={16} x2={SUMMARY.MONTH_COL_WIDTH} y2={height - 16} stroke={Colors.SLATE} />
       <VerticalSummaryItems summary={summary} />
     </g>
   );

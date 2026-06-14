@@ -1,14 +1,14 @@
 import { renderToStaticMarkup } from "react-dom/server";
-import path from "node:path";
 import { Fragment } from "react";
-import { addDays, startOfWeek } from "../../../../common/dates";
+import { addDays, startOfWeek } from "../../../../common/utils/date-utils";
 import { buildColorMap, Colors, RotaColors } from "../../../../common/colors";
-import { buildWeekSpanBars, computeMonthSummary, summaryBlockHeight, weekRowHeight, formatMonthLabel } from "../../../layout";
-import { formatUserName, OnCallEvent } from "../../../../domain/on-call-event";
+import { buildWeekSpanBars, computeMonthSummary, summaryBlockHeight, weekRowHeight } from "../../../layout";
+import { OnCallEvent } from "../../../../domain/on-call-event";
 import { MonthBlock } from "./month-block";
 import { SummaryBlock } from "./summary-block";
 import { ON_CALL_PILL_CIRC_R, OnCallPill } from "../on-call-pill";
 import { MONTH } from "./constants";
+import { formatUserName } from "../../../../domain/user";
 
 type Props = {
   events: OnCallEvent[];
@@ -76,7 +76,7 @@ function CombinedScheduleSvg({
   }));
 
   const colorSourceEvents = allEvents ?? events;
-  const uniqueNames = [...new Set(colorSourceEvents.map((event) => formatUserName(event.user)))].sort();
+  const uniqueNames = [...new Set(colorSourceEvents.map((event) => formatUserName(event.user)))].toSorted();
   const colorMap = buildColorMap(uniqueNames);
 
   const weekTimelinesByMonth = monthGroups.map(({ year, month, weeks }) =>
@@ -130,10 +130,10 @@ function CombinedScheduleSvg({
       <defs>
         <pattern id="hatch" width={8} height={8} patternUnits="userSpaceOnUse" patternTransform="rotate(135)">
           {columnBg !== "none" && <rect width={8} height={8} fill={columnBg} />}
-          <path d="M 0 0 L 0 8" stroke={Colors.NAVY} strokeWidth={1} opacity={0.5} />
+          <path d="M 0 0 L 0 8" stroke={Colors.DEEP_DARK} strokeWidth={1} opacity={0.5} />
         </pattern>
         <filter id="shadow" x="-10%" y="-30%" width="120%" height="170%">
-          <feDropShadow dx={0} dy={2} stdDeviation={2} floodColor={Colors.VOID} floodOpacity={0.3} />
+          <feDropShadow dx={0} dy={2} stdDeviation={2} floodColor={Colors.DEEP_DARK} floodOpacity={0.3} />
         </filter>
       </defs>
       {backgroundColor && <rect width={MONTH.WIDTH} height={totalHeight} fill={backgroundColor} />}
@@ -169,7 +169,7 @@ function CombinedScheduleSvg({
               y1={monthOffsets[monthIndex] + monthTotalHeight(monthIndex) + MONTH.BLOCK_GAP / 2}
               x2={MONTH.WIDTH}
               y2={monthOffsets[monthIndex] + monthTotalHeight(monthIndex) + MONTH.BLOCK_GAP / 2}
-              stroke={Colors.SEPARATOR}
+              stroke={Colors.SLATE}
               strokeWidth={2}
             />
           )}

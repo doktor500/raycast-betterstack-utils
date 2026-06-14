@@ -1,13 +1,14 @@
 import { Action, ActionPanel, Detail, environment, showToast, Toast } from "@raycast/api";
 import { useState } from "react";
-import { getCurrentMonthWindow, addDays } from "./common/dates";
+import { getCurrentMonthWindow, addDays } from "./common/utils/date-utils";
 import { buildMonthViewSvg } from "./ui/schedule/components/month/month-schedule";
 import { useOnCallData } from "./hooks/use-on-call-data";
-import { formatUserName, getCurrentOnCallUser } from "./domain/on-call-event";
+import { getCurrentOnCallUser } from "./domain/on-call-event";
 import { buildColorMap, Colors, RotaColors } from "./common/colors";
 import { buildScheduleSkeletonSvg } from "./ui/schedule/skeleton/schedule";
 import { buildWeekViewSvg } from "./ui/schedule/components/week/week-schedule";
-import { exportSvgToClipboard, toSvgDataUri } from "./ui/schedule/svgUtils";
+import { exportSvgToClipboard, toSvgDataUri } from "./common/utils/svg-utils";
+import { formatUserName } from "./domain/user";
 
 type TimeRange = "week" | "month";
 
@@ -58,7 +59,7 @@ export default function Command() {
     return <NoScheduleDetail />;
   }
 
-  const userNames = [...new Set(events.map((e) => formatUserName(e.user)))].sort();
+  const userNames = [...new Set(events.map((e) => formatUserName(e.user)))].toSorted();
   const colorMap = buildColorMap(userNames);
   const filteredEvents = selectedUser ? events.filter((e) => formatUserName(e.user) === selectedUser) : events;
 
@@ -121,15 +122,16 @@ export default function Command() {
     today,
     anchorDate: weekAnchorDate,
     allEvents: events,
-    onCallName, onCallColor
+    onCallName,
+    onCallColor,
   };
 
   function buildScheduleMarkdown(): string {
     if (isLoading) return `![schedule](${toSvgDataUri(buildScheduleSkeletonSvg())})`;
 
-    return timeRange === "week" ?
-      `![schedule](${toSvgDataUri(buildWeekViewSvg(weekViewProps))})` :
-      `![schedule](${toSvgDataUri(buildMonthViewSvg(monthViewProps))})`;
+    return timeRange === "week"
+      ? `![schedule](${toSvgDataUri(buildWeekViewSvg(weekViewProps))})`
+      : `![schedule](${toSvgDataUri(buildMonthViewSvg(monthViewProps))})`;
   }
 
   const markdown = buildScheduleMarkdown();

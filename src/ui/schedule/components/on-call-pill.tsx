@@ -1,4 +1,4 @@
-import { getTextColor, Colors, RotaColors } from "../../../common/colors";
+import { getThemeColor, Colors, RotaColors } from "../../../common/colors";
 import { FONT_FAMILY } from "../../../common/fonts";
 
 export const ON_CALL_PILL_CIRC_R = 16;
@@ -35,7 +35,7 @@ export function OnCallPill({ cy, name, color }: OnCallPillProps) {
         dy="0.35em"
         fontSize={14}
         fontWeight={700}
-        fill={getTextColor(color)}
+        fill={getThemeColor(color)}
         fontFamily={FONT_FAMILY}
       >
         {initial}

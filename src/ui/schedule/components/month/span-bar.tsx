@@ -1,6 +1,6 @@
 import { type WeekSpanBar, truncateLabel } from "../../../layout";
 import { FONT_FAMILY } from "../../../../common/fonts";
-import { getTextColor } from "../../../../common/colors";
+import { getThemeColor } from "../../../../common/colors";
 import { MONTH } from "./constants";
 
 interface SpanBarProps {
@@ -15,7 +15,7 @@ export function SpanBar({ bar, clipId }: SpanBarProps) {
   const barWidth = Math.max(rightX - leftX - 2 * MONTH.H_GAP, 2);
   const barY = MONTH.ROW_TOP + bar.lane * (MONTH.ROW_HEIGHT + MONTH.BAR_GAP);
   const id = `bar-${clipId}`;
-  const textColor = getTextColor(bar.color);
+  const themeColor = getThemeColor(bar.color);
   const fontSize = 19;
   const rx = Math.min(6, Math.floor(barWidth / 3));
   const textAvailWidth = barWidth - 22;
@@ -42,7 +42,7 @@ export function SpanBar({ bar, clipId }: SpanBarProps) {
         height={MONTH.ROW_HEIGHT - 2}
         rx={Math.max(rx - 1, 0)}
         fill="none"
-        stroke={textColor}
+        stroke={themeColor}
         strokeOpacity={0.16}
       />
       {label && (
@@ -50,7 +50,7 @@ export function SpanBar({ bar, clipId }: SpanBarProps) {
           x={barX + 12}
           y={barY + 27}
           clipPath={`url(#${id})`}
-          fill={textColor}
+          fill={themeColor}
           fontFamily={FONT_FAMILY}
           fontSize={fontSize}
           fontWeight={600}
