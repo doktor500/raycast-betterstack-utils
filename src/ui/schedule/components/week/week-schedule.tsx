@@ -1,5 +1,4 @@
 import React from "react";
-import { renderToStaticMarkup } from "react-dom/server";
 import { getCurrentWeekDays, isSameDay, TimeWindow } from "@/common/utils/date-utils";
 import { OnCallEvent } from "@/domain/on-call-event";
 import { OnCallUser } from "@/domain/user";
@@ -11,6 +10,7 @@ import { DayColumn } from "@/ui/schedule/components/week/day-column";
 import { WeekEvents } from "@/ui/schedule/components/week/week-events";
 import { CurrentTimeMarker } from "@/ui/schedule/components/week/current-time-marker";
 import { Colors } from "@/common/colors";
+import { renderToSvg } from "@/ui/schedule/satori-renderer";
 
 interface WeekViewProps {
   events: OnCallEvent[];
@@ -18,7 +18,7 @@ interface WeekViewProps {
   onCallUser?: OnCallUser;
 }
 
-function WeekViewSvg({ events, window, onCallUser }: WeekViewProps) {
+function WeekViewRoot({ events, window, onCallUser }: WeekViewProps) {
   const today = new Date();
   const days = getCurrentWeekDays(window.start);
   const todayIndex = days.findIndex((day) => isSameDay(day, today));
@@ -28,18 +28,21 @@ function WeekViewSvg({ events, window, onCallUser }: WeekViewProps) {
   const gridTop = bannerHeight + WEEK.HEADER_HEIGHT;
   const totalHeight = WEEK.TOTAL_HEIGHT + bannerHeight;
 
-  const todayStartMs = todayIndex >= 0 ? new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime() : 0;
+  const todayStartMs =
+    todayIndex >= 0 ? new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime() : 0;
   const nowFraction = todayIndex >= 0 ? (today.getTime() - todayStartMs) / (24 * 3600 * 1000) : 0;
   const markerY = gridTop + nowFraction * WEEK.TIMELINE_HEIGHT;
 
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={WEEK.WIDTH}
-      height={totalHeight}
-      viewBox={`0 0 ${WEEK.WIDTH} ${totalHeight}`}
+    <div
+      style={{
+        position: "relative",
+        width: WEEK.WIDTH,
+        height: totalHeight,
+        backgroundColor: onCallUser ? "transparent" : Colors.DARK,
+      }}
     >
-      <rect width={WEEK.WIDTH} height={totalHeight} fill={onCallUser ? "transparent" : Colors.DARK} />
+      {onCallUser && <OnCallPill name={onCallUser.name} color={onCallUser.color} />}
       <HourGridLines gridTop={gridTop} />
       <HourLabels gridTop={gridTop} />
       {days.map((day, dayIndex) => (
@@ -55,11 +58,12 @@ function WeekViewSvg({ events, window, onCallUser }: WeekViewProps) {
       ))}
       <WeekEvents days={days} events={events} gridTop={gridTop} />
       {todayIndex >= 0 && <CurrentTimeMarker todayIndex={todayIndex} markerY={markerY} />}
-      {onCallUser && <OnCallPill cy={Math.round(bannerHeight / 2)} name={onCallUser.name} color={onCallUser.color} />}
-    </svg>
+    </div>
   );
 }
 
-export function buildWeekViewSvg(props: WeekViewProps): string {
-  return renderToStaticMarkup(<WeekViewSvg {...props} />);
+export async function buildWeekViewSvg(props: WeekViewProps): Promise<string> {
+  const bannerHeight = props.onCallUser ? ON_CALL_PILL_CIRC_R * 2 : 0;
+  const totalHeight = WEEK.TOTAL_HEIGHT + bannerHeight;
+  return renderToSvg(<WeekViewRoot {...props} />, WEEK.WIDTH, totalHeight);
 }
