@@ -1,5 +1,5 @@
 import { Detail, environment, showToast, Toast } from "@raycast/api";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as os from "node:os";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { getCurrentMonthWindow, getCurrentWeekWindow, TimeWindow } from "@/common/utils/date-utils";
@@ -26,6 +26,22 @@ function OnCallSchedule() {
   const [timeRange, setTimeRange] = useState<TimeRange>(TimeRange.MONTH);
   const [selectedUser, setSelectedUser] = useState<string>("");
   const [offset, setOffset] = useState<number>(0);
+  const [markdown, setMarkdown] = useState<string>("");
+
+  const userNames = [...new Set(events.map((event) => formatUserName(event.user)))].toSorted();
+  const filteredEvents = selectedUser ? events.filter((event) => formatUserName(event.user) === selectedUser) : events;
+  const onCallUser = getOnCallUser(events);
+  const window = timeRange === TimeRange.WEEK ? getCurrentWeekWindow(offset) : getCurrentMonthWindow(offset);
+
+  useEffect(() => {
+    let cancelled = false;
+    renderSchedule({ events: filteredEvents, onCallUser, window, timeRange, isLoading }).then((result) => {
+      if (!cancelled) setMarkdown(result);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [filteredEvents, onCallUser, window, timeRange, isLoading]);
 
   function handleTimeRangeChange(range: TimeRange) {
     setTimeRange(range);
@@ -40,15 +56,9 @@ function OnCallSchedule() {
     return <Detail markdown={NO_PRIMARY_SCHEDULE_ERROR_MESSAGE} />;
   }
 
-  const userNames = [...new Set(events.map((event) => formatUserName(event.user)))].toSorted();
-  const filteredEvents = selectedUser ? events.filter((event) => formatUserName(event.user) === selectedUser) : events;
-  const onCallUser = getOnCallUser(events);
-  const window = timeRange === TimeRange.WEEK ? getCurrentWeekWindow(offset) : getCurrentMonthWindow(offset);
-  const markdown = renderSchedule({ events: filteredEvents, onCallUser, window, timeRange, isLoading });
-
   return (
     <Detail
-      isLoading={isLoading}
+      isLoading={isLoading || markdown === ""}
       navigationTitle={selectedUser ? `${scheduleName} — ${selectedUser}` : scheduleName}
       markdown={markdown}
       actions={
@@ -72,7 +82,7 @@ async function copyAsPng(props: { timeRange: TimeRange; events: OnCallEvent[]; w
   const toast = await showToast({ style: Toast.Style.Animated, title: "Copying to clipboard…" });
 
   try {
-    const svg = timeRange === WEEK ? buildWeekViewSvg({ events, window }) : buildMonthViewSvg({ events, window });
+    const svg = timeRange === WEEK ? await buildWeekViewSvg({ events, window }) : await buildMonthViewSvg({ events, window });
     await exportSvgToClipboard(svg, environment.supportPath);
     toast.style = Toast.Style.Success;
     toast.title = "Schedule copied";
