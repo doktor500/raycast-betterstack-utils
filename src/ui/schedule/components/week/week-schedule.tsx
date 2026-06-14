@@ -1,7 +1,6 @@
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { getCurrentWeekDays, isSameDay } from "@/common/utils/date-utils";
-import { buildColorMap } from "@/common/colors";
 import { OnCallEvent } from "@/domain/on-call-event";
 import { ON_CALL_PILL_CIRC_R, OnCallPill } from "@/ui/schedule/components/on-call-pill";
 import { WEEK } from "@/ui/schedule/components/week/constants";
@@ -10,8 +9,6 @@ import { HourLabels } from "@/ui/schedule/components/week/hour-labels";
 import { DayColumn } from "@/ui/schedule/components/week/day-column";
 import { WeekEvents } from "@/ui/schedule/components/week/week-events";
 import { CurrentTimeMarker } from "@/ui/schedule/components/week/current-time-marker";
-import { formatUserName } from "@/domain/user";
-
 interface WeekViewProps {
   events: OnCallEvent[];
   today: Date;
@@ -22,20 +19,9 @@ interface WeekViewProps {
   onCallColor?: string;
 }
 
-function WeekViewSvg({
-  events,
-  today,
-  anchorDate,
-  backgroundColor,
-  allEvents,
-  onCallName,
-  onCallColor,
-}: WeekViewProps) {
+function WeekViewSvg({ events, today, anchorDate, backgroundColor, onCallName, onCallColor }: WeekViewProps) {
   const weekAnchor = anchorDate ?? today;
   const days = getCurrentWeekDays(weekAnchor);
-  const colorSourceEvents = allEvents ?? events;
-  const uniqueNames = [...new Set(colorSourceEvents.map((e) => formatUserName(e.user)))].toSorted();
-  const colorMap = buildColorMap(uniqueNames);
   const todayIndex = days.findIndex((d) => isSameDay(d, today));
 
   const bannerHeight = onCallName && onCallColor ? ON_CALL_PILL_CIRC_R * 2 : 0;
@@ -68,7 +54,7 @@ function WeekViewSvg({
           totalHeight={totalHeight}
         />
       ))}
-      <WeekEvents days={days} events={events} colorMap={colorMap} gridTop={gridTop} />
+      <WeekEvents days={days} events={events} gridTop={gridTop} />
       {todayIndex >= 0 && <CurrentTimeMarker todayIndex={todayIndex} markerY={markerY} />}
       {onCallName && onCallColor && (
         <OnCallPill cy={Math.round(bannerHeight / 2)} name={onCallName} color={onCallColor} />

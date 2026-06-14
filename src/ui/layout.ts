@@ -1,23 +1,16 @@
 import { OnCallEvent } from "@/domain/on-call-event";
-import { RotaColors } from "@/common/colors";
+import { getColor } from "@/common/colors";
 import { FONT_FAMILY } from "@/common/fonts";
 import { formatUserName } from "@/domain/user";
 
 export interface WeekSpanBar {
   startDayIndex: number;
-  startFraction: number;
   endDayIndex: number;
+  startFraction: number;
   endFraction: number;
   label: string;
   color: string;
   lane: number;
-}
-
-export interface SummaryEntry {
-  name: string;
-  email: string;
-  hours: number;
-  color: string;
 }
 
 interface DayPosition {
@@ -93,7 +86,6 @@ export function buildWeekSpanBars(
   days: Date[],
   events: OnCallEvent[],
   currentMonth: { year: number; month: number },
-  colorMap: Map<string, string>,
 ): WeekSpanBar[] {
   const dayStarts = toDayStarts(days);
   const range = inMonthRange(days, currentMonth.year, currentMonth.month);
@@ -109,27 +101,12 @@ export function buildWeekSpanBars(
       const eventEnd = new Date(event.endedAt).getTime();
       const overlap = clampToWindow(eventStart, eventEnd, windowStart, windowEnd);
 
-      return overlap ? eventToLanedBar(event, overlap, dayStarts, first, last, colorMap) : null;
+      return overlap ? eventToLanedBar(event, overlap, dayStarts, first, last) : undefined;
     })
-    .filter((bar): bar is Omit<WeekSpanBar, "lane"> => bar !== null)
+    .filter((bar): bar is Omit<WeekSpanBar, "lane"> => bar !== undefined)
     .toSorted((a, b) => a.startDayIndex + a.startFraction - (b.startDayIndex + b.startFraction));
 
   return assignSpanLanes(bars);
-}
-
-export function computeMonthSummary(
-  year: number,
-  month: number,
-  events: OnCallEvent[],
-  colorMap: Map<string, string>,
-): SummaryEntry[] {
-  const monthStart = new Date(year, month, 1);
-  const monthEnd = new Date(year, month + 1, 1);
-  const hoursByName = accumulateEventHours(events, monthStart, monthEnd);
-
-  return [...hoursByName.entries()]
-    .map(([name, { hours, email }]) => ({ name, email, hours, color: colorMap.get(name) ?? RotaColors.GREEN }))
-    .toSorted((a, b) => b.hours - a.hours);
 }
 
 function toDayStarts(days: Date[]): number[] {
@@ -187,9 +164,9 @@ function eventToLanedBar(
   dayStarts: number[],
   first: number,
   last: number,
-  colorMap: Map<string, string>,
 ): Omit<WeekSpanBar, "lane"> {
   const label = formatUserName(event.user);
+  const color = getColor(label);
   const { dayIndex: startDayIndex, fraction: startFraction } = findStartPosition(overlap.start, dayStarts, first, last);
   const { dayIndex: endDayIndex, fraction: endFraction } = findEndPosition(overlap.end, dayStarts, first, last);
 
@@ -199,7 +176,7 @@ function eventToLanedBar(
     endDayIndex,
     endFraction,
     label,
-    color: colorMap.get(label) ?? RotaColors.GREEN,
+    color,
   };
 }
 
@@ -214,22 +191,4 @@ function assignSpanLanes(bars: Omit<WeekSpanBar, "lane">[]): WeekSpanBar[] {
 
     return { ...bar, lane };
   });
-}
-
-function accumulateEventHours(
-  events: OnCallEvent[],
-  monthStart: Date,
-  monthEnd: Date,
-): Map<string, { hours: number; email: string }> {
-  return events.reduce((totalHours, event) => {
-    const overlapStart = Math.max(new Date(event.startedAt).getTime(), monthStart.getTime());
-    const overlapEnd = Math.min(new Date(event.endedAt).getTime(), monthEnd.getTime());
-    const hours = (overlapEnd - overlapStart) / (3600 * 1000);
-    const name = formatUserName(event.user);
-    const { email } = event.user;
-
-    if (overlapEnd <= overlapStart) return totalHours;
-    const existing = totalHours.get(name);
-    return totalHours.set(name, { hours: (existing?.hours ?? 0) + hours, email });
-  }, new Map<string, { hours: number; email: string }>());
 }

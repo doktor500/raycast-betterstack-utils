@@ -1,10 +1,12 @@
+import { createHash } from "crypto";
+
 export const RotaColors = {
-  GREEN: "#16C77A",
-  RED: "#FF5E7A",
   BLUE: "#21A7FF",
-  PURPLE: "#D36BFF",
-  ORANGE: "#FF8738",
+  GREEN: "#16C77A",
   INDIGO: "#7F88FF",
+  ORANGE: "#FF8738",
+  PURPLE: "#D36BFF",
+  RED: "#FF5E7A",
   YELLOW: "#E7B84A",
 };
 
@@ -19,17 +21,18 @@ export const Colors = {
 };
 
 const ROTA_SVG_PALETTE = [
-  RotaColors.GREEN,
-  RotaColors.RED,
   RotaColors.BLUE,
-  RotaColors.PURPLE,
-  RotaColors.ORANGE,
+  RotaColors.GREEN,
   RotaColors.INDIGO,
+  RotaColors.ORANGE,
+  RotaColors.PURPLE,
+  RotaColors.RED,
   RotaColors.YELLOW,
 ];
 
-export function buildColorMap(names: string[]): Map<string, string> {
-  return new Map(names.map((name, index) => [name, ROTA_SVG_PALETTE[index % ROTA_SVG_PALETTE.length]]));
+export function getColor(value: string): string {
+  const hash = createHash("sha256").update(value).digest("hex");
+  return ROTA_SVG_PALETTE[parseInt(hash.slice(0, 8), 16) % ROTA_SVG_PALETTE.length];
 }
 
 export function getThemeColor(bgHex: string): string {

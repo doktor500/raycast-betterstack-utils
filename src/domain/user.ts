@@ -10,10 +10,7 @@ export function formatUserName(user: User): string {
 }
 
 export function buildUserFromEmail(email: string): User {
-  const firstName = capitalize(email.split("@")[0] ?? email);
+  const firstName = capitalize(email.split("@")[0]) ?? email;
 
-  return {
-    firstName,
-    email,
-  };
+  return { firstName, email };
 }

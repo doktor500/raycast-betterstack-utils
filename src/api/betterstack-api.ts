@@ -11,10 +11,15 @@ import { HttpStatusCodes } from "@/common/utils/http-utils";
 const BASE_URL = "https://uptime.betterstack.com/api/v2";
 const USER_TYPE = "user" as const;
 
+interface IncludedUserAttributes {
+  first_name: string;
+  email: string;
+}
+
 interface IncludedUser {
   id: string;
   type: typeof USER_TYPE;
-  attributes: User;
+  attributes: IncludedUserAttributes;
 }
 
 interface CalendarApiResponse<T> {
@@ -43,7 +48,7 @@ export async function getRota(): Promise<Rota> {
 
   const teamMembers = toList(result.included)
     .filter((includedUser): includedUser is IncludedUser => includedUser.type === USER_TYPE)
-    .map((includedUser) => [includedUser.attributes.email.toLowerCase(), includedUser.attributes] as const);
+    .map((includedUser) => [includedUser.attributes.email.toLowerCase(), toUser(includedUser)] as const);
 
   return { calendars, teamMembers: new Map(teamMembers) };
 }
@@ -97,6 +102,10 @@ function apiError() {
   return (response: Response) => {
     throw new Error(`BetterStack API error: ${response.status} ${response.statusText}`);
   };
+}
+
+function toUser(includedUser: IncludedUser) {
+  return { firstName: includedUser.attributes.first_name, email: includedUser.attributes.email };
 }
 
 function getHeaders(): Record<string, string> {

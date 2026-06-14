@@ -5,7 +5,7 @@ import { getCurrentMonthWindow, addDays } from "@/common/utils/date-utils";
 import { buildMonthViewSvg } from "@/ui/schedule/components/month/month-schedule";
 import { useOnCallData } from "@/hooks/use-on-call-data";
 import { getCurrentOnCallUser } from "@/domain/on-call-event";
-import { buildColorMap, Colors, RotaColors } from "@/common/colors";
+import { getColor, Colors } from "@/common/colors";
 import { buildScheduleSkeletonSvg } from "@/ui/schedule/skeleton/schedule";
 import { buildWeekViewSvg } from "@/ui/schedule/components/week/week-schedule";
 import { exportSvgToClipboard, toSvgDataUri } from "@/common/utils/svg-utils";
@@ -14,8 +14,8 @@ import { formatUserName } from "@/domain/user";
 type TimeRange = "week" | "month";
 
 type ScheduleActionPanelProps = {
-  nextTimeRange: TimeRange;
   currentTimeRange: TimeRange;
+  nextTimeRange: TimeRange;
   monthOffset: number;
   weekOffset: number;
   userNames: string[];
@@ -23,16 +23,11 @@ type ScheduleActionPanelProps = {
   onTimeRangeChange: (range: TimeRange) => void;
   onMonthOffsetChange: (offset: number) => void;
   onWeekOffsetChange: (offset: number) => void;
-  onCopyAsPng: () => void;
   onUserSelect: (user: string) => void;
+  onCopyAsPng: () => void;
 };
 
-const NEXT_TIME_RANGE: Record<TimeRange, TimeRange> = {
-  month: "week",
-  week: "month",
-};
-
-const TIME_RANGE_LABELS: Record<TimeRange, string> = {
+const TIME_RANGE_LABELS: Record<TimeRange, TimeRange> = {
   week: "week",
   month: "month",
 };
@@ -70,16 +65,15 @@ function OnCallSchedule() {
     return <NoScheduleDetail />;
   }
 
-  const userNames = [...new Set(events.map((e) => formatUserName(e.user)))].toSorted();
-  const colorMap = buildColorMap(userNames);
-  const filteredEvents = selectedUser ? events.filter((e) => formatUserName(e.user) === selectedUser) : events;
+  const userNames = [...new Set(events.map((event) => formatUserName(event.user)))].toSorted();
+  const filteredEvents = selectedUser ? events.filter((event) => formatUserName(event.user) === selectedUser) : events;
 
   const scheduleWindow = getCurrentMonthWindow(monthOffset);
   const weekAnchorDate = addDays(today, weekOffset * 7);
 
   const currentOnCall = getCurrentOnCallUser(today, events);
   const onCallName = currentOnCall ? formatUserName(currentOnCall) : undefined;
-  const onCallColor = onCallName ? (colorMap.get(onCallName) ?? RotaColors.GREEN) : undefined;
+  const onCallColor = onCallName ? getColor(onCallName) : undefined;
 
   async function copyAsPng() {
     const toast = await showToast({ style: Toast.Style.Animated, title: "Copying to clipboard…" });
@@ -154,7 +148,7 @@ function OnCallSchedule() {
       markdown={markdown}
       actions={
         <ScheduleActionPanel
-          nextTimeRange={NEXT_TIME_RANGE[timeRange]}
+          nextTimeRange={TIME_RANGE_LABELS[timeRange]}
           currentTimeRange={timeRange}
           monthOffset={monthOffset}
           weekOffset={weekOffset}

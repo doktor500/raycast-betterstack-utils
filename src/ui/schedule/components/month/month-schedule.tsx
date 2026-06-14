@@ -1,14 +1,15 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { Fragment } from "react";
 import { addDays, startOfWeek } from "@/common/utils/date-utils";
-import { buildColorMap, Colors, RotaColors } from "@/common/colors";
-import { buildWeekSpanBars, computeMonthSummary, summaryBlockHeight, weekRowHeight } from "@/ui/layout";
+import { Colors, getColor } from "@/common/colors";
+import { buildWeekSpanBars, summaryBlockHeight, weekRowHeight } from "@/ui/layout";
 import { OnCallEvent } from "@/domain/on-call-event";
 import { MonthBlock } from "@/ui/schedule/components/month/month-block";
 import { SummaryBlock } from "@/ui/schedule/components/month/summary-block";
 import { ON_CALL_PILL_CIRC_R, OnCallPill } from "@/ui/schedule/components/on-call-pill";
 import { MONTH } from "@/ui/schedule/components/month/constants";
 import { formatUserName } from "@/domain/user";
+import { computeOnCallSummary } from "@/domain/on-call-summary";
 
 type Props = {
   events: OnCallEvent[];
@@ -22,18 +23,14 @@ type Props = {
 
 const ON_CALL_PILL_BANNER = ON_CALL_PILL_CIRC_R * 2;
 
-function findOnCallAtTime(
-  date: Date,
-  events: OnCallEvent[],
-  colorMap: Map<string, string>,
-): { name: string; color: string } | null {
+function findOnCallAtTime(date: Date, events: OnCallEvent[]): { userName: string; color: string } | undefined {
   const dateMs = date.getTime();
-  const event = events.find(
-    (e) => new Date(e.startedAt).getTime() <= dateMs && new Date(e.endedAt).getTime() > dateMs,
-  );
-  if (!event) return null;
-  const name = formatUserName(event.user);
-  return { name, color: colorMap.get(name) ?? RotaColors.GREEN };
+  const event = events.find((e) => new Date(e.startedAt).getTime() <= dateMs && new Date(e.endedAt).getTime() > dateMs);
+
+  if (event) {
+    const userName = formatUserName(event.user);
+    return { userName: userName, color: getColor(userName) };
+  }
 }
 
 function CombinedScheduleSvg({
@@ -75,12 +72,8 @@ function CombinedScheduleSvg({
     weeks: allWeeks.filter((days) => days.some((day) => day.getFullYear() === year && day.getMonth() === month)),
   }));
 
-  const colorSourceEvents = allEvents ?? events;
-  const uniqueNames = [...new Set(colorSourceEvents.map((event) => formatUserName(event.user)))].toSorted();
-  const colorMap = buildColorMap(uniqueNames);
-
   const weekTimelinesByMonth = monthGroups.map(({ year, month, weeks }) =>
-    weeks.map((days) => buildWeekSpanBars(days, events, { year, month }, colorMap)),
+    weeks.map((days) => buildWeekSpanBars(days, events, { year, month })),
   );
 
   const weekRowHeightsByMonth = weekTimelinesByMonth.map((weekTimelines) =>
@@ -93,11 +86,17 @@ function CombinedScheduleSvg({
   const calendarHeight = (monthIndex: number) =>
     MONTH.BLOCK_HEADER_HEIGHT + weekRowHeightsByMonth[monthIndex].reduce((sum, height) => sum + height, 0);
 
-  const summaries = monthGroups.map(({ year, month }) => computeMonthSummary(year, month, events, colorMap));
+  const summaries = monthGroups.map(({ year, month }) =>
+    computeOnCallSummary({
+      year: year,
+      month: month,
+      events: events,
+    }),
+  );
 
   const monthOnCall = monthGroups.map(() => {
     if (!showOnCallPill) return null;
-    return findOnCallAtTime(today, allEvents ?? events, colorMap);
+    return findOnCallAtTime(today, allEvents ?? events);
   });
 
   const currentMonthOnCall = monthOnCall.find((m) => m !== null) ?? null;
@@ -140,7 +139,7 @@ function CombinedScheduleSvg({
       {currentMonthOnCall && (
         <OnCallPill
           cy={Math.round(topBannerHeight / 2)}
-          name={currentMonthOnCall.name}
+          name={currentMonthOnCall.userName}
           color={currentMonthOnCall.color}
         />
       )}

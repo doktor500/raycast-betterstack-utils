@@ -33,8 +33,8 @@ export function resolveOverrideConflicts(events: OnCallEvent[]): OnCallEvent[] {
     const interval = { start: new Date(event.startedAt).getTime(), end: new Date(event.endedAt).getTime() };
     return subtractIntervals(interval, overrideIntervals).map((fragment) => ({
       ...event,
-      started_at: new Date(fragment.start).toISOString(),
-      ended_at: new Date(fragment.end).toISOString(),
+      startedAt: new Date(fragment.start).toISOString(),
+      endedAt: new Date(fragment.end).toISOString(),
     }));
   });
 
