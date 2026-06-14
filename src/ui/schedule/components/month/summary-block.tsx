@@ -22,14 +22,14 @@ function VerticalSummaryItems({ summary }: VerticalItemsProps) {
 
   return (
     <>
-      {summary.map(({ name, hours, color }, index) => {
+      {summary.map(({ name, email, hours, color }, index) => {
         const cy = paddingY + index * rowHeight + rowHeight / 2;
         const textX = dotX + dotRadius + 10;
         return (
           <g key={index}>
             <circle cx={dotX} cy={cy} r={dotRadius} fill={color} />
             <text x={textX} y={cy + 5} fill={Colors.SUBTLE} fontFamily={FONT_FAMILY} fontSize={17} fontWeight={600}>
-              {name}
+              {name} - {email}
             </text>
             <text
               x={MONTH.WIDTH - 24}
