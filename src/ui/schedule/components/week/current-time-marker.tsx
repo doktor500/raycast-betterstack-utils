@@ -7,18 +7,20 @@ interface CurrentTimeMarkerProps {
 }
 
 export function CurrentTimeMarker({ todayIndex, markerY }: CurrentTimeMarkerProps) {
+  const left = WEEK.SIDEBAR_WIDTH + todayIndex * WEEK.DAY_WIDTH + 4;
+
   return (
-    <g>
-      <circle cx={WEEK.SIDEBAR_WIDTH + todayIndex * WEEK.DAY_WIDTH + 4} cy={markerY} r={3} fill={Colors.WHITE} />
-      <line
-        x1={WEEK.SIDEBAR_WIDTH + todayIndex * WEEK.DAY_WIDTH + 4}
-        y1={markerY}
-        x2={WEEK.SIDEBAR_WIDTH + (todayIndex + 1) * WEEK.DAY_WIDTH - 2}
-        y2={markerY}
-        stroke={Colors.WHITE}
-        strokeWidth={4}
-        opacity={0.85}
-      />
-    </g>
+    <div
+      style={{
+        position: "absolute",
+        left,
+        top: markerY - 2,
+        width: WEEK.DAY_WIDTH - 6,
+        height: 4,
+        backgroundColor: Colors.WHITE,
+        opacity: 0.85,
+        borderRadius: 2,
+      }}
+    />
   );
 }
