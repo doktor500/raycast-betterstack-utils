@@ -1,64 +1,51 @@
 import { type WeekSpanBar, truncateLabel } from "@/ui/layout";
-import { FONT_FAMILY } from "@/common/fonts";
 import { getThemeColor } from "@/common/colors";
 import { MONTH } from "@/ui/schedule/components/month/constants";
 
 interface SpanBarProps {
   bar: WeekSpanBar;
-  clipId: number;
 }
 
-export function SpanBar({ bar, clipId }: SpanBarProps) {
+export function SpanBar({ bar }: SpanBarProps) {
   const leftX = bar.startDayIndex * MONTH.DAY_WIDTH + bar.startFraction * MONTH.DAY_WIDTH;
   const rightX = bar.endDayIndex * MONTH.DAY_WIDTH + bar.endFraction * MONTH.DAY_WIDTH;
-  const barX = leftX + MONTH.H_GAP;
+  const barLeft = leftX + MONTH.H_GAP;
   const barWidth = Math.max(rightX - leftX - 2 * MONTH.H_GAP, 2);
-  const barY = MONTH.ROW_TOP + bar.lane * (MONTH.ROW_HEIGHT + MONTH.BAR_GAP);
-  const id = `bar-${clipId}`;
+  const barTop = MONTH.ROW_TOP + bar.lane * (MONTH.ROW_HEIGHT + MONTH.BAR_GAP);
   const themeColor = getThemeColor(bar.color);
-  const fontSize = 19;
-  const rx = Math.min(6, Math.floor(barWidth / 3));
+  const borderRadius = Math.min(6, Math.floor(barWidth / 3));
   const textAvailWidth = barWidth - 22;
-  const label = textAvailWidth > 15 ? truncateLabel(bar.label, textAvailWidth, fontSize) : "";
+  const label = textAvailWidth > 15 ? truncateLabel(bar.label, textAvailWidth, 16) : "";
 
   return (
-    <g>
-      <clipPath id={id}>
-        <rect x={barX + 10} y={barY} width={Math.max(barWidth - 20, 1)} height={MONTH.ROW_HEIGHT} />
-      </clipPath>
-      <rect
-        x={barX}
-        y={barY}
-        width={barWidth}
-        height={MONTH.ROW_HEIGHT}
-        rx={rx}
-        fill={bar.color}
-        filter="url(#shadow)"
-      />
-      <rect
-        x={barX + 1}
-        y={barY + 1}
-        width={barWidth - 2}
-        height={MONTH.ROW_HEIGHT - 2}
-        rx={Math.max(rx - 1, 0)}
-        fill="none"
-        stroke={themeColor}
-        strokeOpacity={0.16}
-      />
+    <div
+      tw="flex items-center"
+      style={{
+        position: "absolute",
+        left: barLeft,
+        top: barTop,
+        width: barWidth,
+        height: MONTH.ROW_HEIGHT,
+        backgroundColor: bar.color,
+        borderRadius,
+        boxShadow: "0 2px 4px rgba(11,12,21,0.3)",
+        overflow: "hidden",
+      }}
+    >
       {label && (
-        <text
-          x={barX + 12}
-          y={barY + 27}
-          clipPath={`url(#${id})`}
-          fill={themeColor}
-          fontFamily={FONT_FAMILY}
-          fontSize={fontSize}
-          fontWeight={600}
-          textRendering="geometricPrecision"
+        <span
+          style={{
+            paddingLeft: 12,
+            fontSize: 16,
+            fontWeight: 600,
+            color: themeColor,
+            fontFamily: "Inter",
+            whiteSpace: "nowrap",
+          }}
         >
           {label}
-        </text>
+        </span>
       )}
-    </g>
+    </div>
   );
 }
