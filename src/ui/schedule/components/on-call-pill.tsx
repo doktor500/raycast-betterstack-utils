@@ -1,48 +1,36 @@
-import { getThemeColor, Colors, RotaColors } from "@/common/colors";
-import { FONT_FAMILY } from "@/common/fonts";
+// src/ui/schedule/components/on-call-pill.tsx
+import { getThemeColor, Colors } from "@/common/colors";
 
 export const ON_CALL_PILL_CIRC_R = 16;
-const CX = ON_CALL_PILL_CIRC_R;
-const GAP = 13;
-const PAD_LEFT = 12;
-const PAD_TOP = 6;
 
 interface OnCallPillProps {
-  cy: number;
   name: string;
   color: string;
 }
 
-export function OnCallPill({ cy, name, color }: OnCallPillProps) {
-  const textX = CX + ON_CALL_PILL_CIRC_R + GAP;
+export function OnCallPill({ name, color }: OnCallPillProps) {
   const initial = name.charAt(0).toUpperCase();
+  const diameter = ON_CALL_PILL_CIRC_R * 2;
+
   return (
-    <g transform={`translate(${PAD_LEFT}, ${PAD_TOP})`}>
-      <circle cx={CX} cy={cy} r={ON_CALL_PILL_CIRC_R} fill={RotaColors.GREEN} opacity="0.8">
-        <animate
-          attributeName="r"
-          values={`${ON_CALL_PILL_CIRC_R};${ON_CALL_PILL_CIRC_R + 10};${ON_CALL_PILL_CIRC_R}`}
-          dur="2s"
-          repeatCount="indefinite"
-        />
-        <animate attributeName="opacity" values="0.8;0;0.8" dur="2s" repeatCount="indefinite" />
-      </circle>
-      <circle cx={CX} cy={cy} r={ON_CALL_PILL_CIRC_R} fill={color} />
-      <text
-        x={CX}
-        y={cy}
-        textAnchor="middle"
-        dy="0.35em"
-        fontSize={14}
-        fontWeight={700}
-        fill={getThemeColor(color)}
-        fontFamily={FONT_FAMILY}
+    <div
+      tw="flex items-center"
+      style={{ height: diameter, paddingLeft: 12, paddingTop: 6, gap: 13 }}
+    >
+      <div
+        tw="flex items-center justify-center"
+        style={{
+          width: diameter,
+          height: diameter,
+          borderRadius: "50%",
+          backgroundColor: color,
+        }}
       >
-        {initial}
-      </text>
-      <text x={textX} y={cy} dy="0.35em" fontSize={17} fontWeight={500} fill={Colors.WHITE} fontFamily={FONT_FAMILY}>
+        <span style={{ fontSize: 14, fontWeight: 700, color: getThemeColor(color) }}>{initial}</span>
+      </div>
+      <span style={{ fontSize: 17, fontWeight: 500, color: Colors.WHITE }}>
         {`${name} is on-call`}
-      </text>
-    </g>
+      </span>
+    </div>
   );
 }
