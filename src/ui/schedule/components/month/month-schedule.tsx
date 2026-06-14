@@ -1,8 +1,7 @@
-import { renderToStaticMarkup } from "react-dom/server";
-import { Fragment } from "react";
+import React, { Fragment } from "react";
 import { addDays, startOfWeek, TimeWindow } from "@/common/utils/date-utils";
 import { Colors } from "@/common/colors";
-import { buildWeekSpanBars, summaryBlockHeight, weekRowHeight } from "@/ui/layout";
+import { buildWeekSpanBars, summaryBlockHeight, weekRowHeight, LAYOUT } from "@/ui/layout";
 import { OnCallEvent } from "@/domain/on-call-event";
 import { MonthBlock } from "@/ui/schedule/components/month/month-block";
 import { SummaryBlock } from "@/ui/schedule/components/month/summary-block";
@@ -10,6 +9,7 @@ import { ON_CALL_PILL_CIRC_R, OnCallPill } from "@/ui/schedule/components/on-cal
 import { MONTH } from "@/ui/schedule/components/month/constants";
 import { OnCallUser } from "@/domain/user";
 import { computeOnCallSummary } from "@/domain/on-call-summary";
+import { renderToSvg } from "@/ui/schedule/satori-renderer";
 
 type Props = {
   events: OnCallEvent[];
@@ -19,10 +19,7 @@ type Props = {
 
 const ON_CALL_PILL_BANNER = ON_CALL_PILL_CIRC_R * 2;
 
-function CombinedScheduleSvg({ events, window, onCallUser }: Props) {
-  const today = new Date();
-  const backgroundColor = onCallUser ? "transparent" : Colors.DARK;
-  const showTodayMarker = !!onCallUser;
+function buildMonthData(events: OnCallEvent[], window: TimeWindow) {
   const { start, end } = window;
   const firstWeekStart = startOfWeek(start);
   const lastWeekStart = startOfWeek(end);
@@ -47,79 +44,64 @@ function CombinedScheduleSvg({ events, window, onCallUser }: Props) {
     }
   }
 
-  const monthGroups = monthList.map(({ year, month }) => ({
-    year,
-    month,
-    weeks: allWeeks.filter((days) => days.some((day) => day.getFullYear() === year && day.getMonth() === month)),
-  }));
+  const monthGroups = monthList.map(({ year, month }) => {
+    const weeks = allWeeks.filter((week) => week.some((d) => d.getFullYear() === year && d.getMonth() === month));
+    return { year, month, weeks };
+  });
 
   const weekTimelinesByMonth = monthGroups.map(({ year, month, weeks }) =>
     weeks.map((days) => buildWeekSpanBars(days, events, { year, month })),
   );
 
   const weekRowHeightsByMonth = weekTimelinesByMonth.map((weekTimelines) =>
-    weekTimelines.map((weekTimeline) => {
-      const maxLanes = Math.max(1, ...weekTimeline.map((bar) => bar.lane + 1));
-      return weekRowHeight(maxLanes);
-    }),
+    weekTimelines.map((timeline) => weekRowHeight(Math.max(1, ...timeline.map((bar) => bar.lane + 1)))),
   );
 
+  const summaries = monthGroups.map(({ year, month }) => computeOnCallSummary({ year, month, events }));
+
+  return { monthGroups, weekTimelinesByMonth, weekRowHeightsByMonth, summaries };
+}
+
+function computeTotalHeight(
+  monthGroups: ReturnType<typeof buildMonthData>["monthGroups"],
+  weekRowHeightsByMonth: ReturnType<typeof buildMonthData>["weekRowHeightsByMonth"],
+  summaries: ReturnType<typeof buildMonthData>["summaries"],
+  topBannerHeight: number,
+): number {
   const calendarHeight = (monthIndex: number) =>
-    MONTH.BLOCK_HEADER_HEIGHT + weekRowHeightsByMonth[monthIndex].reduce((sum, height) => sum + height, 0);
+    MONTH.BLOCK_HEADER_HEIGHT + weekRowHeightsByMonth[monthIndex].reduce((a, b) => a + b, 0);
 
-  const summaries = monthGroups.map(({ year, month }) =>
-    computeOnCallSummary({
-      year: year,
-      month: month,
-      events: events,
-    }),
-  );
-
-  const topBannerHeight = onCallUser ? ON_CALL_PILL_BANNER : 0;
-
-  const monthTotalHeight = (monthIndex: number) => {
-    return calendarHeight(monthIndex) + MONTH.SUMMARY_GAP + summaryBlockHeight(summaries[monthIndex].length);
-  };
-
-  const totalHeight =
-    topBannerHeight +
-    monthGroups.reduce((sum, _group, monthIndex) => sum + monthTotalHeight(monthIndex), 0) +
-    (monthGroups.length - 1) * MONTH.BLOCK_GAP;
-
-  const columnBg = backgroundColor ?? "none";
-
-  let currentY = topBannerHeight;
-  const monthOffsets = monthGroups.map((_, monthIndex) => {
-    const offsetY = currentY;
-    currentY += monthTotalHeight(monthIndex) + MONTH.BLOCK_GAP;
-    return offsetY;
-  });
+  const monthTotalHeight = (monthIndex: number) =>
+    calendarHeight(monthIndex) + MONTH.SUMMARY_GAP + summaryBlockHeight(summaries[monthIndex].length);
 
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={MONTH.WIDTH}
-      height={totalHeight}
-      viewBox={`0 0 ${MONTH.WIDTH} ${totalHeight}`}
+    topBannerHeight +
+    monthGroups.reduce((acc, _, monthIndex) => acc + monthTotalHeight(monthIndex), 0) +
+    (monthGroups.length - 1) * MONTH.BLOCK_GAP
+  );
+}
+
+function CombinedScheduleRoot({ events, window, onCallUser }: Props) {
+  const today = new Date();
+  const showTodayMarker = !!onCallUser;
+  const backgroundColor = onCallUser ? "transparent" : Colors.DARK;
+  const columnBg = onCallUser ? Colors.DARK : "none";
+
+  const { monthGroups, weekTimelinesByMonth, weekRowHeightsByMonth, summaries } = buildMonthData(events, window);
+
+  const calendarHeight = (monthIndex: number) =>
+    MONTH.BLOCK_HEADER_HEIGHT + weekRowHeightsByMonth[monthIndex].reduce((a, b) => a + b, 0);
+
+  return (
+    <div
+      tw="flex flex-col"
+      style={{ width: MONTH.WIDTH, backgroundColor }}
     >
-      <defs>
-        <pattern id="hatch" width={8} height={8} patternUnits="userSpaceOnUse" patternTransform="rotate(135)">
-          {columnBg !== "none" && <rect width={8} height={8} fill={columnBg} />}
-          <path d="M 0 0 L 0 8" stroke={Colors.DEEP_DARK} strokeWidth={1} opacity={0.5} />
-        </pattern>
-        <filter id="shadow" x="-10%" y="-30%" width="120%" height="170%">
-          <feDropShadow dx={0} dy={2} stdDeviation={2} floodColor={Colors.DEEP_DARK} floodOpacity={0.3} />
-        </filter>
-      </defs>
-      {backgroundColor && <rect width={MONTH.WIDTH} height={totalHeight} fill={backgroundColor} />}
-      {onCallUser && (
-        <OnCallPill cy={Math.round(topBannerHeight / 2)} name={onCallUser.name} color={onCallUser.color} />
-      )}
+      {onCallUser && <OnCallPill name={onCallUser.name} color={onCallUser.color} />}
       {monthGroups.map(({ year, month, weeks }, monthIndex) => (
         <Fragment key={monthIndex}>
           <MonthBlock
             weeks={weeks}
-            blockOffsetY={monthOffsets[monthIndex]}
             blockHeight={calendarHeight(monthIndex)}
             today={today}
             weekTimelines={weekTimelinesByMonth[monthIndex]}
@@ -128,29 +110,24 @@ function CombinedScheduleSvg({ events, window, onCallUser }: Props) {
             columnBg={columnBg}
             weekRowHeights={weekRowHeightsByMonth[monthIndex]}
           />
-
-          <SummaryBlock
-            year={year}
-            month={month}
-            summary={summaries[monthIndex]}
-            offsetY={monthOffsets[monthIndex] + calendarHeight(monthIndex) + MONTH.SUMMARY_GAP}
-          />
+          <div style={{ height: MONTH.SUMMARY_GAP }} />
+          <SummaryBlock year={year} month={month} summary={summaries[monthIndex]} />
           {monthIndex < monthGroups.length - 1 && (
-            <line
-              x1={0}
-              y1={monthOffsets[monthIndex] + monthTotalHeight(monthIndex) + MONTH.BLOCK_GAP / 2}
-              x2={MONTH.WIDTH}
-              y2={monthOffsets[monthIndex] + monthTotalHeight(monthIndex) + MONTH.BLOCK_GAP / 2}
-              stroke={Colors.SLATE}
-              strokeWidth={2}
-            />
+            <>
+              <div style={{ height: MONTH.BLOCK_GAP / 2 }} />
+              <div style={{ width: MONTH.WIDTH, height: 2, backgroundColor: Colors.SLATE }} />
+              <div style={{ height: MONTH.BLOCK_GAP / 2 }} />
+            </>
           )}
         </Fragment>
       ))}
-    </svg>
+    </div>
   );
 }
 
-export function buildMonthViewSvg(props: Props): string {
-  return renderToStaticMarkup(<CombinedScheduleSvg {...props} />);
+export async function buildMonthViewSvg(props: Props): Promise<string> {
+  const topBannerHeight = props.onCallUser ? ON_CALL_PILL_BANNER : 0;
+  const { monthGroups, weekRowHeightsByMonth, summaries } = buildMonthData(props.events, props.window);
+  const totalHeight = computeTotalHeight(monthGroups, weekRowHeightsByMonth, summaries, topBannerHeight);
+  return renderToSvg(<CombinedScheduleRoot {...props} />, MONTH.WIDTH, totalHeight);
 }
