@@ -31,7 +31,7 @@ const ROTA_SVG_PALETTE = [
 ];
 
 export function getColor(value: string): string {
-  const hash = createHash("sha256").update(value).digest("hex");
+  const hash = createHash("shake256").update(value).digest("hex");
   return ROTA_SVG_PALETTE[parseInt(hash.slice(0, 8), 16) % ROTA_SVG_PALETTE.length];
 }
 

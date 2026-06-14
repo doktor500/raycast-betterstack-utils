@@ -1,145 +1,50 @@
-import { Action, ActionPanel, Detail, environment, showToast, Toast } from "@raycast/api";
+import { Detail, environment, showToast, Toast } from "@raycast/api";
 import { useState } from "react";
+import * as os from "node:os";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { getCurrentMonthWindow, addDays } from "@/common/utils/date-utils";
+import { getCurrentMonthWindow, getCurrentWeekWindow, TimeWindow } from "@/common/utils/date-utils";
 import { buildMonthViewSvg } from "@/ui/schedule/components/month/month-schedule";
 import { useOnCallData } from "@/hooks/use-on-call-data";
-import { getCurrentOnCallUser } from "@/domain/on-call-event";
-import { getColor, Colors } from "@/common/colors";
-import { buildScheduleSkeletonSvg } from "@/ui/schedule/skeleton/schedule";
 import { buildWeekViewSvg } from "@/ui/schedule/components/week/week-schedule";
-import { exportSvgToClipboard, toSvgDataUri } from "@/common/utils/svg-utils";
+import { exportSvgToClipboard } from "@/common/utils/svg-utils";
 import { formatUserName } from "@/domain/user";
+import { TimeRange } from "@/domain/time-range";
+import { getOnCallUser, OnCallEvent } from "@/domain/on-call-event";
+import { renderSchedule } from "@/ui/schedule/schedule-renderer";
+import { ScheduleActionPanel } from "@/ui/schedule/components/action-panel/schedule-action-panel";
 
-type TimeRange = "week" | "month";
+const { WEEK } = TimeRange;
 
-type ScheduleActionPanelProps = {
-  currentTimeRange: TimeRange;
-  nextTimeRange: TimeRange;
-  monthOffset: number;
-  weekOffset: number;
-  userNames: string[];
-  selectedUser: string;
-  onTimeRangeChange: (range: TimeRange) => void;
-  onMonthOffsetChange: (offset: number) => void;
-  onWeekOffsetChange: (offset: number) => void;
-  onUserSelect: (user: string) => void;
-  onCopyAsPng: () => void;
-};
-
-const TIME_RANGE_LABELS: Record<TimeRange, TimeRange> = {
-  week: "week",
-  month: "month",
-};
+const NO_PRIMARY_SCHEDULE_ERROR_MESSAGE = "## No 'Primary' on-call schedule found in your BetterStack account.";
+const SCHEDULE_LOAD_ERROR_TITLE = "## Failed to load on-call schedule";
+const SCHEDULE_LOAD_ERROR_MESSAGE = "Check your API token and network connection, then reopen the extension.";
 
 const queryClient = new QueryClient();
 
-export default function Command() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <OnCallSchedule />
-    </QueryClientProvider>
-  );
-}
-
 function OnCallSchedule() {
-  const { events, scheduleName, isLoading, noSchedule, hasError } = useOnCallData();
-  const [timeRange, setTimeRange] = useState<TimeRange>("month");
+  const { events, scheduleName, isLoading, isEmpty, hasError } = useOnCallData();
+  const [timeRange, setTimeRange] = useState<TimeRange>(TimeRange.MONTH);
   const [selectedUser, setSelectedUser] = useState<string>("");
-  const [monthOffset, setMonthOffset] = useState<number>(0);
-  const [weekOffset, setWeekOffset] = useState<number>(0);
+  const [offset, setOffset] = useState<number>(0);
 
-  const today = new Date();
-
-  if (hasError) {
-    return (
-      <Detail
-        markdown={
-          "## Failed to load on-call schedule\n\nCheck your API token and network connection, then reopen the extension."
-        }
-      />
-    );
+  function handleTimeRangeChange(range: TimeRange) {
+    setTimeRange(range);
+    setOffset(0);
   }
 
-  if (noSchedule) {
-    return <NoScheduleDetail />;
+  if (hasError) {
+    return <Detail markdown={[SCHEDULE_LOAD_ERROR_TITLE, SCHEDULE_LOAD_ERROR_MESSAGE].join(os.EOL)} />;
+  }
+
+  if (isEmpty) {
+    return <Detail markdown={NO_PRIMARY_SCHEDULE_ERROR_MESSAGE} />;
   }
 
   const userNames = [...new Set(events.map((event) => formatUserName(event.user)))].toSorted();
   const filteredEvents = selectedUser ? events.filter((event) => formatUserName(event.user) === selectedUser) : events;
-
-  const scheduleWindow = getCurrentMonthWindow(monthOffset);
-  const weekAnchorDate = addDays(today, weekOffset * 7);
-
-  const currentOnCall = getCurrentOnCallUser(today, events);
-  const onCallName = currentOnCall ? formatUserName(currentOnCall) : undefined;
-  const onCallColor = onCallName ? getColor(onCallName) : undefined;
-
-  async function copyAsPng() {
-    const toast = await showToast({ style: Toast.Style.Animated, title: "Copying to clipboard…" });
-    try {
-      const svg =
-        timeRange === "week"
-          ? buildWeekViewSvg({
-              events: filteredEvents,
-              today,
-              anchorDate: weekAnchorDate,
-              backgroundColor: Colors.DARK,
-              allEvents: events,
-            })
-          : buildMonthViewSvg({
-              events: filteredEvents,
-              today: today,
-              window: scheduleWindow,
-              backgroundColor: Colors.DARK,
-              showTodayMarker: false,
-              showOnCallPill: false,
-              allEvents: events,
-            });
-      await exportSvgToClipboard(svg, environment.supportPath);
-      toast.style = Toast.Style.Success;
-      toast.title = "Schedule copied";
-    } catch (error) {
-      toast.style = Toast.Style.Failure;
-      toast.title = "Failed to copy schedule";
-      toast.message = error instanceof Error ? error.message : String(error);
-    }
-  }
-
-  function handleTimeRangeChange(range: TimeRange) {
-    setTimeRange(range);
-    setMonthOffset(0);
-    setWeekOffset(0);
-  }
-
-  const monthViewProps = {
-    events: filteredEvents,
-    today: today,
-    window: scheduleWindow,
-    backgroundColor: undefined,
-    showTodayMarker: true,
-    showOnCallPill: true,
-    allEvents: events,
-  };
-
-  const weekViewProps = {
-    events: filteredEvents,
-    today,
-    anchorDate: weekAnchorDate,
-    allEvents: events,
-    onCallName,
-    onCallColor,
-  };
-
-  function buildScheduleMarkdown(): string {
-    if (isLoading) return `![schedule](${toSvgDataUri(buildScheduleSkeletonSvg())})`;
-
-    return timeRange === "week"
-      ? `![schedule](${toSvgDataUri(buildWeekViewSvg(weekViewProps))})`
-      : `![schedule](${toSvgDataUri(buildMonthViewSvg(monthViewProps))})`;
-  }
-
-  const markdown = buildScheduleMarkdown();
+  const onCallUser = getOnCallUser(events);
+  const window = timeRange === TimeRange.WEEK ? getCurrentWeekWindow(offset) : getCurrentMonthWindow(offset);
+  const markdown = renderSchedule({ events: filteredEvents, onCallUser, window, timeRange, isLoading });
 
   return (
     <Detail
@@ -148,108 +53,40 @@ function OnCallSchedule() {
       markdown={markdown}
       actions={
         <ScheduleActionPanel
-          nextTimeRange={TIME_RANGE_LABELS[timeRange]}
           currentTimeRange={timeRange}
-          monthOffset={monthOffset}
-          weekOffset={weekOffset}
+          offset={offset}
           userNames={userNames}
           selectedUser={selectedUser}
           onTimeRangeChange={handleTimeRangeChange}
-          onMonthOffsetChange={setMonthOffset}
-          onWeekOffsetChange={setWeekOffset}
-          onCopyAsPng={copyAsPng}
+          onOffsetChange={setOffset}
           onUserSelect={setSelectedUser}
+          onCopyAsPng={() => copyAsPng({ timeRange, events: filteredEvents, window })}
         />
       }
     />
   );
 }
 
-function NoScheduleDetail() {
-  return <Detail markdown={"## No 'Primary' on-call schedule found in your BetterStack account."} />;
+async function copyAsPng(props: { timeRange: TimeRange; events: OnCallEvent[]; window: TimeWindow }) {
+  const { timeRange, events, window } = props;
+  const toast = await showToast({ style: Toast.Style.Animated, title: "Copying to clipboard…" });
+
+  try {
+    const svg = timeRange === WEEK ? buildWeekViewSvg({ events, window }) : buildMonthViewSvg({ events, window });
+    await exportSvgToClipboard(svg, environment.supportPath);
+    toast.style = Toast.Style.Success;
+    toast.title = "Schedule copied";
+  } catch (error) {
+    toast.style = Toast.Style.Failure;
+    toast.title = "Failed to copy schedule";
+    toast.message = error instanceof Error ? error.message : String(error);
+  }
 }
 
-function ScheduleActionPanel({
-  nextTimeRange,
-  currentTimeRange,
-  monthOffset,
-  weekOffset,
-  userNames,
-  selectedUser,
-  onTimeRangeChange,
-  onMonthOffsetChange,
-  onWeekOffsetChange,
-  onCopyAsPng,
-  onUserSelect,
-}: ScheduleActionPanelProps) {
+export default function Command() {
   return (
-    <ActionPanel>
-      <Action title={`Show ${TIME_RANGE_LABELS[nextTimeRange]}`} onAction={() => onTimeRangeChange(nextTimeRange)} />
-      {currentTimeRange === "month" && (
-        <Action
-          title="Previous Month"
-          shortcut={{ modifiers: [], key: "arrowLeft" }}
-          onAction={() => onMonthOffsetChange(monthOffset - 1)}
-        />
-      )}
-      {currentTimeRange === "month" && (
-        <Action
-          title="Next Month"
-          shortcut={{ modifiers: [], key: "arrowRight" }}
-          onAction={() => onMonthOffsetChange(monthOffset + 1)}
-        />
-      )}
-      {currentTimeRange === "month" && monthOffset !== 0 && (
-        <Action
-          title="Back to Current Month"
-          shortcut={{ modifiers: [], key: "0" }}
-          onAction={() => onMonthOffsetChange(0)}
-        />
-      )}
-      {currentTimeRange === "week" && (
-        <Action
-          title="Previous Week"
-          shortcut={{ modifiers: [], key: "arrowLeft" }}
-          onAction={() => onWeekOffsetChange(weekOffset - 1)}
-        />
-      )}
-      {currentTimeRange === "week" && (
-        <Action
-          title="Next Week"
-          shortcut={{ modifiers: [], key: "arrowRight" }}
-          onAction={() => onWeekOffsetChange(weekOffset + 1)}
-        />
-      )}
-      {currentTimeRange === "week" && weekOffset !== 0 && (
-        <Action
-          title="Back to Current Week"
-          shortcut={{ modifiers: [], key: "0" }}
-          onAction={() => onWeekOffsetChange(0)}
-        />
-      )}
-      <Action
-        title="Copy Schedule to Clipboard"
-        shortcut={{ modifiers: ["cmd", "shift"], key: "c" }}
-        onAction={onCopyAsPng}
-      />
-      {userNames.length > 0 && (
-        <ActionPanel.Submenu
-          title={selectedUser ? `Filter: ${selectedUser}` : "Filter by User"}
-          shortcut={{ modifiers: ["cmd"], key: "f" }}
-        >
-          <Action title="All Users" onAction={() => onUserSelect("")} />
-          {userNames.map((name) => (
-            <Action key={name} title={name} onAction={() => onUserSelect(name)} />
-          ))}
-        </ActionPanel.Submenu>
-      )}
-      {selectedUser && (
-        <Action
-          title="Clear User Filter"
-          shortcut={{ modifiers: ["cmd", "shift"], key: "f" }}
-          onAction={() => onUserSelect("")}
-        />
-      )}
-    </ActionPanel>
+    <QueryClientProvider client={queryClient}>
+      <OnCallSchedule />
+    </QueryClientProvider>
   );
 }

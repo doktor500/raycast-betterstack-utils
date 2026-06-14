@@ -1,6 +1,7 @@
 import { isDateInInterval } from "@/common/utils/date-utils";
-import { User } from "@/domain/user";
+import { formatUserName, User } from "@/domain/user";
 import { mergeIntervals, subtractIntervals } from "@/domain/time-interval";
+import { getColor } from "@/common/colors";
 
 export interface OnCallEvent {
   user: User;
@@ -9,12 +10,12 @@ export interface OnCallEvent {
   override: boolean;
 }
 
-export function getCurrentOnCallUser(date: Date, events: OnCallEvent[]): User | undefined {
-  const active = events.filter((event) => isDateInInterval(date, new Date(event.startedAt), new Date(event.endedAt)));
-  const override = active.find((event) => event.override);
-  if (override) return override.user;
+export function getOnCallUser(events: OnCallEvent[]) {
+  const today = new Date();
+  const currentOnCall = getCurrentOnCallUser(today, events);
+  const onCallUserName = currentOnCall ? formatUserName(currentOnCall) : undefined;
 
-  return active[0]?.user;
+  return onCallUserName ? { name: onCallUserName, color: getColor(onCallUserName) } : undefined;
 }
 
 export function resolveOverrideConflicts(events: OnCallEvent[]): OnCallEvent[] {
@@ -39,4 +40,12 @@ export function resolveOverrideConflicts(events: OnCallEvent[]): OnCallEvent[] {
   });
 
   return [...overrideEvents, ...regularEventFragments];
+}
+
+function getCurrentOnCallUser(date: Date, events: OnCallEvent[]): User | undefined {
+  const active = events.filter((event) => isDateInInterval(date, new Date(event.startedAt), new Date(event.endedAt)));
+  const override = active.find((event) => event.override);
+  if (override) return override.user;
+
+  return active[0]?.user;
 }

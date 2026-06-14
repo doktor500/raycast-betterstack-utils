@@ -5,6 +5,11 @@ export interface User {
   email: string;
 }
 
+export interface OnCallUser {
+  name: string;
+  color: string;
+}
+
 export function formatUserName(user: User): string {
   return `${user.firstName}`.trim() ?? user.email;
 }

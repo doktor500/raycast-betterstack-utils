@@ -13,7 +13,7 @@ interface OnCallData {
   events: OnCallEvent[];
   scheduleName: string;
   isLoading: boolean;
-  noSchedule: boolean;
+  isEmpty: boolean;
   hasError: boolean;
 }
 
@@ -33,7 +33,7 @@ export function useOnCallData(): OnCallData {
     events: toList(data?.events),
     scheduleName: toString(data?.scheduleName),
     isLoading,
-    noSchedule: !isLoading && !isError && data === null,
+    isEmpty: !isLoading && !isError && data === null,
     hasError: isError,
   };
 }
