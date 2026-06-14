@@ -43,6 +43,9 @@ export function DayColumn({ day, dayIndex, isToday, gridTop, headerTop, totalHei
       <div
         tw="flex items-center justify-center"
         style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           position: "absolute",
           left: colLeft,
           top: headerTop,

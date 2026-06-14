@@ -95,7 +95,7 @@ function CombinedScheduleRoot({ events, window, onCallUser }: Props) {
   return (
     <div
       tw="flex flex-col"
-      style={{ width: MONTH.WIDTH, backgroundColor }}
+      style={{ display: "flex", flexDirection: "column", width: MONTH.WIDTH, backgroundColor }}
     >
       {onCallUser && <OnCallPill name={onCallUser.name} color={onCallUser.color} />}
       {monthGroups.map(({ year, month, weeks }, monthIndex) => (

@@ -15,7 +15,7 @@ export function OnCallPill({ name, color }: OnCallPillProps) {
   return (
     <div
       tw="flex items-center"
-      style={{ height: diameter, paddingLeft: 12, paddingTop: 6, gap: 13 }}
+      style={{ display: "flex", alignItems: "center", height: diameter, paddingLeft: 12, paddingTop: 6, gap: 13 }}
     >
       <div
         tw="flex items-center justify-center"

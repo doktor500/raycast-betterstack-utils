@@ -24,7 +24,7 @@ function ScheduleSkeletonRoot() {
   const summaryHeight = summaryBlockHeight(NUM_SUMMARY);
 
   return (
-    <div tw="flex flex-col" style={{ width: LAYOUT.WIDTH }}>
+    <div tw="flex flex-col" style={{ display: "flex", flexDirection: "column", width: LAYOUT.WIDTH }}>
       <div style={{ height: ON_CALL_PILL_BANNER }} />
       <div style={{ display: "flex", position: "relative", width: LAYOUT.WIDTH, height: calendarHeight, borderRadius: 10, border: `1px solid ${SKELETON_COLOR}` }}>
         <div style={{ position: "absolute", inset: 0, borderRadius: 10, backgroundColor: "rgba(40,53,78,0.2)" }} />

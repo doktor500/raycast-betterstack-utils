@@ -19,6 +19,7 @@ export function SummaryBlock({ year, month, summary }: SummaryBlockProps) {
     <div
       tw="flex"
       style={{
+        display: "flex",
         width: MONTH.WIDTH,
         height,
         borderRadius: 10,
@@ -42,6 +43,9 @@ export function SummaryBlock({ year, month, summary }: SummaryBlockProps) {
       <div
         tw="flex flex-col justify-center"
         style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
           flex: 1,
           paddingTop: SUMMARY.VERTICAL_PADDING,
           paddingBottom: SUMMARY.VERTICAL_PADDING,
@@ -51,7 +55,7 @@ export function SummaryBlock({ year, month, summary }: SummaryBlockProps) {
           <div
             key={index}
             tw="flex items-center"
-            style={{ height: SUMMARY.VERTICAL_ROW_HEIGHT, paddingLeft: 20 }}
+            style={{ display: "flex", alignItems: "center", height: SUMMARY.VERTICAL_ROW_HEIGHT, paddingLeft: 20 }}
           >
             <div
               style={{
