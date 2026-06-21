@@ -10,7 +10,7 @@ import { toString } from "@/common/utils/string-utils";
 const PRIMARY_SCHEDULE_NAME = "Primary";
 
 interface OnCallData {
-  events: OnCallEvent[];
+  onCallEvents: OnCallEvent[];
   scheduleName: string;
   isLoading: boolean;
   isEmpty: boolean;
@@ -30,7 +30,7 @@ export function useOnCallData(): OnCallData {
   }, [isError, error]);
 
   return {
-    events: toList(data?.events),
+    onCallEvents: toList(data?.events),
     scheduleName: toString(data?.scheduleName),
     isLoading,
     isEmpty: !isLoading && !isError && data === null,
@@ -41,13 +41,14 @@ export function useOnCallData(): OnCallData {
 async function fetchScheduleData(): Promise<ScheduleData> {
   const { calendars, teamMembers } = await getRota();
   const primaryCalendar = findPrimarySchedule(calendars);
-  if (!primaryCalendar) return undefined;
 
-  const scheduleName = primaryCalendar.name ?? PRIMARY_SCHEDULE_NAME;
-  const calendarEvents = await getOnCallEvents(primaryCalendar.id, teamMembers);
-  const events = resolveOverrideConflicts(calendarEvents);
+  if (primaryCalendar) {
+    const scheduleName = primaryCalendar.name ?? PRIMARY_SCHEDULE_NAME;
+    const calendarEvents = await getOnCallEvents(primaryCalendar.id, teamMembers);
+    const events = resolveOverrideConflicts(calendarEvents);
 
-  return { scheduleName, events };
+    return { scheduleName, events };
+  }
 }
 
 function findPrimarySchedule(calendars: Calendar[]): Calendar | undefined {

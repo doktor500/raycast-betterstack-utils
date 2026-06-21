@@ -12,12 +12,12 @@ import { renderToSvg } from "@/components/satori-renderer";
 
 type Props = {
   events: OnCallEvent[];
-  window: TimeWindow;
+  timeWindow: TimeWindow;
   onCallUser?: OnCallUser;
 };
 
-function buildMonthData(events: OnCallEvent[], window: TimeWindow) {
-  const { start, end } = window;
+function buildMonthData(events: OnCallEvent[], timeWindow: TimeWindow) {
+  const { start, end } = timeWindow;
   const firstWeekStart = startOfWeek(start);
   const lastWeekStart = startOfWeek(end);
   const allWeeks: Date[][] = [];
@@ -62,13 +62,13 @@ function buildMonthData(events: OnCallEvent[], window: TimeWindow) {
   return { monthGroups, weekTimelinesByMonth, weekRowHeightsByMonth, summaries };
 }
 
-function CombinedScheduleRoot({ events, window, onCallUser }: Props) {
+function CombinedScheduleRoot({ events, timeWindow, onCallUser }: Props) {
   const today = new Date();
   const showTodayMarker = !!onCallUser;
   const backgroundColor = onCallUser ? "transparent" : Colors.DARK;
   const columnBg = onCallUser ? Colors.DARK : "none";
 
-  const { monthGroups, weekTimelinesByMonth, weekRowHeightsByMonth, summaries } = buildMonthData(events, window);
+  const { monthGroups, weekTimelinesByMonth, weekRowHeightsByMonth, summaries } = buildMonthData(events, timeWindow);
 
   return (
     <div tw={`flex flex-col w-[1160px] bg-[${backgroundColor}]`}>

@@ -10,13 +10,13 @@ import { renderToSvg } from "@/components/satori-renderer";
 
 interface WeekViewProps {
   events: OnCallEvent[];
-  window: TimeWindow;
+  timeWindow: TimeWindow;
   onCallUser?: OnCallUser;
 }
 
-function WeekViewRoot({ events, window, onCallUser }: WeekViewProps) {
+function WeekViewRoot({ events, timeWindow, onCallUser }: WeekViewProps) {
   const today = new Date();
-  const days = getCurrentWeekDays(window.start);
+  const days = getCurrentWeekDays(timeWindow.start);
   const todayIndex = days.findIndex((day) => isSameDay(day, today));
 
   const todayStartMs = todayIndex >= 0 ? new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime() : 0;
