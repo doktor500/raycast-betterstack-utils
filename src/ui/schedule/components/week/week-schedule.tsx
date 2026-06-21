@@ -19,16 +19,13 @@ function WeekViewRoot({ events, window, onCallUser }: WeekViewProps) {
   const days = getCurrentWeekDays(window.start);
   const todayIndex = days.findIndex((day) => isSameDay(day, today));
 
-  const bannerHeight = onCallUser ? 32 : 0;
-  const totalHeight = bannerHeight + 524; // 44px header + 480px timeline
-
   const todayStartMs = todayIndex >= 0 ? new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime() : 0;
   const nowFraction = todayIndex >= 0 ? (today.getTime() - todayStartMs) / (24 * 3600 * 1000) : 0;
 
   const bgColor = onCallUser ? "transparent" : Colors.DARK;
 
   return (
-    <div tw={`flex flex-col w-[1160px] h-[${totalHeight}px] bg-[${bgColor}]`}>
+    <div tw={`flex flex-col w-[1160px] bg-[${bgColor}]`}>
       {onCallUser && <OnCallPill name={onCallUser.name} color={onCallUser.color} />}
       <div tw="flex h-[524px]">
         <HourLabels />
