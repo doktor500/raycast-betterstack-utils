@@ -50,8 +50,8 @@ export function DayColumn({ day, dayIndex, isToday, events, nowFraction }: DayCo
         <div tw={`flex absolute top-0 left-0 right-0 h-[44px] rounded-[6px] bg-[${Colors.DEEP_DARK}] opacity-50`} />
       )}
       <div tw="flex items-center justify-center h-[44px] gap-[4px]">
-        <span tw={`text-[13px] font-semibold text-white opacity-[${weekdayOpacity}]`}>{`${formatWeekday(day)} `}</span>
-        <span tw={`text-[16px] font-semibold text-white opacity-[${dateOpacity}]`}>
+        <span tw={`text-[14px] font-semibold text-white opacity-[${weekdayOpacity}]`}>{`${formatWeekday(day)} `}</span>
+        <span tw={`text-[14px] pl-2 font-semibold text-white opacity-[${dateOpacity}]`}>
           {`${day.getDate()}/${day.getMonth() + 1}`}
         </span>
       </div>
