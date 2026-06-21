@@ -1,7 +1,8 @@
 import { OnCallEvent } from "@/domain/on-call-event";
 import { getColor } from "@/common/colors";
 import { formatUserName } from "@/domain/user";
-import { MONTH } from "@/ui/schedule/components/month/constants";
+
+const DAY_MS = 24 * 3600 * 1000;
 
 export interface WeekSpanBar {
   startDayIndex: number;
@@ -29,7 +30,7 @@ export function buildWeekSpanBars(
 
   const { first, last } = range;
   const windowStart = dayStarts[first];
-  const windowEnd = dayStarts[last] + MONTH.DAY_MS;
+  const windowEnd = dayStarts[last] + DAY_MS;
 
   const bars = events
     .map((event) => {
@@ -73,12 +74,12 @@ function clampToWindow(
 }
 
 function dayFraction(timestamp: number, dayStart: number): number {
-  return (timestamp - dayStart) / MONTH.DAY_MS;
+  return (timestamp - dayStart) / DAY_MS;
 }
 
 function findStartPosition(timestamp: number, dayStarts: number[], from: number, to: number): DayPosition {
   const days = dayStarts.slice(from, to + 1);
-  const match = days.findIndex((start) => timestamp >= start && timestamp < start + MONTH.DAY_MS);
+  const match = days.findIndex((start) => timestamp >= start && timestamp < start + DAY_MS);
   const dayIndex = from + match;
   if (match === -1) return { dayIndex: from, fraction: 0 };
 
@@ -87,7 +88,7 @@ function findStartPosition(timestamp: number, dayStarts: number[], from: number,
 
 function findEndPosition(timestamp: number, dayStarts: number[], from: number, to: number): DayPosition {
   const days = dayStarts.slice(from, to + 1);
-  const match = days.findIndex((start) => timestamp > start && timestamp <= start + MONTH.DAY_MS);
+  const match = days.findIndex((start) => timestamp > start && timestamp <= start + DAY_MS);
   const dayIndex = from + match;
   if (match === -1) return { dayIndex: to, fraction: 1.0 };
 
