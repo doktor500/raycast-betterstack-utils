@@ -4,7 +4,6 @@ import { Colors } from "@/common/colors";
 import { DayColumn } from "@/ui/schedule/components/month/day-column";
 import { SpanBar } from "@/ui/schedule/components/month/span-bar";
 import { CurrentTimeMarker } from "@/ui/schedule/components/month/current-time-marker";
-import { MONTH } from "@/ui/schedule/components/month/constants";
 
 interface WeekGroupProps {
   days: Date[];
@@ -30,9 +29,9 @@ export function WeekGroup({
   const todayIndex = days.findIndex((day) => isSameDay(day, today));
 
   return (
-    <div tw={`flex relative w-[${MONTH.WIDTH}px] h-[${rowHeight}px]`}>
+    <div tw={`flex relative w-full h-[${rowHeight}px]`}>
       {weekIndex > 0 && (
-        <div tw={`flex absolute top-0 left-0 w-[${MONTH.WIDTH}px] h-px bg-[${Colors.SLATE}]`} />
+        <div tw={`flex absolute top-0 left-0 right-0 h-px bg-[${Colors.SLATE}]`} />
       )}
       {days.map((day, index) => (
         <DayColumn
