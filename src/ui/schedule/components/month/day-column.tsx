@@ -4,8 +4,6 @@ import { Colors } from "@/common/colors";
 const WEEKEND_STRIPES_TW =
   "repeating-linear-gradient(135deg,transparent,transparent_3px,rgba(45,55,76,0.5)_3px,rgba(45,55,76,0.5)_4px)";
 
-const DAY_HEADER_HEIGHT = 30;
-
 interface DayColumnProps {
   day: Date;
   currentMonth: { year: number; month: number };
@@ -25,8 +23,8 @@ export function DayColumn({ day, currentMonth, columnBg, rowHeight }: DayColumnP
       {inMonth && (
         <>
           <div tw={`flex absolute left-0 top-0 w-px h-[${rowHeight}px] bg-[${Colors.SLATE}]`} />
-          <div tw={`flex absolute left-0 top-[${DAY_HEADER_HEIGHT}px] right-0 h-px bg-[${Colors.SLATE}]`} />
-          <div tw={`flex items-center justify-center w-full h-[${DAY_HEADER_HEIGHT}px]`}>
+          <div tw={`flex absolute left-0 top-[30px] right-0 h-px bg-[${Colors.SLATE}]`} />
+          <div tw={`flex items-center justify-center w-full h-[30px]`}>
             <span tw={`text-[14px] font-semibold text-[${Colors.DIM}]`}>{formatWeekday(day)}</span>
             <div tw="flex w-[8px]" />
             <span tw={`text-[14px] font-semibold text-[${Colors.SUBTLE}]`}>{day.getDate()}</span>
