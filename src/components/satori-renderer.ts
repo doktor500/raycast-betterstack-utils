@@ -1,6 +1,7 @@
 import satori from "satori";
 import type { ReactNode } from "react";
 import { loadFonts } from "@/common/utils/font-loader";
+import { Colors, RotaColors } from "@/common/colors";
 
 const VIEWPORT_WIDTH = 1160;
 
@@ -15,20 +16,20 @@ export async function renderToSvg(element: ReactNode): Promise<string> {
             mono: "JetBrainsMono",
           },
           colors: {
-            "deep-dark": "#0B0C15",
-            "dark": "#1F2433",
-            "slate": "#2D374C",
-            "dim": "#718096",
-            "subtle": "#AEB8D3",
-            "frost": "#F3F5FA",
-            "skeleton": "#28354E",
-            "rota-blue": "#21A7FF",
-            "rota-green": "#16C77A",
-            "rota-indigo": "#7F88FF",
-            "rota-orange": "#FF8738",
-            "rota-purple": "#D36BFF",
-            "rota-red": "#FF5E7A",
-            "rota-yellow": "#E7B84A",
+            "deep-dark": Colors.DEEP_DARK,
+            "dark": Colors.DARK,
+            "slate": Colors.SLATE,
+            "dim": Colors.DIM,
+            "subtle": Colors.SUBTLE,
+            "frost": Colors.FROST,
+            "skeleton": Colors.SKELETON,
+            "rota-blue": RotaColors.BLUE,
+            "rota-green": RotaColors.GREEN,
+            "rota-indigo": RotaColors.INDIGO,
+            "rota-orange": RotaColors.ORANGE,
+            "rota-purple": RotaColors.PURPLE,
+            "rota-red": RotaColors.RED,
+            "rota-yellow": RotaColors.YELLOW,
           },
         },
       },

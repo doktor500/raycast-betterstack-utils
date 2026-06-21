@@ -1,5 +1,16 @@
 import { createHash } from "crypto";
 
+export const Colors = {
+  WHITE: "#FFFFFF",
+  DEEP_DARK: "#0B0C15",
+  DARK: "#1F2433",
+  SLATE: "#2D374C",
+  DIM: "#718096",
+  SUBTLE: "#AEB8D3",
+  FROST: "#F3F5FA",
+  SKELETON: "#28354E",
+}
+
 export const RotaColors = {
   BLUE: "#21A7FF",
   GREEN: "#16C77A",
@@ -22,11 +33,12 @@ const ROTA_SVG_PALETTE = [
 
 export function getColor(value: string): string {
   const hash = createHash("shake256").update(value).digest("hex");
+
   return ROTA_SVG_PALETTE[parseInt(hash.slice(0, 8), 16) % ROTA_SVG_PALETTE.length];
 }
 
 export function getThemeColor(bgHex: string): string {
-  return relativeLuminance(bgHex) > 0.179 ? "#1F2433" : "#FFFFFF";
+  return relativeLuminance(bgHex) > 0.179 ? Colors.DARK : Colors.WHITE;
 }
 
 function relativeLuminance(hex: string): number {
