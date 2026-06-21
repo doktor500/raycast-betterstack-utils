@@ -8,13 +8,12 @@ const DAY_HEADER_HEIGHT = 30;
 
 interface DayColumnProps {
   day: Date;
-  index: number;
   currentMonth: { year: number; month: number };
   columnBg: string;
   rowHeight: number;
 }
 
-export function DayColumn({ day, index, currentMonth, columnBg, rowHeight }: DayColumnProps) {
+export function DayColumn({ day, currentMonth, columnBg, rowHeight }: DayColumnProps) {
   const isWeekend = day.getDay() === 0 || day.getDay() === 6;
   const inMonth = day.getFullYear() === currentMonth.year && day.getMonth() === currentMonth.month;
   const weekendOpacity = inMonth ? 1 : 0.3;

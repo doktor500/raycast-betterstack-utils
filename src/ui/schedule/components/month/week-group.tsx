@@ -37,7 +37,6 @@ export function WeekGroup({
         <DayColumn
           key={index}
           day={day}
-          index={index}
           currentMonth={currentMonth}
           columnBg={columnBg}
           rowHeight={rowHeight}
