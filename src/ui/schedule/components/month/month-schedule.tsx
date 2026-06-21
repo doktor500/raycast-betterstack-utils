@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
 import { addDays, startOfWeek, TimeWindow } from "@/common/utils/date-utils";
+import { rangeOf } from "@/common/utils/collection-utils";
 import { Colors } from "@/common/colors";
 import { buildWeekSpanBars } from "@/ui/schedule/components/month/span-bars";
 import { OnCallEvent } from "@/domain/on-call-event";
@@ -23,7 +24,7 @@ function buildMonthData(events: OnCallEvent[], timeWindow: TimeWindow) {
   const allWeeks: Date[][] = [];
 
   for (let weekStart = firstWeekStart; weekStart <= lastWeekStart; weekStart = addDays(weekStart, 7)) {
-    allWeeks.push(Array.from({ length: 7 }, (_, dayOffset) => addDays(weekStart, dayOffset)));
+    allWeeks.push(rangeOf(7).map((dayOffset) => addDays(weekStart, dayOffset)));
   }
 
   const monthsSeen = new Set<string>();

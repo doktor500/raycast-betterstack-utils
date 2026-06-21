@@ -1,4 +1,5 @@
 import { DateTime } from "luxon";
+import { rangeOf } from "@/common/utils/collection-utils";
 
 export type TimeWindow = { start: Date; end: Date };
 
@@ -42,7 +43,7 @@ export function getCurrentWeekDays(date?: Date): Date[] {
   const dateTime = date ? DateTime.fromJSDate(date) : DateTime.now();
   const monday = dateTime.minus({ days: dateTime.weekday - 1 }).startOf("day");
 
-  return Array.from({ length: 7 }, (_, i) => monday.plus({ days: i }).toJSDate());
+  return rangeOf(7).map((dayIndex) => monday.plus({ days: dayIndex }).toJSDate());
 }
 
 export function isDateInInterval(date: Date, start: Date, end: Date): boolean {

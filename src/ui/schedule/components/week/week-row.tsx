@@ -1,4 +1,5 @@
 import { SKELETON_COLOR } from "@/ui/schedule/skeleton/colors/skeleton-colors";
+import { rangeOf } from "@/common/utils/collection-utils";
 
 interface WeekRowProps {
   weekIndex: number;
@@ -10,7 +11,7 @@ export function WeekRow({ weekIndex, spans, rowHeight }: WeekRowProps) {
   return (
     <div tw={`flex relative w-[1160px] h-[${rowHeight}px]`}>
       {weekIndex > 0 && <div tw={`flex absolute top-0 left-0 w-[1160px] h-px bg-[${SKELETON_COLOR}]`} />}
-      {Array.from({ length: 7 }, (_, dayIndex) => {
+      {rangeOf(7).map((dayIndex) => {
         const left = dayIndex * (1160 / 7);
         return (
           <div key={dayIndex} tw="flex">

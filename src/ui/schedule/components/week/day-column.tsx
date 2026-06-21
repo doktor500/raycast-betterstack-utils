@@ -1,4 +1,5 @@
 import { Colors, getColor } from "@/common/colors";
+import { rangeOf } from "@/common/utils/collection-utils";
 import { formatWeekday } from "@/common/utils/date-utils";
 import { OnCallEvent } from "@/domain/on-call-event";
 import { formatUserName } from "@/domain/user";
@@ -56,7 +57,7 @@ export function DayColumn({ day, dayIndex, isToday, events, nowFraction }: DayCo
         </span>
       </div>
       <div tw={`flex relative h-[480px] ${dayIndex > 0 ? `border-l border-[${Colors.SLATE}]` : ""}`}>
-        {Array.from({ length: 24 }, (_, hourIndex) => (
+        {rangeOf(24).map((hourIndex) => (
           <div
             key={`hr${hourIndex}`}
             tw={`flex absolute left-0 right-0 top-[${hourIndex * 20}px] h-px bg-[${Colors.SLATE}]`}
