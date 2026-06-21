@@ -13,69 +13,20 @@ interface DayColumnProps {
 
 export function DayColumn({ day, dayIndex, isToday, gridTop, headerTop, totalHeight }: DayColumnProps) {
   const colLeft = WEEK.SIDEBAR_WIDTH + dayIndex * WEEK.DAY_WIDTH;
+  const weekdayOpacity = isToday ? 1 : 0.65;
+  const dateOpacity = isToday ? 1 : 0.75;
 
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          position: "absolute",
-          left: colLeft,
-          top: gridTop,
-          width: 1,
-          height: totalHeight - gridTop,
-          backgroundColor: Colors.SLATE,
-        }}
-      />
+      <div tw={`flex absolute left-[${colLeft}px] top-[${gridTop}px] w-px h-[${totalHeight - gridTop}px] bg-[${Colors.SLATE}]`} />
       {isToday && (
-        <div
-          style={{
-            display: "flex",
-            position: "absolute",
-            left: colLeft,
-            top: headerTop,
-            width: WEEK.DAY_WIDTH,
-            height: WEEK.HEADER_HEIGHT,
-            borderRadius: 6,
-            backgroundColor: Colors.DEEP_DARK,
-            opacity: 0.5,
-          }}
-        />
+        <div tw={`flex absolute left-[${colLeft}px] top-[${headerTop}px] w-[${WEEK.DAY_WIDTH}px] h-[${WEEK.HEADER_HEIGHT}px] rounded-[6px] bg-[${Colors.DEEP_DARK}] opacity-50`} />
       )}
-      <div
-        tw="flex items-center justify-center"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          position: "absolute",
-          left: colLeft,
-          top: headerTop,
-          width: WEEK.DAY_WIDTH,
-          height: WEEK.HEADER_HEIGHT,
-          gap: 4,
-        }}
-      >
-        <span
-          style={{
-            fontSize: 13,
-            fontWeight: 600,
-            color: Colors.WHITE,
-            opacity: isToday ? 1 : 0.65,
-            fontFamily: "Inter",
-          }}
-        >
+      <div tw={`flex items-center justify-center absolute left-[${colLeft}px] top-[${headerTop}px] w-[${WEEK.DAY_WIDTH}px] h-[${WEEK.HEADER_HEIGHT}px] gap-[4px]`}>
+        <span tw={`text-[13px] font-semibold text-white opacity-[${weekdayOpacity}]`}>
           {`${formatWeekday(day)} `}
         </span>
-        <span
-          style={{
-            fontSize: 16,
-            fontWeight: 600,
-            color: Colors.WHITE,
-            opacity: isToday ? 1 : 0.75,
-            fontFamily: "Inter",
-          }}
-        >
+        <span tw={`text-[16px] font-semibold text-white opacity-[${dateOpacity}]`}>
           {`${day.getDate()}/${day.getMonth() + 1}`}
         </span>
       </div>

@@ -1,4 +1,3 @@
-import { Colors } from "@/common/colors";
 import { WEEK } from "@/ui/schedule/components/week/constants";
 
 interface CurrentTimeMarkerProps {
@@ -10,18 +9,6 @@ export function CurrentTimeMarker({ todayIndex, markerY }: CurrentTimeMarkerProp
   const left = WEEK.SIDEBAR_WIDTH + todayIndex * WEEK.DAY_WIDTH + 4;
 
   return (
-    <div
-      style={{
-        display: "flex",
-        position: "absolute",
-        left,
-        top: markerY - 2,
-        width: WEEK.DAY_WIDTH - 6,
-        height: 4,
-        backgroundColor: Colors.WHITE,
-        opacity: 0.85,
-        borderRadius: 2,
-      }}
-    />
+    <div tw={`flex absolute left-[${left}px] top-[${markerY - 2}px] w-[${WEEK.DAY_WIDTH - 6}px] h-[4px] bg-white opacity-[0.85] rounded-[2px]`} />
   );
 }

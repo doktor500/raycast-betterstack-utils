@@ -24,69 +24,18 @@ export function SummaryBlock({ year, month, summary }: SummaryBlockProps) {
   const height = summaryBlockHeight(summary.length);
 
   return (
-    <div
-      tw="flex"
-      style={{
-        display: "flex",
-        width: MONTH.WIDTH,
-        height,
-        borderRadius: 10,
-        border: `1px solid ${Colors.SLATE}`,
-        backgroundColor: Colors.DARK,
-        overflow: "hidden",
-      }}
-    >
-      <div
-        tw="flex items-center"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          width: SUMMARY.MONTH_COL_WIDTH,
-          paddingLeft: 24,
-          borderRight: `1px solid ${Colors.SLATE}`,
-        }}
-      >
-        <span style={{ fontSize: 18, fontWeight: 700, color: Colors.FROST, fontFamily: "Inter" }}>{monthLabel}</span>
+    <div tw={`flex w-[${MONTH.WIDTH}px] h-[${height}px] rounded-[10px] border border-[${Colors.SLATE}] bg-[${Colors.DARK}] overflow-hidden`}>
+      <div tw={`flex items-center w-[${SUMMARY.MONTH_COL_WIDTH}px] pl-[24px] border-r border-[${Colors.SLATE}]`}>
+        <span tw={`text-[18px] font-bold text-[${Colors.FROST}]`}>{monthLabel}</span>
       </div>
-      <div
-        tw="flex flex-col justify-center"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          flex: 1,
-          paddingTop: SUMMARY.VERTICAL_PADDING,
-          paddingBottom: SUMMARY.VERTICAL_PADDING,
-        }}
-      >
+      <div tw={`flex flex-col justify-center flex-1 pt-[${SUMMARY.VERTICAL_PADDING}px] pb-[${SUMMARY.VERTICAL_PADDING}px]`}>
         {summary.map(({ teamMember, email, hours, color }, index) => (
-          <div
-            key={index}
-            tw="flex items-center"
-            style={{ display: "flex", alignItems: "center", height: SUMMARY.VERTICAL_ROW_HEIGHT, paddingLeft: 20 }}
-          >
-            <div
-              style={{
-                display: "flex",
-                width: 12,
-                height: 12,
-                borderRadius: "50%",
-                backgroundColor: color,
-                marginRight: 10,
-              }}
-            />
-            <span
-              style={{
-                fontSize: 17,
-                fontWeight: 600,
-                color: Colors.SUBTLE,
-                flex: 1,
-                fontFamily: "Inter",
-              }}
-            >
+          <div key={index} tw={`flex items-center h-[${SUMMARY.VERTICAL_ROW_HEIGHT}px] pl-[20px]`}>
+            <div tw={`flex w-[12px] h-[12px] rounded-full bg-[${color}] mr-[10px]`} />
+            <span tw={`flex-1 text-[17px] font-semibold text-[${Colors.SUBTLE}]`}>
               {`${teamMember} - ${email}`}
             </span>
-            <span style={{ fontSize: 15, color: Colors.DIM, paddingRight: 24, fontFamily: "Inter" }}>
+            <span tw={`text-[15px] text-[${Colors.DIM}] pr-[24px]`}>
               {formatDaysHours(hours)}
             </span>
           </div>

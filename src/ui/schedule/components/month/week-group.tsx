@@ -30,19 +30,9 @@ export function WeekGroup({
   const todayIndex = days.findIndex((day) => isSameDay(day, today));
 
   return (
-    <div style={{ display: "flex", position: "relative", width: MONTH.WIDTH, height: rowHeight }}>
+    <div tw={`flex relative w-[${MONTH.WIDTH}px] h-[${rowHeight}px]`}>
       {weekIndex > 0 && (
-        <div
-          style={{
-            display: "flex",
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: MONTH.WIDTH,
-            height: 1,
-            backgroundColor: Colors.SLATE,
-          }}
-        />
+        <div tw={`flex absolute top-0 left-0 w-[${MONTH.WIDTH}px] h-px bg-[${Colors.SLATE}]`} />
       )}
       {days.map((day, index) => (
         <DayColumn

@@ -3,5 +3,18 @@ import type { ReactNode } from "react";
 import { loadFonts } from "@/common/utils/font-loader";
 
 export async function renderToSvg(element: ReactNode, width: number, height: number): Promise<string> {
-  return satori(element, { width, height, fonts: loadFonts(), tailwindConfig: {} });
+  return satori(element, {
+    width,
+    height,
+    fonts: loadFonts(),
+    tailwindConfig: {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: "JetBrainsMono",
+          },
+        },
+      },
+    },
+  });
 }

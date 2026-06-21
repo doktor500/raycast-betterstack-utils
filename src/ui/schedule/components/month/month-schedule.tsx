@@ -94,7 +94,7 @@ function CombinedScheduleRoot({ events, window, onCallUser }: Props) {
     MONTH.BLOCK_HEADER_HEIGHT + weekRowHeightsByMonth[monthIndex].reduce((a, b) => a + b, 0);
 
   return (
-    <div tw="flex flex-col" style={{ display: "flex", flexDirection: "column", width: MONTH.WIDTH, backgroundColor }}>
+    <div tw={`flex flex-col w-[${MONTH.WIDTH}px] bg-[${backgroundColor}]`}>
       {onCallUser && <OnCallPill name={onCallUser.name} color={onCallUser.color} />}
       {monthGroups.map(({ year, month, weeks }, monthIndex) => (
         <Fragment key={monthIndex}>
@@ -108,13 +108,13 @@ function CombinedScheduleRoot({ events, window, onCallUser }: Props) {
             columnBg={columnBg}
             weekRowHeights={weekRowHeightsByMonth[monthIndex]}
           />
-          <div style={{ display: "flex", height: MONTH.SUMMARY_GAP }} />
+          <div tw={`flex h-[${MONTH.SUMMARY_GAP}px]`} />
           <SummaryBlock year={year} month={month} summary={summaries[monthIndex]} />
           {monthIndex < monthGroups.length - 1 && (
             <>
-              <div style={{ display: "flex", height: MONTH.BLOCK_GAP / 2 }} />
-              <div style={{ display: "flex", width: MONTH.WIDTH, height: 2, backgroundColor: Colors.SLATE }} />
-              <div style={{ display: "flex", height: MONTH.BLOCK_GAP / 2 }} />
+              <div tw={`flex h-[${MONTH.BLOCK_GAP / 2}px]`} />
+              <div tw={`flex w-[${MONTH.WIDTH}px] h-[2px] bg-[${Colors.SLATE}]`} />
+              <div tw={`flex h-[${MONTH.BLOCK_GAP / 2}px]`} />
             </>
           )}
         </Fragment>

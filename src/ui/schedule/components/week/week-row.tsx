@@ -9,58 +9,17 @@ interface WeekRowProps {
 
 export function WeekRow({ weekIndex, spans, rowHeight }: WeekRowProps) {
   return (
-    <div style={{ display: "flex", position: "relative", width: MONTH.WIDTH, height: rowHeight }}>
+    <div tw={`flex relative w-[${MONTH.WIDTH}px] h-[${rowHeight}px]`}>
       {weekIndex > 0 && (
-        <div
-          style={{
-            display: "flex",
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: MONTH.WIDTH,
-            height: 1,
-            backgroundColor: SKELETON_COLOR,
-          }}
-        />
+        <div tw={`flex absolute top-0 left-0 w-[${MONTH.WIDTH}px] h-px bg-[${SKELETON_COLOR}]`} />
       )}
       {Array.from({ length: 7 }, (_, dayIndex) => {
         const left = dayIndex * MONTH.DAY_WIDTH;
         return (
-          <div key={dayIndex} style={{ display: "flex" }}>
-            <div
-              style={{
-                display: "flex",
-                position: "absolute",
-                left,
-                top: 0,
-                width: 1,
-                height: rowHeight,
-                backgroundColor: SKELETON_COLOR,
-              }}
-            />
-            <div
-              style={{
-                display: "flex",
-                position: "absolute",
-                left,
-                top: MONTH.DAY_HEADER_HEIGHT,
-                width: MONTH.DAY_WIDTH,
-                height: 1,
-                backgroundColor: SKELETON_COLOR,
-              }}
-            />
-            <div
-              style={{
-                display: "flex",
-                position: "absolute",
-                left: left + MONTH.DAY_WIDTH / 2 - 20,
-                top: 5,
-                width: 39,
-                height: 15,
-                backgroundColor: SKELETON_COLOR,
-                borderRadius: 2,
-              }}
-            />
+          <div key={dayIndex} tw="flex">
+            <div tw={`flex absolute left-[${left}px] top-0 w-px h-[${rowHeight}px] bg-[${SKELETON_COLOR}]`} />
+            <div tw={`flex absolute left-[${left}px] top-[${MONTH.DAY_HEADER_HEIGHT}px] w-[${MONTH.DAY_WIDTH}px] h-px bg-[${SKELETON_COLOR}]`} />
+            <div tw={`flex absolute left-[${left + MONTH.DAY_WIDTH / 2 - 20}px] top-[5px] w-[39px] h-[15px] bg-[${SKELETON_COLOR}] rounded-[2px]`} />
           </div>
         );
       })}
@@ -68,19 +27,7 @@ export function WeekRow({ weekIndex, spans, rowHeight }: WeekRowProps) {
         const barLeft = start * MONTH.DAY_WIDTH + MONTH.H_GAP;
         const barWidth = (end - start) * MONTH.DAY_WIDTH - 2 * MONTH.H_GAP;
         return (
-          <div
-            key={index}
-            style={{
-              display: "flex",
-              position: "absolute",
-              left: barLeft,
-              top: MONTH.ROW_TOP,
-              width: barWidth,
-              height: MONTH.ROW_HEIGHT,
-              borderRadius: 6,
-              backgroundColor: SKELETON_COLOR,
-            }}
-          />
+          <div key={index} tw={`flex absolute left-[${barLeft}px] top-[${MONTH.ROW_TOP}px] w-[${barWidth}px] h-[${MONTH.ROW_HEIGHT}px] rounded-[6px] bg-[${SKELETON_COLOR}]`} />
         );
       })}
     </div>

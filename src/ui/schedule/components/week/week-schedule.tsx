@@ -32,16 +32,10 @@ function WeekViewRoot({ events, window, onCallUser }: WeekViewProps) {
   const nowFraction = todayIndex >= 0 ? (today.getTime() - todayStartMs) / (24 * 3600 * 1000) : 0;
   const markerY = gridTop + nowFraction * WEEK.TIMELINE_HEIGHT;
 
+  const bgColor = onCallUser ? "transparent" : Colors.DARK;
+
   return (
-    <div
-      style={{
-        display: "flex",
-        position: "relative",
-        width: WEEK.WIDTH,
-        height: totalHeight,
-        backgroundColor: onCallUser ? "transparent" : Colors.DARK,
-      }}
-    >
+    <div tw={`flex relative w-[${WEEK.WIDTH}px] h-[${totalHeight}px] bg-[${bgColor}]`}>
       {onCallUser && <OnCallPill name={onCallUser.name} color={onCallUser.color} />}
       <HourGridLines gridTop={gridTop} />
       <HourLabels gridTop={gridTop} />

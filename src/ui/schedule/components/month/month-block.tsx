@@ -28,28 +28,9 @@ export function MonthBlock({
   const monthLabel = formatMonthLabel(currentMonth);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        position: "relative",
-        width: MONTH.WIDTH,
-        height: blockHeight,
-        border: `1px solid ${Colors.SLATE}`,
-        overflow: "hidden",
-      }}
-    >
-      <div
-        tw="flex items-center justify-center"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          height: MONTH.BLOCK_HEADER_HEIGHT,
-          borderBottom: `1px solid ${Colors.SLATE}`,
-        }}
-      >
-        <span style={{ fontSize: 17, fontWeight: 700, color: Colors.FROST, fontFamily: "Inter" }}>{monthLabel}</span>
+    <div tw={`flex flex-col relative w-[${MONTH.WIDTH}px] h-[${blockHeight}px] border border-[${Colors.SLATE}] overflow-hidden`}>
+      <div tw={`flex items-center justify-center h-[${MONTH.BLOCK_HEADER_HEIGHT}px] border-b border-[${Colors.SLATE}]`}>
+        <span tw={`text-[17px] font-bold text-[${Colors.FROST}]`}>{monthLabel}</span>
       </div>
       {weeks.map((days, localIndex) => (
         <WeekGroup

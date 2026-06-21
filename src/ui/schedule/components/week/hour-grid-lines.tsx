@@ -7,15 +7,7 @@ export function HourGridLines({ gridTop }: { gridTop: number }) {
       {Array.from({ length: WEEK.HOURS }, (_, hourIndex) => (
         <div
           key={`hg${hourIndex}`}
-          style={{
-            display: "flex",
-            position: "absolute",
-            left: WEEK.SIDEBAR_WIDTH,
-            top: gridTop + hourIndex * WEEK.HOUR_HEIGHT,
-            width: WEEK.WIDTH - WEEK.SIDEBAR_WIDTH,
-            height: 1,
-            backgroundColor: Colors.SLATE,
-          }}
+          tw={`flex absolute left-[${WEEK.SIDEBAR_WIDTH}px] top-[${gridTop + hourIndex * WEEK.HOUR_HEIGHT}px] w-[${WEEK.WIDTH - WEEK.SIDEBAR_WIDTH}px] h-px bg-[${Colors.SLATE}]`}
         />
       ))}
     </>

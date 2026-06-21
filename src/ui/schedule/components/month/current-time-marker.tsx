@@ -1,4 +1,3 @@
-import { Colors } from "@/common/colors";
 import { MONTH } from "@/ui/schedule/components/month/constants";
 
 interface CurrentTimeMarkerProps {
@@ -12,18 +11,6 @@ export function CurrentTimeMarker({ index, today, rowHeight }: CurrentTimeMarker
   const left = index * MONTH.DAY_WIDTH + fraction * MONTH.DAY_WIDTH - 2;
 
   return (
-    <div
-      style={{
-        display: "flex",
-        position: "absolute",
-        left,
-        top: MONTH.DAY_HEADER_HEIGHT,
-        width: 4,
-        height: rowHeight - MONTH.DAY_HEADER_HEIGHT,
-        backgroundColor: Colors.WHITE,
-        opacity: 0.85,
-        borderRadius: 2,
-      }}
-    />
+    <div tw={`flex absolute left-[${left}px] top-[${MONTH.DAY_HEADER_HEIGHT}px] w-[4px] h-[${rowHeight - MONTH.DAY_HEADER_HEIGHT}px] bg-white opacity-[0.85] rounded-[2px]`} />
   );
 }

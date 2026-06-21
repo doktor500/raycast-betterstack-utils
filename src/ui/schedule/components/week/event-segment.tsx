@@ -23,32 +23,9 @@ export function EventSegment({ segment, colLeft, colWidth, gridTop }: EventSegme
   const showName = height >= WEEK.LABEL_MIN_HEIGHT;
 
   return (
-    <div
-      style={{
-        display: "flex",
-        position: "absolute",
-        left: colLeft,
-        top,
-        width: colWidth,
-        height,
-        backgroundColor: segment.color,
-        borderRadius: 3,
-        overflow: "hidden",
-      }}
-    >
+    <div tw={`flex absolute left-[${colLeft}px] top-[${top}px] w-[${colWidth}px] h-[${height}px] bg-[${segment.color}] rounded-[3px] overflow-hidden`}>
       {showName && (
-        <span
-          style={{
-            position: "absolute",
-            left: 12,
-            top: 4,
-            fontSize: 14,
-            fontWeight: 600,
-            color: themeColor,
-            fontFamily: "Inter",
-            whiteSpace: "nowrap",
-          }}
-        >
+        <span tw={`absolute left-[12px] top-[4px] text-[14px] font-semibold text-[${themeColor}] whitespace-nowrap`}>
           {truncateLabel(segment.label, colWidth - 22, 14)}
         </span>
       )}

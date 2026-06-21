@@ -7,20 +7,7 @@ export function HourLabels({ gridTop }: { gridTop: number }) {
       {Array.from({ length: WEEK.HOURS }, (_, hourIndex) => (
         <div
           key={`hl${hourIndex}`}
-          tw="flex items-center justify-end"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-end",
-            position: "absolute",
-            left: 0,
-            top: gridTop + hourIndex * WEEK.HOUR_HEIGHT,
-            width: WEEK.SIDEBAR_WIDTH - 2,
-            height: WEEK.HOUR_HEIGHT,
-            fontSize: 10,
-            color: Colors.DIM,
-            fontFamily: "JetBrainsMono",
-          }}
+          tw={`flex items-center justify-end absolute left-0 top-[${gridTop + hourIndex * WEEK.HOUR_HEIGHT}px] w-[${WEEK.SIDEBAR_WIDTH - 2}px] h-[${WEEK.HOUR_HEIGHT}px] text-[10px] text-[${Colors.DIM}] font-mono`}
         >
           {hourIndex}
         </div>

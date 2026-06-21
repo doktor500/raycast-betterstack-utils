@@ -19,33 +19,9 @@ export function SpanBar({ bar }: SpanBarProps) {
   const label = textAvailWidth > 15 ? truncateLabel(bar.label, textAvailWidth, 16) : "";
 
   return (
-    <div
-      tw="flex items-center"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        position: "absolute",
-        left: barLeft,
-        top: barTop,
-        width: barWidth,
-        height: MONTH.ROW_HEIGHT,
-        backgroundColor: bar.color,
-        borderRadius,
-        boxShadow: "0 2px 4px rgba(11,12,21,0.3)",
-        overflow: "hidden",
-      }}
-    >
+    <div tw={`flex items-center absolute left-[${barLeft}px] top-[${barTop}px] w-[${barWidth}px] h-[${MONTH.ROW_HEIGHT}px] bg-[${bar.color}] rounded-[${borderRadius}px] shadow-[0_2px_4px_rgba(11,12,21,0.3)] overflow-hidden`}>
       {label && (
-        <span
-          style={{
-            paddingLeft: 12,
-            fontSize: 16,
-            fontWeight: 600,
-            color: themeColor,
-            fontFamily: "Inter",
-            whiteSpace: "nowrap",
-          }}
-        >
+        <span tw={`pl-[12px] text-[16px] font-semibold text-[${themeColor}] whitespace-nowrap`}>
           {label}
         </span>
       )}

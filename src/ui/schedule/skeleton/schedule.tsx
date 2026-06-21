@@ -24,107 +24,23 @@ function ScheduleSkeletonRoot() {
   const summaryHeight = summaryBlockHeight(NUM_SUMMARY);
 
   return (
-    <div tw="flex flex-col" style={{ display: "flex", flexDirection: "column", width: MONTH.WIDTH }}>
-      <div style={{ height: ON_CALL_PILL_BANNER }} />
-      <div
-        style={{
-          display: "flex",
-          position: "relative",
-          width: MONTH.WIDTH,
-          height: calendarHeight,
-          borderRadius: 10,
-          border: `1px solid ${SKELETON_COLOR}`,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            position: "absolute",
-            inset: 0,
-            borderRadius: 10,
-            backgroundColor: "rgba(40,53,78,0.2)",
-          }}
-        />
-        <div
-          style={{
-            display: "flex",
-            position: "absolute",
-            left: MONTH.WIDTH / 2 - 80,
-            top: 13,
-            width: 160,
-            height: 18,
-            backgroundColor: SKELETON_COLOR,
-            borderRadius: 4,
-          }}
-        />
-        <div
-          style={{
-            display: "flex",
-            position: "absolute",
-            top: MONTH.BLOCK_HEADER_HEIGHT,
-            left: 0,
-            width: MONTH.WIDTH,
-            height: 1,
-            backgroundColor: SKELETON_COLOR,
-          }}
-        />
+    <div tw={`flex flex-col w-[${MONTH.WIDTH}px]`}>
+      <div tw={`flex h-[${ON_CALL_PILL_BANNER}px]`} />
+      <div tw={`flex relative w-[${MONTH.WIDTH}px] h-[${calendarHeight}px] rounded-[10px] border border-[${SKELETON_COLOR}]`}>
+        <div tw={`flex absolute inset-0 rounded-[10px] bg-[rgba(40,53,78,0.2)]`} />
+        <div tw={`flex absolute left-[${MONTH.WIDTH / 2 - 80}px] top-[13px] w-[160px] h-[18px] bg-[${SKELETON_COLOR}] rounded-[4px]`} />
+        <div tw={`flex absolute top-[${MONTH.BLOCK_HEADER_HEIGHT}px] left-0 w-[${MONTH.WIDTH}px] h-px bg-[${SKELETON_COLOR}]`} />
         {Array.from({ length: NUM_WEEKS }, (_, weekIndex) => (
-          <div
-            key={weekIndex}
-            style={{
-              display: "flex",
-              position: "absolute",
-              top: MONTH.BLOCK_HEADER_HEIGHT + weekIndex * rowHeight,
-              left: 0,
-            }}
-          >
+          <div key={weekIndex} tw={`flex absolute top-[${MONTH.BLOCK_HEADER_HEIGHT + weekIndex * rowHeight}px] left-0`}>
             <WeekRow weekIndex={weekIndex} spans={WEEK_BAR_SPANS[weekIndex]} rowHeight={rowHeight} />
           </div>
         ))}
       </div>
-      <div style={{ display: "flex", height: MONTH.SUMMARY_GAP }} />
-      <div
-        style={{
-          display: "flex",
-          position: "relative",
-          width: MONTH.WIDTH,
-          height: summaryHeight,
-          borderRadius: 10,
-          border: `1px solid ${SKELETON_COLOR}`,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            position: "absolute",
-            inset: 0,
-            borderRadius: 10,
-            backgroundColor: "rgba(40,53,78,0.2)",
-          }}
-        />
-        <div
-          style={{
-            display: "flex",
-            position: "absolute",
-            left: 24,
-            top: summaryHeight / 2 - 5,
-            width: 90,
-            height: 14,
-            backgroundColor: SKELETON_COLOR,
-            borderRadius: 3,
-          }}
-        />
-        <div
-          style={{
-            display: "flex",
-            position: "absolute",
-            left: SUMMARY.MONTH_COL_WIDTH,
-            top: 16,
-            width: 1,
-            height: summaryHeight - 32,
-            backgroundColor: SKELETON_COLOR,
-          }}
-        />
+      <div tw={`flex h-[${MONTH.SUMMARY_GAP}px]`} />
+      <div tw={`flex relative w-[${MONTH.WIDTH}px] h-[${summaryHeight}px] rounded-[10px] border border-[${SKELETON_COLOR}]`}>
+        <div tw={`flex absolute inset-0 rounded-[10px] bg-[rgba(40,53,78,0.2)]`} />
+        <div tw={`flex absolute left-[24px] top-[${summaryHeight / 2 - 5}px] w-[90px] h-[14px] bg-[${SKELETON_COLOR}] rounded-[3px]`} />
+        <div tw={`flex absolute left-[${SUMMARY.MONTH_COL_WIDTH}px] top-[16px] w-px h-[${summaryHeight - 32}px] bg-[${SKELETON_COLOR}]`} />
       </div>
     </div>
   );
