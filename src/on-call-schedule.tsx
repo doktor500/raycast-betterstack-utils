@@ -30,7 +30,12 @@ function OnCallSchedule() {
   const { timeWindow, timeRange, offset, setTimeRange, setOffset } = timeData;
 
   useEffect(() => {
-    renderSchedule({ events: scheduleEvents, onCallUser, timeWindow, timeRange, isLoading }).then(setMarkdown);
+    renderSchedule({ events: scheduleEvents, onCallUser, timeWindow, timeRange, isLoading })
+      .then(setMarkdown)
+      .catch((error) => {
+        const message = error instanceof Error ? error.message : String(error);
+        setMarkdown(`## Schedule render error\n\n\`\`\`\n${message}\n\`\`\``);
+      });
   }, [scheduleEvents, onCallUser, timeWindow, timeRange, isLoading]);
 
   if (hasError) {
@@ -68,7 +73,7 @@ async function copyAsPng(props: { timeRange: TimeRange; timeWindow: TimeWindow; 
   const data = { events, timeWindow };
 
   try {
-    const svg = timeRange === WEEK ? await buildWeekViewSvg(data) : await buildMonthViewSvg(data);
+    const svg = timeRange === WEEK ? await buildWeekViewSvg(data) : await buildMonthViewSvg({ ...data, forExport: true });
     await exportSvgToClipboard(svg, environment.supportPath);
     toast.style = Toast.Style.Success;
     toast.title = "Schedule copied to clipboard";

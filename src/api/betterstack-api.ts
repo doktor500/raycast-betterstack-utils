@@ -40,7 +40,10 @@ interface Event {
 
 interface EventsApiResponse {
   events: Event[];
+  pagination?: { next?: string | null };
 }
+
+const THREE_MONTHS_MS = 90 * 24 * 60 * 60 * 1000;
 
 export async function getRota(): Promise<Rota> {
   const result = await fetchAllPages<{ id: string; attributes: { name: Optional<string> } }>(`${BASE_URL}/on-calls`);
@@ -54,9 +57,20 @@ export async function getRota(): Promise<Rota> {
 }
 
 export async function getOnCallEvents(calendarId: string, teamMembers: Map<string, User>): Promise<OnCallEvent[]> {
-  const { events } = await fetchJson<EventsApiResponse>(`${BASE_URL}/on-calls/${calendarId}/events`);
+  const from = new Date(Date.now() - THREE_MONTHS_MS).toISOString();
+  const to = new Date(Date.now() + THREE_MONTHS_MS).toISOString();
+  const params = new URLSearchParams({ from, to });
 
-  return events.flatMap((event) =>
+  let url: Optional<string> = `${BASE_URL}/on-calls/${calendarId}/events?${params}`;
+  const allEvents: Event[] = [];
+
+  while (url) {
+    const page: EventsApiResponse = await fetchJson<EventsApiResponse>(url);
+    allEvents.push(...page.events);
+    url = asOptional(page.pagination?.next);
+  }
+
+  return allEvents.flatMap((event) =>
     event.users.map((email) => ({
       startedAt: event.starts_at,
       endedAt: event.ends_at,

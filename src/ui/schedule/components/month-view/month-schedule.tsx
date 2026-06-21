@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { addDays, startOfWeek, TimeWindow } from "@/common/utils/date-utils";
 import { rangeOf } from "@/common/utils/collection-utils";
 import { buildWeekSpanBars } from "@/ui/schedule/components/month-view/span-bars";
@@ -15,6 +15,7 @@ type MonthViewProps = {
   events: OnCallEvent[];
   timeWindow: TimeWindow;
   onCallUser?: OnCallUser;
+  forExport?: boolean;
 };
 
 export async function buildMonthViewSvg(props: MonthViewProps): Promise<string> {
@@ -67,10 +68,11 @@ function buildMonthData(events: OnCallEvent[], timeWindow: TimeWindow) {
   return { monthGroups, weekTimelinesByMonth, weekRowHeightsByMonth, summaries };
 }
 
-function MonthScheduleView({ events, timeWindow, onCallUser }: MonthViewProps) {
+function MonthScheduleView({ events, timeWindow, onCallUser, forExport = false }: MonthViewProps) {
   const today = new Date();
   const showTodayMarker = !!onCallUser;
   const columnBg = onCallUser ? "" : "bg-dark";
+  const showWeekendStripes = !forExport;
 
   const { monthGroups, weekTimelinesByMonth, weekRowHeightsByMonth, summaries } = buildMonthData(events, timeWindow);
 
@@ -78,7 +80,7 @@ function MonthScheduleView({ events, timeWindow, onCallUser }: MonthViewProps) {
     <div tw={cn("flex flex-col w-[1160px]", { "bg-dark": !onCallUser })}>
       {onCallUser && <OnCallUserPill name={onCallUser.name} color={onCallUser.color} />}
       {monthGroups.map(({ year, month, weeks }, monthIndex) => (
-        <Fragment key={monthIndex}>
+        <div key={monthIndex} tw="flex flex-col w-[1160px]">
           <MonthBlock
             weeks={weeks}
             today={today}
@@ -87,17 +89,18 @@ function MonthScheduleView({ events, timeWindow, onCallUser }: MonthViewProps) {
             showTodayMarker={showTodayMarker}
             columnBg={columnBg}
             weekRowHeights={weekRowHeightsByMonth[monthIndex]}
+            showWeekendStripes={showWeekendStripes}
           />
           <div tw="flex h-[12px]" />
-          <SummaryBlock year={year} month={month} summary={summaries[monthIndex]} />
+          <SummaryBlock year={year} month={month} summary={summaries[monthIndex]} bg={columnBg} />
           {monthIndex < monthGroups.length - 1 && (
-            <>
+            <div tw="flex flex-col w-[1160px]">
               <div tw="flex h-[20px]" />
               <div tw="flex w-[1160px] h-[2px] bg-slate" />
               <div tw="flex h-[20px]" />
-            </>
+            </div>
           )}
-        </Fragment>
+        </div>
       ))}
     </div>
   );

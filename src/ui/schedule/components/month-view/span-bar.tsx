@@ -28,7 +28,7 @@ export function SpanBar({ bar }: SpanBarProps) {
     >
       {showLabel && (
         <span
-          tw={`pl-[${TEXT_PADDING_LEFT}px] text-[16px] font-semibold text-[${themeColor}]`}
+          tw={`pl-[${TEXT_PADDING_LEFT}px] text-[19px] font-semibold text-[${themeColor}]`}
           style={{
             display: "block",
             width: `${textWidth}px`,

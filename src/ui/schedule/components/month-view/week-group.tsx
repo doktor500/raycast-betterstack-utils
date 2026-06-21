@@ -13,6 +13,7 @@ interface WeekGroupProps {
   showTodayMarker: boolean;
   columnBg: string;
   rowHeight: number;
+  showWeekendStripes: boolean;
 }
 
 export function WeekGroup({
@@ -23,6 +24,7 @@ export function WeekGroup({
   showTodayMarker,
   columnBg,
   rowHeight,
+  showWeekendStripes,
 }: WeekGroupProps) {
   const todayIndex = days.findIndex((day) => isSameDay(day, today));
 
@@ -35,6 +37,7 @@ export function WeekGroup({
           currentCalendarMonth={currentCalendarMonth}
           columnBg={columnBg}
           rowHeight={rowHeight}
+          showWeekendStripes={showWeekendStripes}
         />
       ))}
       <Grid days={days} currentCalendarMonth={currentCalendarMonth} />

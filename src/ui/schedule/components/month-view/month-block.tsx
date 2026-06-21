@@ -11,6 +11,7 @@ interface MonthBlockProps {
   showTodayMarker: boolean;
   columnBg: string;
   weekRowHeights: number[];
+  showWeekendStripes: boolean;
 }
 
 export function MonthBlock({
@@ -21,13 +22,14 @@ export function MonthBlock({
   showTodayMarker,
   columnBg,
   weekRowHeights,
+  showWeekendStripes,
 }: MonthBlockProps) {
   const monthLabel = formatMonth(currentCalendarMonth);
 
   return (
-    <div tw="flex flex-col relative w-[1160px] overflow-hidden">
+    <div tw="flex flex-col w-[1160px]">
       <div tw="flex items-center justify-center h-[44px]">
-        <span tw="text-[17px] font-bold text-frost">{monthLabel}</span>
+        <span tw="text-[20px] font-bold text-frost">{monthLabel}</span>
       </div>
       {weeks.map((days, localIndex) => (
         <WeekGroup
@@ -39,6 +41,7 @@ export function MonthBlock({
           showTodayMarker={showTodayMarker}
           columnBg={columnBg}
           rowHeight={weekRowHeights[localIndex]}
+          showWeekendStripes={showWeekendStripes}
         />
       ))}
     </div>

@@ -10,9 +10,10 @@ interface DayColumnProps {
   currentCalendarMonth: CalendarMonth;
   columnBg: string;
   rowHeight: number;
+  showWeekendStripes: boolean;
 }
 
-export function DayColumn({ day, currentCalendarMonth, columnBg, rowHeight }: DayColumnProps) {
+export function DayColumn({ day, currentCalendarMonth, columnBg, rowHeight, showWeekendStripes }: DayColumnProps) {
   const { year, month } = currentCalendarMonth;
   const isWeekend = day.getDay() === 0 || day.getDay() === 6;
   const isInCurrentMonth = day.getFullYear() === year && day.getMonth() === month;
@@ -21,7 +22,7 @@ export function DayColumn({ day, currentCalendarMonth, columnBg, rowHeight }: Da
   return (
     <div tw={`flex flex-col flex-1 relative h-[${rowHeight}px]`}>
       {columnBg && <div tw={cn("flex absolute inset-0", columnBg)} />}
-      {isInCurrentMonth && isWeekend && (
+      {isInCurrentMonth && isWeekend && showWeekendStripes && (
         <div
           tw="flex absolute inset-x-0 top-0 h-[30px]"
           style={{

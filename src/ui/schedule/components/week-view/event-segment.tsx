@@ -25,7 +25,8 @@ export function EventSegment({ segment }: EventSegmentProps) {
       tw={`flex absolute left-[2px] right-[2px] top-[${topPercent}%] h-[${height}px] bg-[${segment.color}] rounded-[3px] overflow-hidden`}
     >
       {showName && (
-        <span tw={`absolute left-[12px] top-[4px] text-[14px] font-semibold text-[${themeColor}] whitespace-nowrap`}>
+        <span tw={`absolute left-[12px] top-[4px] text-[16px] font-semibold text-[${themeColor}]`}
+              style={{ whiteSpace: "nowrap" }}>
           {truncateLabel(segment.label, TEXT_AVAILABLE_WIDTH, 14)}
         </span>
       )}

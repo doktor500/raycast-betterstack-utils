@@ -28,7 +28,7 @@ export function ScheduleActionPanel(props: ScheduleActionPanelProps) {
       <ToggleTimeRangeAction currentTimeRange={currentTimeRange} onTimeRangeChange={onTimeRangeChange} />
       <PreviousPeriodAction currentTimeRange={currentTimeRange} offset={offset} onOffsetChange={onOffsetChange} />
       <NextPeriodAction currentTimeRange={currentTimeRange} offset={offset} onOffsetChange={onOffsetChange} />
-      <BackToCurrentAction currentTimeRange={currentTimeRange} offset={offset} onOffsetChange={onOffsetChange} />
+      <BackToCurrentAction offset={offset} onOffsetChange={onOffsetChange} />
       <CopyScheduleAction onCopyAsPng={onCopyAsPng} />
       <FilterByUserSubmenu userNames={userNames} selectedUser={selectedUser} onUserSelect={onUserSelect} />
       <ClearUserFilterAction selectedUser={selectedUser} onUserSelect={onUserSelect} />

@@ -26,7 +26,7 @@ function WeekScheduleView({ events, timeWindow, onCallUser }: WeekViewProps) {
   return (
     <div tw={cn("flex flex-col w-[1160px]", { "bg-dark": !onCallUser })}>
       {onCallUser && <OnCallUserPill name={onCallUser.name} color={onCallUser.color} />}
-      <div tw="flex h-[500px]">
+      <div tw="flex h-[500px] pt-6">
         <HourLabels />
         {days.map((day, dayIndex) => (
           <DayColumn
