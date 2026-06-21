@@ -1,7 +1,6 @@
 import React, { Fragment } from "react";
 import { addDays, startOfWeek, TimeWindow } from "@/common/utils/date-utils";
 import { rangeOf } from "@/common/utils/collection-utils";
-import { Colors } from "@/common/colors";
 import { buildWeekSpanBars } from "@/ui/schedule/components/month/span-bars";
 import { OnCallEvent } from "@/domain/on-call-event";
 import { MonthBlock } from "@/ui/schedule/components/month/month-block";
@@ -66,13 +65,13 @@ function buildMonthData(events: OnCallEvent[], timeWindow: TimeWindow) {
 function CombinedScheduleRoot({ events, timeWindow, onCallUser }: Props) {
   const today = new Date();
   const showTodayMarker = !!onCallUser;
-  const backgroundColor = onCallUser ? "transparent" : Colors.DARK;
-  const columnBg = onCallUser ? Colors.DARK : "none";
+  const backgroundColor = onCallUser ? "" : "bg-dark";
+  const columnBg = onCallUser ? "bg-dark" : "";
 
   const { monthGroups, weekTimelinesByMonth, weekRowHeightsByMonth, summaries } = buildMonthData(events, timeWindow);
 
   return (
-    <div tw={`flex flex-col w-[1160px] bg-[${backgroundColor}]`}>
+    <div tw={`flex flex-col w-[1160px] ${backgroundColor}`}>
       {onCallUser && <OnCallPill name={onCallUser.name} color={onCallUser.color} />}
       {monthGroups.map(({ year, month, weeks }, monthIndex) => (
         <Fragment key={monthIndex}>
@@ -90,7 +89,7 @@ function CombinedScheduleRoot({ events, timeWindow, onCallUser }: Props) {
           {monthIndex < monthGroups.length - 1 && (
             <>
               <div tw="flex h-[20px]" />
-              <div tw={`flex w-[1160px] h-[2px] bg-[${Colors.SLATE}]`} />
+              <div tw="flex w-[1160px] h-[2px] bg-slate" />
               <div tw="flex h-[20px]" />
             </>
           )}
