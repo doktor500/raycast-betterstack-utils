@@ -34,13 +34,7 @@ function OnCallSchedule() {
   const window = timeRange === TimeRange.WEEK ? getCurrentWeekWindow(offset) : getCurrentMonthWindow(offset);
 
   useEffect(() => {
-    let cancelled = false;
-    renderSchedule({ events: filteredEvents, onCallUser, window, timeRange, isLoading }).then((result) => {
-      if (!cancelled) setMarkdown(result);
-    });
-    return () => {
-      cancelled = true;
-    };
+    renderSchedule({ events: filteredEvents, onCallUser, window, timeRange, isLoading }).then(setMarkdown);
   }, [filteredEvents, onCallUser, window, timeRange, isLoading]);
 
   function handleTimeRangeChange(range: TimeRange) {
