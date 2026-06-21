@@ -1,5 +1,5 @@
 import { type WeekSpanBar } from "@/ui/schedule/components/month/span-bars";
-import { formatMonthLabel } from "@/ui/schedule/components/month/constants";
+import { formatMonthLabel } from "@/ui/schedule/components/month/month-utils";
 import { Colors } from "@/common/colors";
 import { WeekGroup } from "@/ui/schedule/components/month/week-group";
 import { MONTH } from "@/ui/schedule/components/month/constants";

@@ -1,4 +1,5 @@
-import { MONTH, SUMMARY, summaryBlockHeight, formatMonthLabel } from "@/ui/schedule/components/month/constants";
+import { summaryBlockHeight, formatMonthLabel } from "@/ui/schedule/components/month/month-utils";
+import { MONTH, SUMMARY } from "@/ui/schedule/components/month/constants";
 import { Colors } from "@/common/colors";
 import { OnCallSummary } from "@/domain/on-call-summary";
 

@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { addDays, startOfWeek, TimeWindow } from "@/common/utils/date-utils";
 import { Colors } from "@/common/colors";
 import { buildWeekSpanBars } from "@/ui/schedule/components/month/span-bars";
-import { weekRowHeight, summaryBlockHeight } from "@/ui/schedule/components/month/constants";
+import { weekRowHeight, summaryBlockHeight } from "@/ui/schedule/components/month/month-utils";
 import { OnCallEvent } from "@/domain/on-call-event";
 import { MonthBlock } from "@/ui/schedule/components/month/month-block";
 import { SummaryBlock } from "@/ui/schedule/components/month/summary-block";

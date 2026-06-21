@@ -1,5 +1,6 @@
 import React from "react";
-import { MONTH, SUMMARY, weekRowHeight, summaryBlockHeight } from "@/ui/schedule/components/month/constants";
+import { MONTH, SUMMARY } from "@/ui/schedule/components/month/constants";
+import { weekRowHeight, summaryBlockHeight } from "@/ui/schedule/components/month/month-utils";
 import { ON_CALL_PILL_CIRC_R } from "@/ui/schedule/components/on-call-pill";
 import { WeekRow } from "@/ui/schedule/components/week/week-row";
 import { SKELETON_COLOR } from "@/ui/schedule/skeleton/colors/skeleton-colors";
