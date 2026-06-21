@@ -1,5 +1,5 @@
 import React from "react";
-import { LAYOUT, SUMMARY, weekRowHeight, summaryBlockHeight } from "@/ui/layout";
+import { MONTH, SUMMARY, weekRowHeight, summaryBlockHeight } from "@/ui/schedule/components/month/constants";
 import { ON_CALL_PILL_CIRC_R } from "@/ui/schedule/components/on-call-pill";
 import { WeekRow } from "@/ui/schedule/components/week/week-row";
 import { SKELETON_COLOR } from "@/ui/schedule/skeleton/colors/skeleton-colors";
@@ -20,19 +20,36 @@ const WEEK_BAR_SPANS = [
 
 function ScheduleSkeletonRoot() {
   const rowHeight = weekRowHeight(1);
-  const calendarHeight = LAYOUT.BLOCK_HEADER_HEIGHT + NUM_WEEKS * rowHeight;
+  const calendarHeight = MONTH.BLOCK_HEADER_HEIGHT + NUM_WEEKS * rowHeight;
   const summaryHeight = summaryBlockHeight(NUM_SUMMARY);
 
   return (
-    <div tw="flex flex-col" style={{ display: "flex", flexDirection: "column", width: LAYOUT.WIDTH }}>
+    <div tw="flex flex-col" style={{ display: "flex", flexDirection: "column", width: MONTH.WIDTH }}>
       <div style={{ height: ON_CALL_PILL_BANNER }} />
-      <div style={{ display: "flex", position: "relative", width: LAYOUT.WIDTH, height: calendarHeight, borderRadius: 10, border: `1px solid ${SKELETON_COLOR}` }}>
-        <div style={{ display: "flex", position: "absolute", inset: 0, borderRadius: 10, backgroundColor: "rgba(40,53,78,0.2)" }} />
+      <div
+        style={{
+          display: "flex",
+          position: "relative",
+          width: MONTH.WIDTH,
+          height: calendarHeight,
+          borderRadius: 10,
+          border: `1px solid ${SKELETON_COLOR}`,
+        }}
+      >
         <div
           style={{
             display: "flex",
             position: "absolute",
-            left: LAYOUT.WIDTH / 2 - 80,
+            inset: 0,
+            borderRadius: 10,
+            backgroundColor: "rgba(40,53,78,0.2)",
+          }}
+        />
+        <div
+          style={{
+            display: "flex",
+            position: "absolute",
+            left: MONTH.WIDTH / 2 - 80,
             top: 13,
             width: 160,
             height: 18,
@@ -44,9 +61,9 @@ function ScheduleSkeletonRoot() {
           style={{
             display: "flex",
             position: "absolute",
-            top: LAYOUT.BLOCK_HEADER_HEIGHT,
+            top: MONTH.BLOCK_HEADER_HEIGHT,
             left: 0,
-            width: LAYOUT.WIDTH,
+            width: MONTH.WIDTH,
             height: 1,
             backgroundColor: SKELETON_COLOR,
           }}
@@ -57,7 +74,7 @@ function ScheduleSkeletonRoot() {
             style={{
               display: "flex",
               position: "absolute",
-              top: LAYOUT.BLOCK_HEADER_HEIGHT + weekIndex * rowHeight,
+              top: MONTH.BLOCK_HEADER_HEIGHT + weekIndex * rowHeight,
               left: 0,
             }}
           >
@@ -65,9 +82,26 @@ function ScheduleSkeletonRoot() {
           </div>
         ))}
       </div>
-      <div style={{ display: "flex", height: LAYOUT.SUMMARY_GAP }} />
-      <div style={{ display: "flex", position: "relative", width: LAYOUT.WIDTH, height: summaryHeight, borderRadius: 10, border: `1px solid ${SKELETON_COLOR}` }}>
-        <div style={{ display: "flex", position: "absolute", inset: 0, borderRadius: 10, backgroundColor: "rgba(40,53,78,0.2)" }} />
+      <div style={{ display: "flex", height: MONTH.SUMMARY_GAP }} />
+      <div
+        style={{
+          display: "flex",
+          position: "relative",
+          width: MONTH.WIDTH,
+          height: summaryHeight,
+          borderRadius: 10,
+          border: `1px solid ${SKELETON_COLOR}`,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            position: "absolute",
+            inset: 0,
+            borderRadius: 10,
+            backgroundColor: "rgba(40,53,78,0.2)",
+          }}
+        />
         <div
           style={{
             display: "flex",
@@ -98,8 +132,8 @@ function ScheduleSkeletonRoot() {
 
 export async function buildScheduleSkeletonSvg(): Promise<string> {
   const rowHeight = weekRowHeight(1);
-  const calendarHeight = LAYOUT.BLOCK_HEADER_HEIGHT + NUM_WEEKS * rowHeight;
+  const calendarHeight = MONTH.BLOCK_HEADER_HEIGHT + NUM_WEEKS * rowHeight;
   const summaryHeight = summaryBlockHeight(NUM_SUMMARY);
-  const totalHeight = ON_CALL_PILL_BANNER + calendarHeight + LAYOUT.SUMMARY_GAP + summaryHeight;
-  return renderToSvg(<ScheduleSkeletonRoot />, LAYOUT.WIDTH, totalHeight);
+  const totalHeight = ON_CALL_PILL_BANNER + calendarHeight + MONTH.SUMMARY_GAP + summaryHeight;
+  return renderToSvg(<ScheduleSkeletonRoot />, MONTH.WIDTH, totalHeight);
 }

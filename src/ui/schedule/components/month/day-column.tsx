@@ -1,4 +1,4 @@
-import { formatWeekday } from "@/ui/layout";
+import { formatWeekday } from "@/common/utils/date-utils";
 import { Colors } from "@/common/colors";
 import { MONTH } from "@/ui/schedule/components/month/constants";
 

@@ -28,8 +28,7 @@ function WeekViewRoot({ events, window, onCallUser }: WeekViewProps) {
   const gridTop = bannerHeight + WEEK.HEADER_HEIGHT;
   const totalHeight = WEEK.TOTAL_HEIGHT + bannerHeight;
 
-  const todayStartMs =
-    todayIndex >= 0 ? new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime() : 0;
+  const todayStartMs = todayIndex >= 0 ? new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime() : 0;
   const nowFraction = todayIndex >= 0 ? (today.getTime() - todayStartMs) / (24 * 3600 * 1000) : 0;
   const markerY = gridTop + nowFraction * WEEK.TIMELINE_HEIGHT;
 

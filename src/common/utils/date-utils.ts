@@ -50,3 +50,7 @@ export function isDateInInterval(date: Date, start: Date, end: Date): boolean {
 
   return dateTime >= DateTime.fromJSDate(start) && dateTime < DateTime.fromJSDate(end);
 }
+
+export function formatWeekday(date: Date): string {
+  return date.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase();
+}

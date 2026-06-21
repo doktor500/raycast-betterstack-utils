@@ -15,12 +15,19 @@ type ScheduleData = {
   isLoading: boolean;
 };
 
-export async function renderSchedule({ events, onCallUser, window, timeRange, isLoading }: ScheduleData): Promise<string> {
+export async function renderSchedule({
+  events,
+  onCallUser,
+  window,
+  timeRange,
+  isLoading,
+}: ScheduleData): Promise<string> {
   if (isLoading) return `![schedule](${toSvgDataUri(await buildScheduleSkeletonSvg())})`;
 
-  const svg = timeRange === TimeRange.WEEK
-    ? await buildWeekViewSvg({ events, window, onCallUser })
-    : await buildMonthViewSvg({ events, window, onCallUser });
+  const svg =
+    timeRange === TimeRange.WEEK
+      ? await buildWeekViewSvg({ events, window, onCallUser })
+      : await buildMonthViewSvg({ events, window, onCallUser });
 
   return `![schedule](${toSvgDataUri(svg)})`;
 }

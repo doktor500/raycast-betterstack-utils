@@ -1,4 +1,4 @@
-import { type WeekSpanBar } from "@/ui/layout";
+import { type WeekSpanBar } from "@/ui/schedule/components/month/span-bars";
 import { isSameDay } from "@/common/utils/date-utils";
 import { Colors } from "@/common/colors";
 import { DayColumn } from "@/ui/schedule/components/month/day-column";

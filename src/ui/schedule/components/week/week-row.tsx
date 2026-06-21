@@ -1,4 +1,4 @@
-import { LAYOUT } from "@/ui/layout";
+import { MONTH } from "@/ui/schedule/components/month/constants";
 import { SKELETON_COLOR } from "@/ui/schedule/skeleton/colors/skeleton-colors";
 
 interface WeekRowProps {
@@ -9,12 +9,22 @@ interface WeekRowProps {
 
 export function WeekRow({ weekIndex, spans, rowHeight }: WeekRowProps) {
   return (
-    <div style={{ display: "flex", position: "relative", width: LAYOUT.WIDTH, height: rowHeight }}>
+    <div style={{ display: "flex", position: "relative", width: MONTH.WIDTH, height: rowHeight }}>
       {weekIndex > 0 && (
-        <div style={{ display: "flex", position: "absolute", top: 0, left: 0, width: LAYOUT.WIDTH, height: 1, backgroundColor: SKELETON_COLOR }} />
+        <div
+          style={{
+            display: "flex",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: MONTH.WIDTH,
+            height: 1,
+            backgroundColor: SKELETON_COLOR,
+          }}
+        />
       )}
       {Array.from({ length: 7 }, (_, dayIndex) => {
-        const left = dayIndex * LAYOUT.DAY_WIDTH;
+        const left = dayIndex * MONTH.DAY_WIDTH;
         return (
           <div key={dayIndex} style={{ display: "flex" }}>
             <div
@@ -33,8 +43,8 @@ export function WeekRow({ weekIndex, spans, rowHeight }: WeekRowProps) {
                 display: "flex",
                 position: "absolute",
                 left,
-                top: LAYOUT.DAY_HEADER_HEIGHT,
-                width: LAYOUT.DAY_WIDTH,
+                top: MONTH.DAY_HEADER_HEIGHT,
+                width: MONTH.DAY_WIDTH,
                 height: 1,
                 backgroundColor: SKELETON_COLOR,
               }}
@@ -43,7 +53,7 @@ export function WeekRow({ weekIndex, spans, rowHeight }: WeekRowProps) {
               style={{
                 display: "flex",
                 position: "absolute",
-                left: left + LAYOUT.DAY_WIDTH / 2 - 20,
+                left: left + MONTH.DAY_WIDTH / 2 - 20,
                 top: 5,
                 width: 39,
                 height: 15,
@@ -55,8 +65,8 @@ export function WeekRow({ weekIndex, spans, rowHeight }: WeekRowProps) {
         );
       })}
       {spans.map(({ start, end }, index) => {
-        const barLeft = start * LAYOUT.DAY_WIDTH + LAYOUT.H_GAP;
-        const barWidth = (end - start) * LAYOUT.DAY_WIDTH - 2 * LAYOUT.H_GAP;
+        const barLeft = start * MONTH.DAY_WIDTH + MONTH.H_GAP;
+        const barWidth = (end - start) * MONTH.DAY_WIDTH - 2 * MONTH.H_GAP;
         return (
           <div
             key={index}
@@ -64,9 +74,9 @@ export function WeekRow({ weekIndex, spans, rowHeight }: WeekRowProps) {
               display: "flex",
               position: "absolute",
               left: barLeft,
-              top: LAYOUT.ROW_TOP,
+              top: MONTH.ROW_TOP,
               width: barWidth,
-              height: LAYOUT.ROW_HEIGHT,
+              height: MONTH.ROW_HEIGHT,
               borderRadius: 6,
               backgroundColor: SKELETON_COLOR,
             }}

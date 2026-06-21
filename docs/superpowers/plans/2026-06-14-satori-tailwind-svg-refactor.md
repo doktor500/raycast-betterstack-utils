@@ -211,7 +211,7 @@ The SVG version used a `cy` coordinate and an SVG `<animate>` pulse ring. The ne
 
 - [ ] **Step 1: Replace on-call-pill.tsx**
 
-```typescript
+```tsx
 // src/ui/schedule/components/on-call-pill.tsx
 import { getThemeColor, Colors } from "@/common/colors";
 
@@ -269,7 +269,7 @@ git -C /Users/davidmolinero/dev/raycast-betterstack commit -m "refactor(pill): r
 
 `gridTop` is passed by the parent to offset the grid below the header/banner. Each line becomes a 1px-high absolutely positioned div.
 
-```typescript
+```tsx
 // src/ui/schedule/components/week/hour-grid-lines.tsx
 import { Colors } from "@/common/colors";
 import { WEEK } from "@/ui/schedule/components/week/constants";
@@ -299,7 +299,7 @@ export function HourGridLines({ gridTop }: { gridTop: number }) {
 
 Hour numbers are displayed in JetBrains Mono, right-aligned against the grid edge.
 
-```typescript
+```tsx
 // src/ui/schedule/components/week/hour-labels.tsx
 import { Colors } from "@/common/colors";
 import { WEEK } from "@/ui/schedule/components/week/constants";
@@ -350,7 +350,7 @@ The column is an absolutely positioned group: a vertical rule, an optional highl
 
 - [ ] **Step 1: Replace week/day-column.tsx**
 
-```typescript
+```tsx
 // src/ui/schedule/components/week/day-column.tsx
 import { Colors } from "@/common/colors";
 import { formatWeekday } from "@/ui/layout";
@@ -452,7 +452,7 @@ git -C /Users/davidmolinero/dev/raycast-betterstack commit -m "refactor(week): r
 
 The segment is an absolutely positioned colored div. `overflow: hidden` clips the label naturally, replacing the SVG `<clipPath>`. Positions are calculated from `gridTop` + fractional offsets.
 
-```typescript
+```tsx
 // src/ui/schedule/components/week/event-segment.tsx
 import { getThemeColor } from "@/common/colors";
 import { truncateLabel } from "@/ui/layout";
@@ -516,7 +516,7 @@ Note: the prop was renamed from `colX` to `colLeft` — update the caller in wee
 
 - [ ] **Step 2: Replace week-events.tsx**
 
-```typescript
+```tsx
 // src/ui/schedule/components/week/week-events.tsx
 import { getColor } from "@/common/colors";
 import { OnCallEvent } from "@/domain/on-call-event";
@@ -600,7 +600,7 @@ Replaces `<circle>` + `<line>` with a 4px-high absolute div spanning today's col
 
 - [ ] **Step 1: Replace week/current-time-marker.tsx**
 
-```typescript
+```tsx
 // src/ui/schedule/components/week/current-time-marker.tsx
 import { Colors } from "@/common/colors";
 import { WEEK } from "@/ui/schedule/components/week/constants";
@@ -648,7 +648,7 @@ The root component becomes a `<div>` with `position: relative`. The export `buil
 
 - [ ] **Step 1: Replace week-schedule.tsx**
 
-```typescript
+```tsx
 // src/ui/schedule/components/week/week-schedule.tsx
 import React from "react";
 import { getCurrentWeekDays, isSameDay, TimeWindow } from "@/common/utils/date-utils";
@@ -739,7 +739,7 @@ Removes the `clipId` prop (no longer needed — `overflow: hidden` handles clipp
 
 - [ ] **Step 1: Replace month/span-bar.tsx**
 
-```typescript
+```tsx
 // src/ui/schedule/components/month/span-bar.tsx
 import { type WeekSpanBar, truncateLabel } from "@/ui/layout";
 import { getThemeColor } from "@/common/colors";
@@ -812,7 +812,7 @@ The hatch fill (`url(#hatch)`) is replaced with CSS `repeating-linear-gradient` 
 
 - [ ] **Step 1: Replace month/day-column.tsx**
 
-```typescript
+```tsx
 // src/ui/schedule/components/month/day-column.tsx
 import { formatWeekday } from "@/ui/layout";
 import { Colors } from "@/common/colors";
@@ -923,7 +923,7 @@ Replaces `<line>` + `<circle>` with a 4px-wide absolutely positioned vertical di
 
 - [ ] **Step 1: Replace month/current-time-marker.tsx**
 
-```typescript
+```tsx
 // src/ui/schedule/components/month/current-time-marker.tsx
 import { Colors } from "@/common/colors";
 import { MONTH } from "@/ui/schedule/components/month/constants";
@@ -973,7 +973,7 @@ Removes `offsetY` (parent positions via flex column) and `baseId` (no longer nee
 
 - [ ] **Step 1: Replace month/week-group.tsx**
 
-```typescript
+```tsx
 // src/ui/schedule/components/month/week-group.tsx
 import { type WeekSpanBar } from "@/ui/layout";
 import { isSameDay } from "@/common/utils/date-utils";
@@ -1059,7 +1059,7 @@ Removes `offsetY` (parent flex column handles positioning). Becomes a flex row w
 
 - [ ] **Step 1: Replace month/summary-block.tsx**
 
-```typescript
+```tsx
 // src/ui/schedule/components/month/summary-block.tsx
 import { SUMMARY, summaryBlockHeight, formatDaysHours, formatMonthLabel } from "@/ui/layout";
 import { Colors } from "@/common/colors";
@@ -1165,7 +1165,7 @@ Removes `blockOffsetY` (parent flex column handles it). Becomes a bordered div w
 
 - [ ] **Step 1: Replace month/month-block.tsx**
 
-```typescript
+```tsx
 // src/ui/schedule/components/month/month-block.tsx
 import { type WeekSpanBar, formatMonthLabel } from "@/ui/layout";
 import { Colors } from "@/common/colors";
@@ -1252,7 +1252,7 @@ The root component becomes a flex column. Height is computed in `buildMonthViewS
 
 - [ ] **Step 1: Replace month-schedule.tsx**
 
-```typescript
+```tsx
 // src/ui/schedule/components/month/month-schedule.tsx
 import React, { Fragment } from "react";
 import { addDays, startOfWeek, TimeWindow } from "@/common/utils/date-utils";
@@ -1408,7 +1408,7 @@ git -C /Users/davidmolinero/dev/raycast-betterstack commit -m "refactor(month): 
 
 - [ ] **Step 1: Replace week-row.tsx**
 
-```typescript
+```tsx
 // src/ui/schedule/components/week/week-row.tsx
 import { LAYOUT } from "@/ui/layout";
 import { SKELETON_COLOR } from "@/ui/schedule/skeleton/colors/skeleton-colors";
@@ -1488,7 +1488,7 @@ export function WeekRow({ weekIndex, spans, rowHeight }: WeekRowProps) {
 
 - [ ] **Step 2: Replace skeleton/schedule.tsx**
 
-```typescript
+```tsx
 // src/ui/schedule/skeleton/schedule.tsx
 import React from "react";
 import { LAYOUT, SUMMARY, weekRowHeight, summaryBlockHeight } from "@/ui/layout";
@@ -1654,7 +1654,7 @@ git -C /Users/davidmolinero/dev/raycast-betterstack commit -m "refactor: make re
 
 - [ ] **Step 1: Replace on-call-schedule.tsx**
 
-```typescript
+```tsx
 // src/on-call-schedule.tsx
 import { Detail, environment, showToast, Toast } from "@raycast/api";
 import { useState, useEffect } from "react";

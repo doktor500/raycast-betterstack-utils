@@ -1,7 +1,7 @@
 import { OnCallEvent } from "@/domain/on-call-event";
 import { getColor } from "@/common/colors";
-import { FONT_FAMILY } from "@/common/fonts";
 import { formatUserName } from "@/domain/user";
+import { MONTH } from "@/ui/schedule/components/month/constants";
 
 export interface WeekSpanBar {
   startDayIndex: number;
@@ -18,70 +18,6 @@ interface DayPosition {
   fraction: number;
 }
 
-export const LAYOUT = {
-  WIDTH: 1160,
-  BLOCK_GAP: 40,
-  BLOCK_HEADER_HEIGHT: 44,
-  DAY_WIDTH: 1160 / 7,
-  DAY_HEADER_HEIGHT: 30,
-  ROW_TOP: 40,
-  ROW_HEIGHT: 42,
-  BAR_GAP: 4,
-  ROW_BOTTOM_PAD: 10,
-  H_GAP: 3,
-  DAY_MS: 24 * 3600 * 1000,
-  SUMMARY_GAP: 12,
-  PILL_GAP: 36,
-  ON_CALL_PILL_TOP_PADDING: 544,
-} as const;
-
-export const SUMMARY = {
-  FONT: FONT_FAMILY,
-  BLOCK_HEIGHT: 100,
-  MONTH_COL_WIDTH: 200,
-  COLS_THRESHOLD: 5,
-  VERTICAL_ROW_HEIGHT: 36,
-  VERTICAL_PADDING: 14,
-} as const;
-
-export function weekRowHeight(maxLanes: number): number {
-  return (
-    LAYOUT.ROW_TOP + maxLanes * LAYOUT.ROW_HEIGHT + Math.max(0, maxLanes - 1) * LAYOUT.BAR_GAP + LAYOUT.ROW_BOTTOM_PAD
-  );
-}
-
-export function summaryBlockHeight(entryCount: number): number {
-  return entryCount * SUMMARY.VERTICAL_ROW_HEIGHT + SUMMARY.VERTICAL_PADDING * 2;
-}
-
-export function formatDaysHours(totalHours: number): string {
-  const days = Math.floor(totalHours / 24);
-  const hours = Math.round(totalHours % 24);
-  if (days > 0 && hours > 0) return `${days}d ${hours}h`;
-  if (days > 0) return `${days}d`;
-
-  return `${hours}h`;
-}
-
-export function truncateLabel(label: string, availableWidth: number, fontSize: number): string {
-  const charWidth = fontSize * 0.58;
-  const maxChars = Math.floor(availableWidth / charWidth);
-  if (label.length <= maxChars) return label;
-
-  return label.slice(0, Math.max(maxChars - 1, 1)) + "…";
-}
-
-export function formatWeekday(date: Date): string {
-  return date.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase();
-}
-
-export function formatMonthLabel(currentMonth: { year: number; month: number }): string {
-  return new Date(currentMonth.year, currentMonth.month, 1).toLocaleDateString("en-US", {
-    month: "long",
-    year: "numeric",
-  });
-}
-
 export function buildWeekSpanBars(
   days: Date[],
   events: OnCallEvent[],
@@ -93,7 +29,7 @@ export function buildWeekSpanBars(
 
   const { first, last } = range;
   const windowStart = dayStarts[first];
-  const windowEnd = dayStarts[last] + LAYOUT.DAY_MS;
+  const windowEnd = dayStarts[last] + MONTH.DAY_MS;
 
   const bars = events
     .map((event) => {
@@ -137,12 +73,12 @@ function clampToWindow(
 }
 
 function dayFraction(timestamp: number, dayStart: number): number {
-  return (timestamp - dayStart) / LAYOUT.DAY_MS;
+  return (timestamp - dayStart) / MONTH.DAY_MS;
 }
 
 function findStartPosition(timestamp: number, dayStarts: number[], from: number, to: number): DayPosition {
   const days = dayStarts.slice(from, to + 1);
-  const match = days.findIndex((start) => timestamp >= start && timestamp < start + LAYOUT.DAY_MS);
+  const match = days.findIndex((start) => timestamp >= start && timestamp < start + MONTH.DAY_MS);
   const dayIndex = from + match;
   if (match === -1) return { dayIndex: from, fraction: 0 };
 
@@ -151,7 +87,7 @@ function findStartPosition(timestamp: number, dayStarts: number[], from: number,
 
 function findEndPosition(timestamp: number, dayStarts: number[], from: number, to: number): DayPosition {
   const days = dayStarts.slice(from, to + 1);
-  const match = days.findIndex((start) => timestamp > start && timestamp <= start + LAYOUT.DAY_MS);
+  const match = days.findIndex((start) => timestamp > start && timestamp <= start + MONTH.DAY_MS);
   const dayIndex = from + match;
   if (match === -1) return { dayIndex: to, fraction: 1.0 };
 
@@ -170,14 +106,7 @@ function eventToLanedBar(
   const { dayIndex: startDayIndex, fraction: startFraction } = findStartPosition(overlap.start, dayStarts, first, last);
   const { dayIndex: endDayIndex, fraction: endFraction } = findEndPosition(overlap.end, dayStarts, first, last);
 
-  return {
-    startDayIndex,
-    startFraction,
-    endDayIndex,
-    endFraction,
-    label,
-    color,
-  };
+  return { startDayIndex, startFraction, endDayIndex, endFraction, label, color };
 }
 
 function assignSpanLanes(bars: Omit<WeekSpanBar, "lane">[]): WeekSpanBar[] {

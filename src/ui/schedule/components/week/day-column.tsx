@@ -1,5 +1,5 @@
 import { Colors } from "@/common/colors";
-import { formatWeekday } from "@/ui/layout";
+import { formatWeekday } from "@/common/utils/date-utils";
 import { WEEK } from "@/ui/schedule/components/week/constants";
 
 interface DayColumnProps {

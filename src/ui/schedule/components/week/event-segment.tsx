@@ -1,5 +1,5 @@
 import { getThemeColor } from "@/common/colors";
-import { truncateLabel } from "@/ui/layout";
+import { truncateLabel } from "@/common/utils/string-utils";
 import { WEEK } from "@/ui/schedule/components/week/constants";
 
 export interface DaySegment {

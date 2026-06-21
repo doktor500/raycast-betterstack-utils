@@ -1,7 +1,8 @@
 import React, { Fragment } from "react";
 import { addDays, startOfWeek, TimeWindow } from "@/common/utils/date-utils";
 import { Colors } from "@/common/colors";
-import { buildWeekSpanBars, summaryBlockHeight, weekRowHeight, LAYOUT } from "@/ui/layout";
+import { buildWeekSpanBars } from "@/ui/schedule/components/month/span-bars";
+import { weekRowHeight, summaryBlockHeight } from "@/ui/schedule/components/month/constants";
 import { OnCallEvent } from "@/domain/on-call-event";
 import { MonthBlock } from "@/ui/schedule/components/month/month-block";
 import { SummaryBlock } from "@/ui/schedule/components/month/summary-block";
@@ -93,10 +94,7 @@ function CombinedScheduleRoot({ events, window, onCallUser }: Props) {
     MONTH.BLOCK_HEADER_HEIGHT + weekRowHeightsByMonth[monthIndex].reduce((a, b) => a + b, 0);
 
   return (
-    <div
-      tw="flex flex-col"
-      style={{ display: "flex", flexDirection: "column", width: MONTH.WIDTH, backgroundColor }}
-    >
+    <div tw="flex flex-col" style={{ display: "flex", flexDirection: "column", width: MONTH.WIDTH, backgroundColor }}>
       {onCallUser && <OnCallPill name={onCallUser.name} color={onCallUser.color} />}
       {monthGroups.map(({ year, month, weeks }, monthIndex) => (
         <Fragment key={monthIndex}>

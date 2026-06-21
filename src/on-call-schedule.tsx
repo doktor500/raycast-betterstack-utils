@@ -80,9 +80,10 @@ function OnCallSchedule() {
 async function copyAsPng(props: { timeRange: TimeRange; events: OnCallEvent[]; window: TimeWindow }) {
   const { timeRange, events, window } = props;
   const toast = await showToast({ style: Toast.Style.Animated, title: "Copying to clipboard…" });
+  const data = { events, window };
 
   try {
-    const svg = timeRange === WEEK ? await buildWeekViewSvg({ events, window }) : await buildMonthViewSvg({ events, window });
+    const svg = timeRange === WEEK ? await buildWeekViewSvg(data) : await buildMonthViewSvg(data);
     await exportSvgToClipboard(svg, environment.supportPath);
     toast.style = Toast.Style.Success;
     toast.title = "Schedule copied";

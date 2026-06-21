@@ -1,5 +1,5 @@
 declare namespace React {
-  interface HTMLAttributes<T> {
+  interface HTMLAttributes {
     tw?: string;
   }
 }

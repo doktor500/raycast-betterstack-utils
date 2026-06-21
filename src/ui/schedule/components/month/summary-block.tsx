@@ -1,12 +1,20 @@
-import { SUMMARY, summaryBlockHeight, formatDaysHours, formatMonthLabel } from "@/ui/layout";
+import { MONTH, SUMMARY, summaryBlockHeight, formatMonthLabel } from "@/ui/schedule/components/month/constants";
 import { Colors } from "@/common/colors";
-import { MONTH } from "@/ui/schedule/components/month/constants";
 import { OnCallSummary } from "@/domain/on-call-summary";
 
 interface SummaryBlockProps {
   year: number;
   month: number;
   summary: OnCallSummary[];
+}
+
+function formatDaysHours(totalHours: number): string {
+  const days = Math.floor(totalHours / 24);
+  const hours = Math.round(totalHours % 24);
+  if (days > 0 && hours > 0) return `${days}d ${hours}h`;
+  if (days > 0) return `${days}d`;
+
+  return `${hours}h`;
 }
 
 export function SummaryBlock({ year, month, summary }: SummaryBlockProps) {
@@ -38,9 +46,7 @@ export function SummaryBlock({ year, month, summary }: SummaryBlockProps) {
           borderRight: `1px solid ${Colors.SLATE}`,
         }}
       >
-        <span style={{ fontSize: 18, fontWeight: 700, color: Colors.FROST, fontFamily: "Inter" }}>
-          {monthLabel}
-        </span>
+        <span style={{ fontSize: 18, fontWeight: 700, color: Colors.FROST, fontFamily: "Inter" }}>{monthLabel}</span>
       </div>
       <div
         tw="flex flex-col justify-center"

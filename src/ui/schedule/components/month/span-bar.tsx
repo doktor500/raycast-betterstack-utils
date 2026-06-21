@@ -1,4 +1,5 @@
-import { type WeekSpanBar, truncateLabel } from "@/ui/layout";
+import { type WeekSpanBar } from "@/ui/schedule/components/month/span-bars";
+import { truncateLabel } from "@/common/utils/string-utils";
 import { getThemeColor } from "@/common/colors";
 import { MONTH } from "@/ui/schedule/components/month/constants";
 

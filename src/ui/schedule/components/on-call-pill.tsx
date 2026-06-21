@@ -31,9 +31,7 @@ export function OnCallPill({ name, color }: OnCallPillProps) {
       >
         <span style={{ fontSize: 14, fontWeight: 700, color: getThemeColor(color) }}>{initial}</span>
       </div>
-      <span style={{ fontSize: 17, fontWeight: 500, color: Colors.WHITE }}>
-        {`${name} is on-call`}
-      </span>
+      <span style={{ fontSize: 17, fontWeight: 500, color: Colors.WHITE }}>{`${name} is on-call`}</span>
     </div>
   );
 }

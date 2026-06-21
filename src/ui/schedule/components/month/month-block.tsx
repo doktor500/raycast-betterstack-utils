@@ -1,4 +1,5 @@
-import { type WeekSpanBar, formatMonthLabel } from "@/ui/layout";
+import { type WeekSpanBar } from "@/ui/schedule/components/month/span-bars";
+import { formatMonthLabel } from "@/ui/schedule/components/month/constants";
 import { Colors } from "@/common/colors";
 import { WeekGroup } from "@/ui/schedule/components/month/week-group";
 import { MONTH } from "@/ui/schedule/components/month/constants";
@@ -48,9 +49,7 @@ export function MonthBlock({
           borderBottom: `1px solid ${Colors.SLATE}`,
         }}
       >
-        <span style={{ fontSize: 17, fontWeight: 700, color: Colors.FROST, fontFamily: "Inter" }}>
-          {monthLabel}
-        </span>
+        <span style={{ fontSize: 17, fontWeight: 700, color: Colors.FROST, fontFamily: "Inter" }}>{monthLabel}</span>
       </div>
       {weeks.map((days, localIndex) => (
         <WeekGroup
