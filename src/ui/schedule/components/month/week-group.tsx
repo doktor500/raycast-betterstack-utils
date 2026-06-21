@@ -30,17 +30,9 @@ export function WeekGroup({
 
   return (
     <div tw={`flex relative w-full h-[${rowHeight}px]`}>
-      {weekIndex > 0 && (
-        <div tw={`flex absolute top-0 left-0 right-0 h-px bg-[${Colors.SLATE}]`} />
-      )}
+      {weekIndex > 0 && <div tw={`flex absolute top-0 left-0 right-0 h-px bg-[${Colors.SLATE}]`} />}
       {days.map((day, index) => (
-        <DayColumn
-          key={index}
-          day={day}
-          currentMonth={currentMonth}
-          columnBg={columnBg}
-          rowHeight={rowHeight}
-        />
+        <DayColumn key={index} day={day} currentMonth={currentMonth} columnBg={columnBg} rowHeight={rowHeight} />
       ))}
       {weekTimeline.map((bar, index) => (
         <SpanBar key={index} bar={bar} />

@@ -68,8 +68,7 @@ function computeTotalHeight(
   summaries: ReturnType<typeof buildMonthData>["summaries"],
   topBannerHeight: number,
 ): number {
-  const calendarHeight = (monthIndex: number) =>
-    44 + weekRowHeightsByMonth[monthIndex].reduce((a, b) => a + b, 0);
+  const calendarHeight = (monthIndex: number) => 44 + weekRowHeightsByMonth[monthIndex].reduce((a, b) => a + b, 0);
 
   const monthTotalHeight = (monthIndex: number) =>
     calendarHeight(monthIndex) + 12 + summaryBlockHeight(summaries[monthIndex].length);
@@ -89,8 +88,7 @@ function CombinedScheduleRoot({ events, window, onCallUser }: Props) {
 
   const { monthGroups, weekTimelinesByMonth, weekRowHeightsByMonth, summaries } = buildMonthData(events, window);
 
-  const calendarHeight = (monthIndex: number) =>
-    44 + weekRowHeightsByMonth[monthIndex].reduce((a, b) => a + b, 0);
+  const calendarHeight = (monthIndex: number) => 44 + weekRowHeightsByMonth[monthIndex].reduce((a, b) => a + b, 0);
 
   return (
     <div tw={`flex flex-col w-[1160px] bg-[${backgroundColor}]`}>

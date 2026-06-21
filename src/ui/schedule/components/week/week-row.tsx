@@ -16,16 +16,18 @@ interface WeekRowProps {
 export function WeekRow({ weekIndex, spans, rowHeight }: WeekRowProps) {
   return (
     <div tw={`flex relative w-[${TOTAL_WIDTH}px] h-[${rowHeight}px]`}>
-      {weekIndex > 0 && (
-        <div tw={`flex absolute top-0 left-0 w-[${TOTAL_WIDTH}px] h-px bg-[${SKELETON_COLOR}]`} />
-      )}
+      {weekIndex > 0 && <div tw={`flex absolute top-0 left-0 w-[${TOTAL_WIDTH}px] h-px bg-[${SKELETON_COLOR}]`} />}
       {Array.from({ length: 7 }, (_, dayIndex) => {
         const left = dayIndex * DAY_WIDTH;
         return (
           <div key={dayIndex} tw="flex">
             <div tw={`flex absolute left-[${left}px] top-0 w-px h-[${rowHeight}px] bg-[${SKELETON_COLOR}]`} />
-            <div tw={`flex absolute left-[${left}px] top-[${DAY_HEADER_HEIGHT}px] w-[${DAY_WIDTH}px] h-px bg-[${SKELETON_COLOR}]`} />
-            <div tw={`flex absolute left-[${left + DAY_WIDTH / 2 - 20}px] top-[5px] w-[39px] h-[15px] bg-[${SKELETON_COLOR}] rounded-[2px]`} />
+            <div
+              tw={`flex absolute left-[${left}px] top-[${DAY_HEADER_HEIGHT}px] w-[${DAY_WIDTH}px] h-px bg-[${SKELETON_COLOR}]`}
+            />
+            <div
+              tw={`flex absolute left-[${left + DAY_WIDTH / 2 - 20}px] top-[5px] w-[39px] h-[15px] bg-[${SKELETON_COLOR}] rounded-[2px]`}
+            />
           </div>
         );
       })}
@@ -33,7 +35,10 @@ export function WeekRow({ weekIndex, spans, rowHeight }: WeekRowProps) {
         const barLeft = start * DAY_WIDTH + H_GAP;
         const barWidth = (end - start) * DAY_WIDTH - 2 * H_GAP;
         return (
-          <div key={index} tw={`flex absolute left-[${barLeft}px] top-[${ROW_TOP}px] w-[${barWidth}px] h-[${ROW_HEIGHT}px] rounded-[6px] bg-[${SKELETON_COLOR}]`} />
+          <div
+            key={index}
+            tw={`flex absolute left-[${barLeft}px] top-[${ROW_TOP}px] w-[${barWidth}px] h-[${ROW_HEIGHT}px] rounded-[6px] bg-[${SKELETON_COLOR}]`}
+          />
         );
       })}
     </div>

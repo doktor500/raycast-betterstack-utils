@@ -1,4 +1,3 @@
-// src/ui/schedule/components/week/event-segment.tsx
 import { getThemeColor } from "@/common/colors";
 import { truncateLabel } from "@/common/utils/string-utils";
 
@@ -22,7 +21,9 @@ export function EventSegment({ segment }: EventSegmentProps) {
   const showName = height >= 24;
 
   return (
-    <div tw={`flex absolute left-[2px] right-[2px] top-[${topPercent}%] h-[${height}px] bg-[${segment.color}] rounded-[3px] overflow-hidden`}>
+    <div
+      tw={`flex absolute left-[2px] right-[2px] top-[${topPercent}%] h-[${height}px] bg-[${segment.color}] rounded-[3px] overflow-hidden`}
+    >
       {showName && (
         <span tw={`absolute left-[12px] top-[4px] text-[14px] font-semibold text-[${themeColor}] whitespace-nowrap`}>
           {truncateLabel(segment.label, TEXT_AVAILABLE_WIDTH, 14)}

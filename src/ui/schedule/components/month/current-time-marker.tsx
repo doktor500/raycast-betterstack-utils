@@ -11,6 +11,8 @@ export function CurrentTimeMarker({ index, today, rowHeight }: CurrentTimeMarker
   const leftPercent = ((index + fraction) / 7) * 100;
 
   return (
-    <div tw={`flex absolute left-[${leftPercent}%] top-[${DAY_HEADER_HEIGHT}px] w-[4px] h-[${rowHeight - DAY_HEADER_HEIGHT}px] bg-white opacity-[0.85] rounded-[2px]`} />
+    <div
+      tw={`flex absolute left-[${leftPercent}%] top-[${DAY_HEADER_HEIGHT}px] w-[4px] h-[${rowHeight - DAY_HEADER_HEIGHT}px] bg-white opacity-[0.85] rounded-[2px]`}
+    />
   );
 }
