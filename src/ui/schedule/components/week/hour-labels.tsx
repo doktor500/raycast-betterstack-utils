@@ -1,17 +1,14 @@
 import { Colors } from "@/common/colors";
-import { WEEK } from "@/ui/schedule/components/week/constants";
 
-export function HourLabels({ gridTop }: { gridTop: number }) {
+export function HourLabels() {
   return (
-    <>
-      {Array.from({ length: WEEK.HOURS }, (_, hourIndex) => (
-        <div
-          key={`hl${hourIndex}`}
-          tw={`flex items-center justify-end absolute left-0 top-[${gridTop + hourIndex * WEEK.HOUR_HEIGHT}px] w-[${WEEK.SIDEBAR_WIDTH - 2}px] h-[${WEEK.HOUR_HEIGHT}px] text-[10px] text-[${Colors.DIM}] font-mono`}
-        >
-          {hourIndex}
+    <div tw="flex flex-col w-[25px]">
+      <div tw="flex h-[44px]" />
+      {Array.from({ length: 24 }, (_, i) => (
+        <div key={`hl${i}`} tw={`flex items-center justify-end w-[23px] h-[20px] text-[10px] text-[${Colors.DIM}] font-mono`}>
+          {i}
         </div>
       ))}
-    </>
+    </div>
   );
 }
