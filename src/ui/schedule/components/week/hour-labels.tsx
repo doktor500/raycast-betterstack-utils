@@ -1,4 +1,3 @@
-import { Colors } from "@/common/colors";
 import { rangeOf } from "@/common/utils/collection-utils";
 
 export function HourLabels() {
@@ -8,7 +7,7 @@ export function HourLabels() {
       {rangeOf(24).map((hourIndex) => (
         <div
           key={`hl${hourIndex}`}
-          tw={`flex items-center justify-end w-[23px] h-[20px] text-[10px] text-[${Colors.DIM}] font-mono`}
+          tw="flex items-center justify-end w-[23px] h-[20px] text-[10px] text-dim font-mono"
         >
           {hourIndex}
         </div>

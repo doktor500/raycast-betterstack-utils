@@ -1,4 +1,4 @@
-import { Colors, getColor } from "@/common/colors";
+import { getColor } from "@/common/colors";
 import { rangeOf } from "@/common/utils/collection-utils";
 import { formatWeekday } from "@/common/utils/date-utils";
 import { OnCallEvent } from "@/domain/on-call-event";
@@ -48,7 +48,7 @@ export function DayColumn({ day, dayIndex, isToday, events, nowFraction }: DayCo
   return (
     <div tw="flex flex-col flex-1 relative">
       {isToday && (
-        <div tw={`flex absolute top-0 left-0 right-0 h-[44px] rounded-[6px] bg-[${Colors.DEEP_DARK}] opacity-50`} />
+        <div tw="flex absolute top-0 left-0 right-0 h-[44px] rounded-[6px] bg-deep-dark opacity-50" />
       )}
       <div tw="flex items-center justify-center h-[44px] gap-[4px]">
         <span tw={`text-[14px] font-semibold text-white opacity-[${weekdayOpacity}]`}>{`${formatWeekday(day)} `}</span>
@@ -56,11 +56,11 @@ export function DayColumn({ day, dayIndex, isToday, events, nowFraction }: DayCo
           {`${day.getDate()}/${day.getMonth() + 1}`}
         </span>
       </div>
-      <div tw={`flex relative h-[480px] ${dayIndex > 0 ? `border-l border-[${Colors.SLATE}]` : ""}`}>
+      <div tw={`flex relative h-[480px] ${dayIndex > 0 ? "border-l border-slate" : ""}`}>
         {rangeOf(24).map((hourIndex) => (
           <div
             key={`hr${hourIndex}`}
-            tw={`flex absolute left-0 right-0 top-[${hourIndex * 20}px] h-px bg-[${Colors.SLATE}]`}
+            tw={`flex absolute left-0 right-0 top-[${hourIndex * 20}px] h-px bg-slate`}
           />
         ))}
         {segments.map((segment, segmentIndex) => (
