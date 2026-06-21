@@ -1,11 +1,10 @@
 import React from "react";
 import { weekRowHeight, summaryBlockHeight } from "@/ui/schedule/components/month/month-utils";
-import { ON_CALL_PILL_CIRC_R } from "@/ui/schedule/components/on-call-pill";
 import { WeekRow } from "@/ui/schedule/components/week/week-row";
 import { SKELETON_COLOR } from "@/ui/schedule/skeleton/colors/skeleton-colors";
 import { renderToSvg } from "@/components/satori-renderer";
 
-const ON_CALL_PILL_BANNER = ON_CALL_PILL_CIRC_R * 2;
+const ON_CALL_PILL_BANNER = 32;
 
 const NUM_WEEKS = 5;
 const NUM_SUMMARY = 3;

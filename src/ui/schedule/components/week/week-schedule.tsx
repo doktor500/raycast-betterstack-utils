@@ -2,7 +2,7 @@ import React from "react";
 import { getCurrentWeekDays, isSameDay, TimeWindow } from "@/common/utils/date-utils";
 import { OnCallEvent } from "@/domain/on-call-event";
 import { OnCallUser } from "@/domain/user";
-import { ON_CALL_PILL_CIRC_R, OnCallPill } from "@/ui/schedule/components/on-call-pill";
+import { OnCallPill } from "@/ui/schedule/components/on-call-pill";
 import { DayColumn } from "@/ui/schedule/components/week/day-column";
 import { HourLabels } from "@/ui/schedule/components/week/hour-labels";
 import { Colors } from "@/common/colors";
@@ -19,7 +19,7 @@ function WeekViewRoot({ events, window, onCallUser }: WeekViewProps) {
   const days = getCurrentWeekDays(window.start);
   const todayIndex = days.findIndex((day) => isSameDay(day, today));
 
-  const bannerHeight = onCallUser ? ON_CALL_PILL_CIRC_R * 2 : 0;
+  const bannerHeight = onCallUser ? 32 : 0;
   const totalHeight = bannerHeight + 524; // 44px header + 480px timeline
 
   const todayStartMs = todayIndex >= 0 ? new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime() : 0;
@@ -48,7 +48,7 @@ function WeekViewRoot({ events, window, onCallUser }: WeekViewProps) {
 }
 
 export async function buildWeekViewSvg(props: WeekViewProps): Promise<string> {
-  const bannerHeight = props.onCallUser ? ON_CALL_PILL_CIRC_R * 2 : 0;
+  const bannerHeight = props.onCallUser ? 32 : 0;
   const totalHeight = bannerHeight + 524;
   return renderToSvg(<WeekViewRoot {...props} />, 1160, totalHeight);
 }

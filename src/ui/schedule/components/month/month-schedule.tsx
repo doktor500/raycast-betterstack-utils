@@ -6,7 +6,7 @@ import { weekRowHeight, summaryBlockHeight } from "@/ui/schedule/components/mont
 import { OnCallEvent } from "@/domain/on-call-event";
 import { MonthBlock } from "@/ui/schedule/components/month/month-block";
 import { SummaryBlock } from "@/ui/schedule/components/month/summary-block";
-import { ON_CALL_PILL_CIRC_R, OnCallPill } from "@/ui/schedule/components/on-call-pill";
+import { OnCallPill } from "@/ui/schedule/components/on-call-pill";
 import { OnCallUser } from "@/domain/user";
 import { computeOnCallSummary } from "@/domain/on-call-summary";
 import { renderToSvg } from "@/components/satori-renderer";
@@ -17,7 +17,6 @@ type Props = {
   onCallUser?: OnCallUser;
 };
 
-const ON_CALL_PILL_BANNER = ON_CALL_PILL_CIRC_R * 2;
 
 function buildMonthData(events: OnCallEvent[], window: TimeWindow) {
   const { start, end } = window;
@@ -121,7 +120,7 @@ function CombinedScheduleRoot({ events, window, onCallUser }: Props) {
 }
 
 export async function buildMonthViewSvg(props: Props): Promise<string> {
-  const topBannerHeight = props.onCallUser ? ON_CALL_PILL_BANNER : 0;
+  const topBannerHeight = props.onCallUser ? 32 : 0;
   const { monthGroups, weekRowHeightsByMonth, summaries } = buildMonthData(props.events, props.window);
   const totalHeight = computeTotalHeight(monthGroups, weekRowHeightsByMonth, summaries, topBannerHeight);
   return renderToSvg(<CombinedScheduleRoot {...props} />, 1160, totalHeight);
