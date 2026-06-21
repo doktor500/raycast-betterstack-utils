@@ -10,16 +10,6 @@ export const RotaColors = {
   YELLOW: "#E7B84A",
 };
 
-export const Colors = {
-  DEEP_DARK: "#0B0C15",
-  DARK: "#1F2433",
-  SLATE: "#2D374C",
-  DIM: "#718096",
-  SUBTLE: "#AEB8D3",
-  FROST: "#F3F5FA",
-  WHITE: "#FFFFFF",
-};
-
 const ROTA_SVG_PALETTE = [
   RotaColors.BLUE,
   RotaColors.GREEN,
@@ -36,7 +26,7 @@ export function getColor(value: string): string {
 }
 
 export function getThemeColor(bgHex: string): string {
-  return relativeLuminance(bgHex) > 0.179 ? Colors.DARK : Colors.WHITE;
+  return relativeLuminance(bgHex) > 0.179 ? "#1F2433" : "#FFFFFF";
 }
 
 function relativeLuminance(hex: string): number {
