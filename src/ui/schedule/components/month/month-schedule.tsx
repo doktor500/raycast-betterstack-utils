@@ -7,7 +7,6 @@ import { OnCallEvent } from "@/domain/on-call-event";
 import { MonthBlock } from "@/ui/schedule/components/month/month-block";
 import { SummaryBlock } from "@/ui/schedule/components/month/summary-block";
 import { ON_CALL_PILL_CIRC_R, OnCallPill } from "@/ui/schedule/components/on-call-pill";
-import { MONTH } from "@/ui/schedule/components/month/constants";
 import { OnCallUser } from "@/domain/user";
 import { computeOnCallSummary } from "@/domain/on-call-summary";
 import { renderToSvg } from "@/components/satori-renderer";
@@ -70,15 +69,15 @@ function computeTotalHeight(
   topBannerHeight: number,
 ): number {
   const calendarHeight = (monthIndex: number) =>
-    MONTH.BLOCK_HEADER_HEIGHT + weekRowHeightsByMonth[monthIndex].reduce((a, b) => a + b, 0);
+    44 + weekRowHeightsByMonth[monthIndex].reduce((a, b) => a + b, 0);
 
   const monthTotalHeight = (monthIndex: number) =>
-    calendarHeight(monthIndex) + MONTH.SUMMARY_GAP + summaryBlockHeight(summaries[monthIndex].length);
+    calendarHeight(monthIndex) + 12 + summaryBlockHeight(summaries[monthIndex].length);
 
   return (
     topBannerHeight +
     monthGroups.reduce((acc, _, monthIndex) => acc + monthTotalHeight(monthIndex), 0) +
-    (monthGroups.length - 1) * MONTH.BLOCK_GAP
+    (monthGroups.length - 1) * 40
   );
 }
 
@@ -91,10 +90,10 @@ function CombinedScheduleRoot({ events, window, onCallUser }: Props) {
   const { monthGroups, weekTimelinesByMonth, weekRowHeightsByMonth, summaries } = buildMonthData(events, window);
 
   const calendarHeight = (monthIndex: number) =>
-    MONTH.BLOCK_HEADER_HEIGHT + weekRowHeightsByMonth[monthIndex].reduce((a, b) => a + b, 0);
+    44 + weekRowHeightsByMonth[monthIndex].reduce((a, b) => a + b, 0);
 
   return (
-    <div tw={`flex flex-col w-[${MONTH.WIDTH}px] bg-[${backgroundColor}]`}>
+    <div tw={`flex flex-col w-[1160px] bg-[${backgroundColor}]`}>
       {onCallUser && <OnCallPill name={onCallUser.name} color={onCallUser.color} />}
       {monthGroups.map(({ year, month, weeks }, monthIndex) => (
         <Fragment key={monthIndex}>
@@ -108,13 +107,13 @@ function CombinedScheduleRoot({ events, window, onCallUser }: Props) {
             columnBg={columnBg}
             weekRowHeights={weekRowHeightsByMonth[monthIndex]}
           />
-          <div tw={`flex h-[${MONTH.SUMMARY_GAP}px]`} />
+          <div tw="flex h-[12px]" />
           <SummaryBlock year={year} month={month} summary={summaries[monthIndex]} />
           {monthIndex < monthGroups.length - 1 && (
             <>
-              <div tw={`flex h-[${MONTH.BLOCK_GAP / 2}px]`} />
-              <div tw={`flex w-[${MONTH.WIDTH}px] h-[2px] bg-[${Colors.SLATE}]`} />
-              <div tw={`flex h-[${MONTH.BLOCK_GAP / 2}px]`} />
+              <div tw="flex h-[20px]" />
+              <div tw={`flex w-[1160px] h-[2px] bg-[${Colors.SLATE}]`} />
+              <div tw="flex h-[20px]" />
             </>
           )}
         </Fragment>
@@ -127,5 +126,5 @@ export async function buildMonthViewSvg(props: Props): Promise<string> {
   const topBannerHeight = props.onCallUser ? ON_CALL_PILL_BANNER : 0;
   const { monthGroups, weekRowHeightsByMonth, summaries } = buildMonthData(props.events, props.window);
   const totalHeight = computeTotalHeight(monthGroups, weekRowHeightsByMonth, summaries, topBannerHeight);
-  return renderToSvg(<CombinedScheduleRoot {...props} />, MONTH.WIDTH, totalHeight);
+  return renderToSvg(<CombinedScheduleRoot {...props} />, 1160, totalHeight);
 }
