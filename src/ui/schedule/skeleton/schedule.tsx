@@ -1,5 +1,4 @@
 import React from "react";
-import { weekRowHeight, summaryBlockHeight } from "@/ui/schedule/components/month/month-utils";
 import { WeekRow } from "@/ui/schedule/components/week/week-row";
 import { SKELETON_COLOR } from "@/ui/schedule/skeleton/colors/skeleton-colors";
 import { renderToSvg } from "@/components/satori-renderer";
@@ -21,11 +20,11 @@ const WEEK_BAR_SPANS = [
   [{ start: 0, end: 7 }],
 ];
 
-function ScheduleSkeletonRoot() {
-  const rowHeight = weekRowHeight(1);
-  const calendarHeight = BLOCK_HEADER_HEIGHT + NUM_WEEKS * rowHeight;
-  const summaryHeight = summaryBlockHeight(NUM_SUMMARY);
+const rowHeight = 92;
+const calendarHeight = BLOCK_HEADER_HEIGHT + NUM_WEEKS * rowHeight;
+const summaryHeight = NUM_SUMMARY * 36 + 28;
 
+function ScheduleSkeletonRoot() {
   return (
     <div tw={`flex flex-col w-[${TOTAL_WIDTH}px]`}>
       <div tw={`flex h-[${ON_CALL_PILL_BANNER}px]`} />
@@ -62,9 +61,5 @@ function ScheduleSkeletonRoot() {
 }
 
 export async function buildScheduleSkeletonSvg(): Promise<string> {
-  const rowHeight = weekRowHeight(1);
-  const calendarHeight = BLOCK_HEADER_HEIGHT + NUM_WEEKS * rowHeight;
-  const summaryHeight = summaryBlockHeight(NUM_SUMMARY);
-  const totalHeight = ON_CALL_PILL_BANNER + calendarHeight + SUMMARY_GAP + summaryHeight;
-  return renderToSvg(<ScheduleSkeletonRoot />, TOTAL_WIDTH, totalHeight);
+  return renderToSvg(<ScheduleSkeletonRoot />, TOTAL_WIDTH);
 }

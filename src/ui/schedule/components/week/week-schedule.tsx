@@ -48,7 +48,5 @@ function WeekViewRoot({ events, window, onCallUser }: WeekViewProps) {
 }
 
 export async function buildWeekViewSvg(props: WeekViewProps): Promise<string> {
-  const bannerHeight = props.onCallUser ? 32 : 0;
-  const totalHeight = bannerHeight + 524;
-  return renderToSvg(<WeekViewRoot {...props} />, 1160, totalHeight);
+  return renderToSvg(<WeekViewRoot {...props} />, 1160);
 }

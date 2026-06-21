@@ -5,7 +5,6 @@ import { WeekGroup } from "@/ui/schedule/components/month/week-group";
 
 interface MonthBlockProps {
   weeks: Date[][];
-  blockHeight: number;
   today: Date;
   weekTimelines: WeekSpanBar[][];
   currentMonth: { year: number; month: number };
@@ -16,7 +15,6 @@ interface MonthBlockProps {
 
 export function MonthBlock({
   weeks,
-  blockHeight,
   today,
   weekTimelines,
   currentMonth,
@@ -27,7 +25,7 @@ export function MonthBlock({
   const monthLabel = formatMonthLabel(currentMonth);
 
   return (
-    <div tw={`flex flex-col relative w-[1160px] h-[${blockHeight}px] border border-[${Colors.SLATE}] overflow-hidden`}>
+    <div tw={`flex flex-col relative w-[1160px] border border-[${Colors.SLATE}] overflow-hidden`}>
       <div tw={`flex items-center justify-center h-[44px] border-b border-[${Colors.SLATE}]`}>
         <span tw={`text-[17px] font-bold text-[${Colors.FROST}]`}>{monthLabel}</span>
       </div>

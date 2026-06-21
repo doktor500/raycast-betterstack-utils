@@ -1,4 +1,4 @@
-import { summaryBlockHeight, formatMonthLabel } from "@/ui/schedule/components/month/month-utils";
+import { formatMonthLabel } from "@/ui/schedule/components/month/month-utils";
 import { Colors } from "@/common/colors";
 import { OnCallSummary } from "@/domain/on-call-summary";
 
@@ -20,12 +20,9 @@ export function SummaryBlock({ year, month, summary }: SummaryBlockProps) {
   if (summary.length === 0) return null;
 
   const monthLabel = formatMonthLabel({ year, month });
-  const height = summaryBlockHeight(summary.length);
 
   return (
-    <div
-      tw={`flex w-[1160px] h-[${height}px] rounded-[10px] border border-[${Colors.SLATE}] bg-[${Colors.DARK}] overflow-hidden`}
-    >
+    <div tw={`flex w-[1160px] rounded-[10px] border border-[${Colors.SLATE}] bg-[${Colors.DARK}] overflow-hidden`}>
       <div tw={`flex items-center w-[200px] pl-[24px] border-r border-[${Colors.SLATE}]`}>
         <span tw={`text-[18px] font-bold text-[${Colors.FROST}]`}>{monthLabel}</span>
       </div>

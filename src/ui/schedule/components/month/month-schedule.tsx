@@ -2,7 +2,6 @@ import React, { Fragment } from "react";
 import { addDays, startOfWeek, TimeWindow } from "@/common/utils/date-utils";
 import { Colors } from "@/common/colors";
 import { buildWeekSpanBars } from "@/ui/schedule/components/month/span-bars";
-import { weekRowHeight, summaryBlockHeight } from "@/ui/schedule/components/month/month-utils";
 import { OnCallEvent } from "@/domain/on-call-event";
 import { MonthBlock } from "@/ui/schedule/components/month/month-block";
 import { SummaryBlock } from "@/ui/schedule/components/month/summary-block";
@@ -16,7 +15,6 @@ type Props = {
   window: TimeWindow;
   onCallUser?: OnCallUser;
 };
-
 
 function buildMonthData(events: OnCallEvent[], window: TimeWindow) {
   const { start, end } = window;
@@ -53,30 +51,15 @@ function buildMonthData(events: OnCallEvent[], window: TimeWindow) {
   );
 
   const weekRowHeightsByMonth = weekTimelinesByMonth.map((weekTimelines) =>
-    weekTimelines.map((timeline) => weekRowHeight(Math.max(1, ...timeline.map((bar) => bar.lane + 1)))),
+    weekTimelines.map((timeline) => {
+      const maxLanes = Math.max(1, ...timeline.map((bar) => bar.lane + 1));
+      return 40 + maxLanes * 42 + Math.max(0, maxLanes - 1) * 4 + 10;
+    }),
   );
 
   const summaries = monthGroups.map(({ year, month }) => computeOnCallSummary({ year, month, events }));
 
   return { monthGroups, weekTimelinesByMonth, weekRowHeightsByMonth, summaries };
-}
-
-function computeTotalHeight(
-  monthGroups: ReturnType<typeof buildMonthData>["monthGroups"],
-  weekRowHeightsByMonth: ReturnType<typeof buildMonthData>["weekRowHeightsByMonth"],
-  summaries: ReturnType<typeof buildMonthData>["summaries"],
-  topBannerHeight: number,
-): number {
-  const calendarHeight = (monthIndex: number) => 44 + weekRowHeightsByMonth[monthIndex].reduce((a, b) => a + b, 0);
-
-  const monthTotalHeight = (monthIndex: number) =>
-    calendarHeight(monthIndex) + 12 + summaryBlockHeight(summaries[monthIndex].length);
-
-  return (
-    topBannerHeight +
-    monthGroups.reduce((acc, _, monthIndex) => acc + monthTotalHeight(monthIndex), 0) +
-    (monthGroups.length - 1) * 40
-  );
 }
 
 function CombinedScheduleRoot({ events, window, onCallUser }: Props) {
@@ -87,8 +70,6 @@ function CombinedScheduleRoot({ events, window, onCallUser }: Props) {
 
   const { monthGroups, weekTimelinesByMonth, weekRowHeightsByMonth, summaries } = buildMonthData(events, window);
 
-  const calendarHeight = (monthIndex: number) => 44 + weekRowHeightsByMonth[monthIndex].reduce((a, b) => a + b, 0);
-
   return (
     <div tw={`flex flex-col w-[1160px] bg-[${backgroundColor}]`}>
       {onCallUser && <OnCallPill name={onCallUser.name} color={onCallUser.color} />}
@@ -96,7 +77,6 @@ function CombinedScheduleRoot({ events, window, onCallUser }: Props) {
         <Fragment key={monthIndex}>
           <MonthBlock
             weeks={weeks}
-            blockHeight={calendarHeight(monthIndex)}
             today={today}
             weekTimelines={weekTimelinesByMonth[monthIndex]}
             currentMonth={{ year, month }}
@@ -120,8 +100,5 @@ function CombinedScheduleRoot({ events, window, onCallUser }: Props) {
 }
 
 export async function buildMonthViewSvg(props: Props): Promise<string> {
-  const topBannerHeight = props.onCallUser ? 32 : 0;
-  const { monthGroups, weekRowHeightsByMonth, summaries } = buildMonthData(props.events, props.window);
-  const totalHeight = computeTotalHeight(monthGroups, weekRowHeightsByMonth, summaries, topBannerHeight);
-  return renderToSvg(<CombinedScheduleRoot {...props} />, 1160, totalHeight);
+  return renderToSvg(<CombinedScheduleRoot {...props} />, 1160);
 }
