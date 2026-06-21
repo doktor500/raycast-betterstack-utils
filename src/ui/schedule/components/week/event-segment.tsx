@@ -1,6 +1,6 @@
+// src/ui/schedule/components/week/event-segment.tsx
 import { getThemeColor } from "@/common/colors";
 import { truncateLabel } from "@/common/utils/string-utils";
-import { WEEK } from "@/ui/schedule/components/week/constants";
 
 export interface DaySegment {
   startFraction: number;
@@ -11,22 +11,21 @@ export interface DaySegment {
 
 interface EventSegmentProps {
   segment: DaySegment;
-  colLeft: number;
-  colWidth: number;
-  gridTop: number;
 }
 
-export function EventSegment({ segment, colLeft, colWidth, gridTop }: EventSegmentProps) {
-  const top = gridTop + segment.startFraction * WEEK.TIMELINE_HEIGHT;
-  const height = Math.max(WEEK.MIN_EVENT_HEIGHT, (segment.endFraction - segment.startFraction) * WEEK.TIMELINE_HEIGHT);
+const TEXT_AVAILABLE_WIDTH = 140; // approx day column width minus left padding and label inset
+
+export function EventSegment({ segment }: EventSegmentProps) {
+  const topPercent = segment.startFraction * 100;
+  const height = Math.max(12, (segment.endFraction - segment.startFraction) * 480);
   const themeColor = getThemeColor(segment.color);
-  const showName = height >= WEEK.LABEL_MIN_HEIGHT;
+  const showName = height >= 24;
 
   return (
-    <div tw={`flex absolute left-[${colLeft}px] top-[${top}px] w-[${colWidth}px] h-[${height}px] bg-[${segment.color}] rounded-[3px] overflow-hidden`}>
+    <div tw={`flex absolute left-[2px] right-[2px] top-[${topPercent}%] h-[${height}px] bg-[${segment.color}] rounded-[3px] overflow-hidden`}>
       {showName && (
         <span tw={`absolute left-[12px] top-[4px] text-[14px] font-semibold text-[${themeColor}] whitespace-nowrap`}>
-          {truncateLabel(segment.label, colWidth - 22, 14)}
+          {truncateLabel(segment.label, TEXT_AVAILABLE_WIDTH, 14)}
         </span>
       )}
     </div>
