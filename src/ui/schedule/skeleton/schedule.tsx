@@ -26,7 +26,7 @@ function ScheduleSkeletonRoot() {
         ))}
       </div>
       <div tw="flex h-[12px]" />
-      <div tw={`flex w-[1160px] rounded-[10px] border border-[${SKELETON_COLOR}]`}>
+      <div tw={`flex relative w-[1160px] rounded-[10px] border border-[${SKELETON_COLOR}]`}>
         <div tw="flex absolute inset-0 rounded-[10px] bg-[rgba(40,53,78,0.2)]" />
         <div tw={`flex items-center w-[200px] pl-[24px]`}>
           <div tw={`flex w-[90px] h-[14px] bg-[${SKELETON_COLOR}] rounded-[3px]`} />
