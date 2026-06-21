@@ -2,7 +2,6 @@ import { type WeekSpanBar } from "@/ui/schedule/components/month/span-bars";
 import { formatMonthLabel } from "@/ui/schedule/components/month/month-utils";
 import { Colors } from "@/common/colors";
 import { WeekGroup } from "@/ui/schedule/components/month/week-group";
-import { MONTH } from "@/ui/schedule/components/month/constants";
 
 interface MonthBlockProps {
   weeks: Date[][];
@@ -28,8 +27,8 @@ export function MonthBlock({
   const monthLabel = formatMonthLabel(currentMonth);
 
   return (
-    <div tw={`flex flex-col relative w-[${MONTH.WIDTH}px] h-[${blockHeight}px] border border-[${Colors.SLATE}] overflow-hidden`}>
-      <div tw={`flex items-center justify-center h-[${MONTH.BLOCK_HEADER_HEIGHT}px] border-b border-[${Colors.SLATE}]`}>
+    <div tw={`flex flex-col relative w-[1160px] h-[${blockHeight}px] border border-[${Colors.SLATE}] overflow-hidden`}>
+      <div tw={`flex items-center justify-center h-[44px] border-b border-[${Colors.SLATE}]`}>
         <span tw={`text-[17px] font-bold text-[${Colors.FROST}]`}>{monthLabel}</span>
       </div>
       {weeks.map((days, localIndex) => (
