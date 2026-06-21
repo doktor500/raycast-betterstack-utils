@@ -10,7 +10,8 @@ export function CurrentTimeMarker({ index, today, rowHeight }: CurrentTimeMarker
 
   return (
     <div
-      tw={`flex absolute left-[${leftPercent}%] top-[30px] w-[4px] h-[${rowHeight - 30}px] bg-white opacity-[0.85] rounded-[2px]`}
+      tw={`flex absolute left-[${leftPercent}%] top-[30px] w-[4px] h-[${rowHeight - 30}px] bg-white rounded-[2px]`}
+      style={{ opacity: 0.85 }}
     />
   );
 }

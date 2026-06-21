@@ -23,7 +23,8 @@ export function SpanBar({ bar }: SpanBarProps) {
 
   return (
     <div
-      tw={`flex items-center absolute left-[${barLeft}%] top-[${barTop}px] w-[${barWidth}%] h-[42px] bg-[${bar.color}] rounded-[${borderRadius}px] shadow-[0_2px_4px_${toRgba(Colors.DEEP_DARK, 0.3)}] overflow-hidden`}
+      tw={`flex items-center absolute left-[${barLeft}%] top-[${barTop}px] w-[${barWidth}%] h-[42px] bg-[${bar.color}] rounded-[${borderRadius}px] overflow-hidden`}
+      style={{ boxShadow: `0 2px 4px ${toRgba(Colors.DEEP_DARK, 0.3)}` }}
     >
       {showLabel && (
         <span
