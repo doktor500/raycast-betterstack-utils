@@ -2,9 +2,11 @@ import satori from "satori";
 import type { ReactNode } from "react";
 import { loadFonts } from "@/common/utils/font-loader";
 
-export async function renderToSvg(element: ReactNode, width: number): Promise<string> {
+const VIEWPORT_WIDTH = 1160;
+
+export async function renderToSvg(element: ReactNode): Promise<string> {
   return satori(element, {
-    width,
+    width: VIEWPORT_WIDTH,
     fonts: loadFonts(),
     tailwindConfig: {
       theme: {

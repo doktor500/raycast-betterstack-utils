@@ -39,5 +39,5 @@ function ScheduleSkeletonRoot() {
 }
 
 export async function buildScheduleSkeletonSvg(): Promise<string> {
-  return renderToSvg(<ScheduleSkeletonRoot />, 1160);
+  return renderToSvg(<ScheduleSkeletonRoot />);
 }

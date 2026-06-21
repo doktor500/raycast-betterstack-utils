@@ -44,5 +44,5 @@ function WeekViewRoot({ events, timeWindow, onCallUser }: WeekViewProps) {
 }
 
 export async function buildWeekViewSvg(props: WeekViewProps): Promise<string> {
-  return renderToSvg(<WeekViewRoot {...props} />, 1160);
+  return renderToSvg(<WeekViewRoot {...props} />);
 }

@@ -100,5 +100,5 @@ function CombinedScheduleRoot({ events, timeWindow, onCallUser }: Props) {
 }
 
 export async function buildMonthViewSvg(props: Props): Promise<string> {
-  return renderToSvg(<CombinedScheduleRoot {...props} />, 1160);
+  return renderToSvg(<CombinedScheduleRoot {...props} />);
 }
