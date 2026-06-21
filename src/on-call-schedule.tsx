@@ -3,15 +3,15 @@ import * as os from "node:os";
 import { useState, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { TimeWindow } from "@/common/utils/date-utils";
-import { buildMonthViewSvg } from "@/ui/schedule/components/month/month-schedule";
+import { buildMonthViewSvg } from "@/ui/schedule/components/month-view/month-schedule";
 import { useOnCallData } from "@/hooks/use-on-call-data";
 import { useSchedule } from "@/hooks/use-schedule";
-import { buildWeekViewSvg } from "@/ui/schedule/components/week/week-schedule";
+import { buildWeekViewSvg } from "@/ui/schedule/components/week-view/week-schedule";
 import { exportSvgToClipboard } from "@/common/utils/svg-utils";
 import { TimeRange } from "@/domain/time-range";
 import { OnCallEvent } from "@/domain/on-call-event";
-import { ScheduleActionPanel } from "@/components/action-panel/schedule-action-panel";
-import { renderSchedule } from "@/components/schedule-renderer";
+import { ScheduleActionPanel } from "@/ui/action-panel/schedule-action-panel";
+import { renderSchedule } from "@/ui/schedule/schedule-renderer";
 
 const { WEEK } = TimeRange;
 

@@ -1,9 +1,9 @@
 interface CurrentTimeMarkerProps {
-  fraction: number;
+  markerTime: number;
 }
 
-export function CurrentTimeMarker({ fraction }: CurrentTimeMarkerProps) {
-  const topPercent = fraction * 100;
+export function CurrentTimeMarker({ markerTime }: CurrentTimeMarkerProps) {
+  const topPercent = markerTime * 100;
 
   return (
     <div

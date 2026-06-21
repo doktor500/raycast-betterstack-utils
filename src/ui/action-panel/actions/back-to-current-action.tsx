@@ -10,5 +10,5 @@ type BackToCurrentActionProps = {
 export function BackToCurrentAction({ currentTimeRange, offset, onOffsetChange }: BackToCurrentActionProps) {
   if (offset === 0) return null;
   const backLabel = currentTimeRange === TimeRange.MONTH ? "Back to Current Month" : "Back to Current Week";
-  return <Action title={backLabel} shortcut={{ modifiers: [], key: "0" }} onAction={() => onOffsetChange(0)} />;
+  return <Action title={backLabel} shortcut={{ modifiers: [], key: "t" }} onAction={() => onOffsetChange(0)} />;
 }

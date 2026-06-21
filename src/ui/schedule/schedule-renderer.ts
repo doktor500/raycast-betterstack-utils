@@ -1,15 +1,16 @@
 import { OnCallEvent } from "@/domain/on-call-event";
 import { OnCallUser } from "@/domain/user";
+import { Optional } from "@/common/utils/optional-utils";
 import { TimeRange } from "@/domain/time-range";
 import { toSvgDataUri } from "@/common/utils/svg-utils";
-import { buildWeekViewSvg } from "@/ui/schedule/components/week/week-schedule";
-import { buildMonthViewSvg } from "@/ui/schedule/components/month/month-schedule";
-import { buildScheduleSkeletonSvg } from "@/ui/schedule/skeleton/schedule";
+import { buildWeekViewSvg } from "@/ui/schedule/components/week-view/week-schedule";
+import { buildMonthViewSvg } from "@/ui/schedule/components/month-view/month-schedule";
+import { buildScheduleSkeletonSvg } from "@/ui/schedule/skeleton/schedule-skeleton";
 import { TimeWindow } from "@/common/utils/date-utils";
 
 type ScheduleData = {
   events: OnCallEvent[];
-  onCallUser: OnCallUser | undefined;
+  onCallUser: Optional<OnCallUser>;
   timeWindow: TimeWindow;
   timeRange: TimeRange;
   isLoading: boolean;

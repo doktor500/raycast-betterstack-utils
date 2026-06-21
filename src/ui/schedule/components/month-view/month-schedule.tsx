@@ -1,20 +1,25 @@
 import React, { Fragment } from "react";
 import { addDays, startOfWeek, TimeWindow } from "@/common/utils/date-utils";
 import { rangeOf } from "@/common/utils/collection-utils";
-import { buildWeekSpanBars } from "@/ui/schedule/components/month/span-bars";
+import { buildWeekSpanBars } from "@/ui/schedule/components/month-view/span-bars";
 import { OnCallEvent } from "@/domain/on-call-event";
-import { MonthBlock } from "@/ui/schedule/components/month/month-block";
-import { SummaryBlock } from "@/ui/schedule/components/month/summary-block";
-import { OnCallPill } from "@/ui/schedule/components/on-call-pill";
+import { MonthBlock } from "@/ui/schedule/components/month-view/month-block";
+import { SummaryBlock } from "@/ui/schedule/components/month-view/summary-block";
+import { OnCallUserPill } from "@/ui/schedule/components/on-call-user-pill";
 import { OnCallUser } from "@/domain/user";
 import { computeOnCallSummary } from "@/domain/on-call-summary";
-import { renderToSvg } from "@/components/satori-renderer";
+import { cn } from "@/lib/utils";
+import { renderToSvg } from "@/ui/svg-renderer";
 
-type Props = {
+type MonthViewProps = {
   events: OnCallEvent[];
   timeWindow: TimeWindow;
   onCallUser?: OnCallUser;
 };
+
+export async function buildMonthViewSvg(props: MonthViewProps): Promise<string> {
+  return renderToSvg(<MonthScheduleView {...props} />);
+}
 
 function buildMonthData(events: OnCallEvent[], timeWindow: TimeWindow) {
   const { start, end } = timeWindow;
@@ -53,7 +58,7 @@ function buildMonthData(events: OnCallEvent[], timeWindow: TimeWindow) {
   const weekRowHeightsByMonth = weekTimelinesByMonth.map((weekTimelines) =>
     weekTimelines.map((timeline) => {
       const maxLanes = Math.max(1, ...timeline.map((bar) => bar.lane + 1));
-      return 40 + maxLanes * 42 + Math.max(0, maxLanes - 1) * 4 + 10;
+      return 30 + maxLanes * 42 + Math.max(0, maxLanes - 1) * 4 + 21;
     }),
   );
 
@@ -62,24 +67,23 @@ function buildMonthData(events: OnCallEvent[], timeWindow: TimeWindow) {
   return { monthGroups, weekTimelinesByMonth, weekRowHeightsByMonth, summaries };
 }
 
-function CombinedScheduleRoot({ events, timeWindow, onCallUser }: Props) {
+function MonthScheduleView({ events, timeWindow, onCallUser }: MonthViewProps) {
   const today = new Date();
   const showTodayMarker = !!onCallUser;
-  const backgroundColor = onCallUser ? "" : "bg-dark";
-  const columnBg = onCallUser ? "bg-dark" : "";
+  const columnBg = onCallUser ? "" : "bg-dark";
 
   const { monthGroups, weekTimelinesByMonth, weekRowHeightsByMonth, summaries } = buildMonthData(events, timeWindow);
 
   return (
-    <div tw={`flex flex-col w-[1160px] ${backgroundColor}`}>
-      {onCallUser && <OnCallPill name={onCallUser.name} color={onCallUser.color} />}
+    <div tw={cn("flex flex-col w-[1160px]", { "bg-dark": !onCallUser })}>
+      {onCallUser && <OnCallUserPill name={onCallUser.name} color={onCallUser.color} />}
       {monthGroups.map(({ year, month, weeks }, monthIndex) => (
         <Fragment key={monthIndex}>
           <MonthBlock
             weeks={weeks}
             today={today}
             weekTimelines={weekTimelinesByMonth[monthIndex]}
-            currentMonth={{ year, month }}
+            currentCalendarMonth={{ year, month }}
             showTodayMarker={showTodayMarker}
             columnBg={columnBg}
             weekRowHeights={weekRowHeightsByMonth[monthIndex]}
@@ -97,8 +101,4 @@ function CombinedScheduleRoot({ events, timeWindow, onCallUser }: Props) {
       ))}
     </div>
   );
-}
-
-export async function buildMonthViewSvg(props: Props): Promise<string> {
-  return renderToSvg(<CombinedScheduleRoot {...props} />);
 }

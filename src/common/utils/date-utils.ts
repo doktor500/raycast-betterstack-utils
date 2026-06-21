@@ -2,6 +2,7 @@ import { DateTime } from "luxon";
 import { rangeOf } from "@/common/utils/collection-utils";
 
 export type TimeWindow = { start: Date; end: Date };
+export type CalendarMonth = { year: number; month: number };
 
 export function startOfWeek(date: Date): Date {
   const dateTime = DateTime.fromJSDate(date);
@@ -46,6 +47,11 @@ export function getCurrentWeekDays(date?: Date): Date[] {
   return rangeOf(7).map((dayIndex) => monday.plus({ days: dayIndex }).toJSDate());
 }
 
+export function fractionOfDayElapsed(date: Date): number {
+  const startOfDayMs = DateTime.fromJSDate(date).startOf("day").toMillis();
+  return (date.getTime() - startOfDayMs) / (24 * 3600 * 1000);
+}
+
 export function isDateInInterval(date: Date, start: Date, end: Date): boolean {
   const dateTime = DateTime.fromJSDate(date);
 
@@ -54,4 +60,8 @@ export function isDateInInterval(date: Date, start: Date, end: Date): boolean {
 
 export function formatWeekday(date: Date): string {
   return date.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase();
+}
+
+export function formatMonth({ year, month }: CalendarMonth): string {
+  return DateTime.fromObject({ year: year, month: month + 1 }).toFormat("MMMM yyyy");
 }

@@ -1,4 +1,5 @@
 import { OnCallEvent } from "@/domain/on-call-event";
+import { type CalendarMonth } from "@/common/utils/date-utils";
 import { getColor } from "@/common/colors";
 import { formatUserName } from "@/domain/user";
 
@@ -22,10 +23,10 @@ interface DayPosition {
 export function buildWeekSpanBars(
   days: Date[],
   events: OnCallEvent[],
-  currentMonth: { year: number; month: number },
+  currentCalendarMonth: CalendarMonth,
 ): WeekSpanBar[] {
   const dayStarts = toDayStarts(days);
-  const range = inMonthRange(days, currentMonth.year, currentMonth.month);
+  const range = inMonthRange(days, currentCalendarMonth.year, currentCalendarMonth.month);
   if (!range) return [];
 
   const { first, last } = range;

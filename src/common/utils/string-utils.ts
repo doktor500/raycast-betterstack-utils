@@ -1,6 +1,8 @@
-export const toString = (value: unknown | undefined) => (value ? String(value) : "");
+import { Optional } from "@/common/utils/optional-utils";
 
-export const capitalize = (value: string | undefined) => {
+export const toString = (value: Optional<unknown>) => (value ? String(value) : "");
+
+export const capitalize = (value: Optional<string>) => {
   if (value) {
     return value.charAt(0).toUpperCase() + value.slice(1);
   }

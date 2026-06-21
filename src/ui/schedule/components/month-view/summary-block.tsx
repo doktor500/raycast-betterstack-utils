@@ -1,4 +1,4 @@
-import { formatMonthLabel } from "@/ui/schedule/components/month/month-utils";
+import { formatMonth } from "@/common/utils/date-utils";
 import { OnCallSummary } from "@/domain/on-call-summary";
 
 interface SummaryBlockProps {
@@ -18,7 +18,7 @@ function formatDaysHours(totalHours: number): string {
 export function SummaryBlock({ year, month, summary }: SummaryBlockProps) {
   if (summary.length === 0) return null;
 
-  const monthLabel = formatMonthLabel({ year, month });
+  const monthLabel = formatMonth({ year, month });
 
   return (
     <div tw="flex w-[1160px] rounded-[10px] border border-slate bg-dark overflow-hidden">

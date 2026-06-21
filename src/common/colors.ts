@@ -9,7 +9,7 @@ export const Colors = {
   SUBTLE: "#AEB8D3",
   FROST: "#F3F5FA",
   SKELETON: "#28354E",
-}
+};
 
 export const RotaColors = {
   BLUE: "#21A7FF",
@@ -39,6 +39,13 @@ export function getColor(value: string): string {
 
 export function getThemeColor(bgHex: string): string {
   return relativeLuminance(bgHex) > 0.179 ? Colors.DARK : Colors.WHITE;
+}
+
+export function toRgba(hex: string, alpha: number): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
 }
 
 function relativeLuminance(hex: string): number {

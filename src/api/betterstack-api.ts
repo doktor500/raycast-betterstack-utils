@@ -2,7 +2,7 @@ import { getPreferenceValues } from "@raycast/api";
 import { match } from "ts-pattern";
 import { toList } from "@/common/utils/collection-utils";
 import { buildUserFromEmail, User } from "@/domain/user";
-import { asOptional } from "@/common/utils/optional-utils";
+import { asOptional, Optional } from "@/common/utils/optional-utils";
 import { Rota } from "@/domain/rota";
 import { Calendar } from "@/domain/calendar";
 import { OnCallEvent } from "@/domain/on-call-event";
@@ -43,7 +43,7 @@ interface EventsApiResponse {
 }
 
 export async function getRota(): Promise<Rota> {
-  const result = await fetchAllPages<{ id: string; attributes: { name: string | undefined } }>(`${BASE_URL}/on-calls`);
+  const result = await fetchAllPages<{ id: string; attributes: { name: Optional<string> } }>(`${BASE_URL}/on-calls`);
   const calendars: Calendar[] = result.data.map((calendar) => ({ id: calendar.id, name: calendar.attributes.name }));
 
   const teamMembers = toList(result.included)
@@ -75,7 +75,7 @@ async function fetchAllPages<T>(url: string): Promise<CalendarApiResponse<T>> {
   };
 }
 
-async function collectPages<T>(currentUrl: string | undefined): Promise<CalendarApiResponse<T>[]> {
+async function collectPages<T>(currentUrl: Optional<string>): Promise<CalendarApiResponse<T>[]> {
   if (!currentUrl) return [];
   const page = await fetchJson<CalendarApiResponse<T>>(currentUrl);
   const pages = await collectPages<T>(asOptional(page.pagination?.next));

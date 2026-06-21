@@ -16,7 +16,7 @@ const TEXT_AVAILABLE_WIDTH = 140; // approx day column width minus left padding 
 
 export function EventSegment({ segment }: EventSegmentProps) {
   const topPercent = segment.startFraction * 100;
-  const height = Math.max(12, (segment.endFraction - segment.startFraction) * 480);
+  const height = Math.max(12, (segment.endFraction - segment.startFraction) * 456);
   const themeColor = getThemeColor(segment.color);
   const showName = height >= 24;
 

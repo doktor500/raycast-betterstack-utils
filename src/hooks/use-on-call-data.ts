@@ -6,6 +6,7 @@ import { OnCallEvent, resolveOverrideConflicts } from "@/domain/on-call-event";
 import { Calendar } from "@/domain/calendar";
 import { toList } from "@/common/utils/collection-utils";
 import { toString } from "@/common/utils/string-utils";
+import { Optional } from "@/common/utils/optional-utils";
 
 const PRIMARY_SCHEDULE_NAME = "Primary";
 
@@ -17,7 +18,7 @@ interface OnCallData {
   hasError: boolean;
 }
 
-type ScheduleData = { scheduleName: string; events: OnCallEvent[] } | undefined;
+type ScheduleData = Optional<{ scheduleName: string; events: OnCallEvent[] }>;
 
 export function useOnCallData(): OnCallData {
   const { data, isLoading, isError, error } = useQuery({ queryKey: ["on-call-data"], queryFn: fetchScheduleData });
@@ -51,6 +52,6 @@ async function fetchScheduleData(): Promise<ScheduleData> {
   }
 }
 
-function findPrimarySchedule(calendars: Calendar[]): Calendar | undefined {
+function findPrimarySchedule(calendars: Calendar[]): Optional<Calendar> {
   return calendars.find((calendar) => calendar.name?.toLowerCase().includes(PRIMARY_SCHEDULE_NAME.toLowerCase()));
 }
