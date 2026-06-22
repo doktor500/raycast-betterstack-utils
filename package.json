@@ -24,6 +24,13 @@
       "description": "Your BetterStack API token",
       "type": "password",
       "required": true
+    },
+    {
+      "name": "teamId",
+      "title": "Team Id",
+      "description": "Your BetterStack team Id. Find it in the URL when viewing your on-call schedule: uptime.betterstack.com/team/t{id}/oncalls",
+      "type": "textfield",
+      "required": false
     }
   ],
   "dependencies": {

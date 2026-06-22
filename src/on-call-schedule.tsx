@@ -22,7 +22,7 @@ const SCHEDULE_LOAD_ERROR_MESSAGE = "Check your API token and network connection
 const queryClient = new QueryClient();
 
 function OnCallSchedule() {
-  const { onCallEvents, scheduleName, isLoading, isEmpty, hasError } = useOnCallData();
+  const { onCallEvents, scheduleName, onCallPageUrl, isLoading, isEmpty, hasError } = useOnCallData();
   const { timeData, userData, scheduleEvents } = useSchedule({ events: onCallEvents });
   const [markdown, setMarkdown] = useState("");
 
@@ -57,6 +57,7 @@ function OnCallSchedule() {
           offset={offset}
           userNames={userNames}
           selectedUser={selectedUser}
+          onCallPageUrl={onCallPageUrl}
           onTimeRangeChange={setTimeRange}
           onOffsetChange={setOffset}
           onUserSelect={setSelectedUser}
@@ -73,7 +74,8 @@ async function copyAsPng(props: { timeRange: TimeRange; timeWindow: TimeWindow; 
   const data = { events, timeWindow };
 
   try {
-    const svg = timeRange === WEEK ? await buildWeekViewSvg(data) : await buildMonthViewSvg({ ...data, forExport: true });
+    const svg =
+      timeRange === WEEK ? await buildWeekViewSvg(data) : await buildMonthViewSvg({ ...data, forExport: true });
     await exportSvgToClipboard(svg, environment.supportPath);
     toast.style = Toast.Style.Success;
     toast.title = "Schedule copied to clipboard";

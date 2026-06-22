@@ -58,7 +58,10 @@ function HorizontalBorder(props: { days: Date[]; currentCalendarMonth: CalendarM
   return (
     <div tw={`flex absolute ${position}-0 left-0 right-0`}>
       {days.map((day, index) => (
-        <div key={index} tw={isDate(day).inCalendarMonth(currentCalendarMonth) ? "flex flex-1 h-px bg-slate" : "flex flex-1 h-px"} />
+        <div
+          key={index}
+          tw={isDate(day).inCalendarMonth(currentCalendarMonth) ? "flex flex-1 h-px bg-slate" : "flex flex-1 h-px"}
+        />
       ))}
     </div>
   );
@@ -69,5 +72,5 @@ const isDate = (date: Date) => {
     inCalendarMonth: (calendarMonth: CalendarMonth) => {
       return date.getFullYear() === calendarMonth.year && date.getMonth() === calendarMonth.month;
     },
-  }
-}
+  };
+};

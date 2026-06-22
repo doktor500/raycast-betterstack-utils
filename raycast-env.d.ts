@@ -9,7 +9,9 @@
 
 type ExtensionPreferences = {
   /** API Token - Your BetterStack API token */
-  "apiToken": string
+  "apiToken": string,
+  /** Team Id - Your BetterStack team Id. Find it in the URL when viewing your on-call schedule: uptime.betterstack.com/team/t{id}/oncalls */
+  "teamId"?: string
 }
 
 /** Preferences accessible in all the extension's commands */

@@ -35,4 +35,3 @@ export function DayColumn({ day, dayIndex, isToday, events, markerTime }: DayCol
     </div>
   );
 }
-
