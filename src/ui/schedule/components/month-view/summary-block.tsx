@@ -24,9 +24,9 @@ export function SummaryBlock({ year, month, summary, bg = "bg-dark" }: SummaryBl
   const [monthName, yearLabel] = monthLabel.split(" ");
 
   return (
-    <div tw={cn("flex w-[1160px] rounded-[10px] border border-slate overflow-hidden", bg)}>
+    <div tw={cn("flex w-[1160px] rounded-[10px] border border-frost overflow-hidden", bg)} style={{ borderColor: "rgba(243, 245, 250, 0.3)" }}>
       <div tw="flex flex-1 items-start justify-center pt-[14px] pb-[14px]">
-        <div tw="flex flex-col justify-center self-center w-[166px] border-r border-slate">
+        <div tw="flex flex-col justify-center self-center w-[166px] border-r border-frost" style={{ borderColor: "rgba(243, 245, 250, 0.3)" }}>
           <span tw="text-[18px] font-bold text-frost" style={{ alignSelf: "center" }}>
             {monthName}
           </span>

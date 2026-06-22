@@ -46,8 +46,8 @@ function DayColumn({ day, previousDay, isLastColumn, currentCalendarMonth }: Day
 
   return (
     <div tw="flex flex-1 relative h-full">
-      {drawLeftBorder && <div tw="flex absolute top-0 bottom-0 left-0 w-px bg-slate" />}
-      {inMonth && isLastColumn && <div tw="flex absolute top-0 bottom-0 right-0 w-px bg-slate" />}
+      {drawLeftBorder && <div tw="flex absolute top-0 bottom-0 left-0 w-px bg-frost" style={{ opacity: 0.3 }} />}
+      {inMonth && isLastColumn && <div tw="flex absolute top-0 bottom-0 right-0 w-px bg-frost" style={{ opacity: 0.3 }} />}
     </div>
   );
 }
@@ -60,7 +60,8 @@ function HorizontalBorder(props: { days: Date[]; currentCalendarMonth: CalendarM
       {days.map((day, index) => (
         <div
           key={index}
-          tw={isDate(day).inCalendarMonth(currentCalendarMonth) ? "flex flex-1 h-px bg-slate" : "flex flex-1 h-px"}
+          tw={isDate(day).inCalendarMonth(currentCalendarMonth) ? "flex flex-1 h-px bg-frost" : "flex flex-1 h-px"}
+          style={{ opacity: 0.3 }}
         />
       ))}
     </div>
