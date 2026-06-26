@@ -34,7 +34,7 @@ export function DayColumn({ day, currentCalendarMonth, columnBg, rowHeight, show
       )}
       {isInCurrentMonth && (
         <>
-          <div tw={`flex absolute left-0 top-0 w-px h-[${rowHeight}px] bg-slate`} />
+          <div tw={`flex absolute left-0 top-0 w-px h-[${rowHeight}px] bg-dim`} style={{ opacity: 0.3 }} />
           <div tw="flex absolute left-0 top-[30px] right-0 h-px bg-slate" />
           <div tw="flex items-center justify-center w-full h-[30px]">
             <span tw="text-[14px] font-semibold text-dim">{formatWeekday(day)}</span>

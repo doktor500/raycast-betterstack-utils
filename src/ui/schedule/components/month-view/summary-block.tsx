@@ -24,7 +24,7 @@ export function SummaryBlock({ year, month, summary, bg = "bg-dark" }: SummaryBl
   const [monthName, yearLabel] = monthLabel.split(" ");
 
   return (
-    <div tw={cn("flex w-[1160px] rounded-[10px] border-[0.5px] border-frost overflow-hidden", bg)}>
+    <div tw={cn("flex w-[1160px] rounded-[10px] border-[0.5px] border-frost/30 overflow-hidden", bg)}>
       <div tw="flex w-[496px] py-[14px]">
         <div tw="flex w-[330px]" />
         <div tw="flex flex-col flex-1 justify-center items-center">
