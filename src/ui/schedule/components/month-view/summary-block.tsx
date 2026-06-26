@@ -24,28 +24,27 @@ export function SummaryBlock({ year, month, summary, bg = "bg-dark" }: SummaryBl
   const [monthName, yearLabel] = monthLabel.split(" ");
 
   return (
-    <div tw={cn("flex w-[1160px] rounded-[10px] border border-frost overflow-hidden", bg)} style={{ borderColor: "rgba(243, 245, 250, 0.3)" }}>
-      <div tw="flex flex-1 items-start justify-center pt-[14px] pb-[14px]">
-        <div tw="flex flex-col justify-center self-center w-[166px] border-r border-frost" style={{ borderColor: "rgba(243, 245, 250, 0.3)" }}>
-          <span tw="text-[18px] font-bold text-frost" style={{ alignSelf: "center" }}>
-            {monthName}
-          </span>
+    <div tw={cn("flex w-[1160px] rounded-[10px] border-[0.5px] border-frost overflow-hidden", bg)}>
+      <div tw="flex w-[496px] py-[14px]">
+        <div tw="flex w-[330px]" />
+        <div tw="flex flex-col flex-1 justify-center items-center">
+          <span tw="text-[18px] font-bold text-frost">{monthName}</span>
           <div tw="flex h-[6px]" />
-          <span tw="text-[18px] font-bold text-frost" style={{ alignSelf: "center" }}>
-            {yearLabel}
-          </span>
+          <span tw="text-[18px] font-bold text-frost">{yearLabel}</span>
         </div>
+      </div>
+      <div tw="flex py-[14px]">
         <div tw="flex flex-col">
           {summary.map(({ teamMember, email, color }, index) => (
-            <div key={index} tw="flex items-center h-[36px] pl-[20px]">
+            <div key={index} tw="flex items-center h-[36px] pl-[24px]">
               <div tw={`flex w-[12px] h-[12px] rounded-full bg-[${color}] mr-[10px]`} />
               <span tw="text-[18px] font-semibold text-subtle">{`${teamMember} - ${email}`}</span>
             </div>
           ))}
         </div>
-        <div tw="flex flex-col w-[80px]">
+        <div tw="flex flex-col">
           {summary.map(({ hours }, index) => (
-            <div key={index} tw="flex items-center justify-end h-[36px] pr-[24px]">
+            <div key={index} tw="flex items-center justify-end h-[36px] pl-[20px]">
               <span tw="text-[18px] font-semibold text-subtle">{formatDaysHours(hours)}</span>
             </div>
           ))}
