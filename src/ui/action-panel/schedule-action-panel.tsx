@@ -10,6 +10,7 @@ import { FilterByUserSubmenu } from "@/ui/action-panel/filter-by-user-submenu";
 import { ClearUserFilterAction } from "@/ui/action-panel/actions/clear-user-filter-action";
 import { OpenScheduleInBrowserAction } from "@/ui/action-panel/actions/open-schedule-in-browser-action";
 import { RefreshAction } from "@/ui/action-panel/actions/refresh-action";
+import { CreateIncidentAction } from "@/ui/action-panel/actions/create-incident-action";
 
 type ScheduleActionPanelProps = {
   currentTimeRange: TimeRange;
@@ -37,6 +38,7 @@ export function ScheduleActionPanel(props: ScheduleActionPanelProps) {
       <FilterByUserSubmenu userNames={userNames} selectedUser={selectedUser} onUserSelect={onUserSelect} />
       <ClearUserFilterAction selectedUser={selectedUser} onUserSelect={onUserSelect} />
       <RefreshAction onRefresh={onRefresh} />
+      <CreateIncidentAction />
       <CopyScheduleAction onCopyAsPng={onCopyAsPng} />
       {onCallPageUrl && <OpenScheduleInBrowserAction url={onCallPageUrl} />}
     </ActionPanel>
