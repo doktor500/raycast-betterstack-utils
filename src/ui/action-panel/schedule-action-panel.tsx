@@ -9,6 +9,7 @@ import { CopyScheduleAction } from "@/ui/action-panel/actions/copy-schedule-acti
 import { FilterByUserSubmenu } from "@/ui/action-panel/filter-by-user-submenu";
 import { ClearUserFilterAction } from "@/ui/action-panel/actions/clear-user-filter-action";
 import { OpenScheduleInBrowserAction } from "@/ui/action-panel/actions/open-schedule-in-browser-action";
+import { RefreshAction } from "@/ui/action-panel/actions/refresh-action";
 
 type ScheduleActionPanelProps = {
   currentTimeRange: TimeRange;
@@ -20,11 +21,12 @@ type ScheduleActionPanelProps = {
   onOffsetChange: (offset: number) => void;
   onUserSelect: (user: string) => void;
   onCopyAsPng: () => void;
+  onRefresh: () => void;
 };
 
 export function ScheduleActionPanel(props: ScheduleActionPanelProps) {
   const { currentTimeRange, offset, userNames, selectedUser, onCallPageUrl } = props;
-  const { onTimeRangeChange, onOffsetChange, onUserSelect, onCopyAsPng } = props;
+  const { onTimeRangeChange, onOffsetChange, onUserSelect, onCopyAsPng, onRefresh } = props;
 
   return (
     <ActionPanel>
@@ -34,6 +36,7 @@ export function ScheduleActionPanel(props: ScheduleActionPanelProps) {
       <BackToCurrentAction offset={offset} onOffsetChange={onOffsetChange} />
       <FilterByUserSubmenu userNames={userNames} selectedUser={selectedUser} onUserSelect={onUserSelect} />
       <ClearUserFilterAction selectedUser={selectedUser} onUserSelect={onUserSelect} />
+      <RefreshAction onRefresh={onRefresh} />
       <CopyScheduleAction onCopyAsPng={onCopyAsPng} />
       {onCallPageUrl && <OpenScheduleInBrowserAction url={onCallPageUrl} />}
     </ActionPanel>

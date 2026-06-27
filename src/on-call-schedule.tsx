@@ -22,7 +22,7 @@ const SCHEDULE_LOAD_ERROR_MESSAGE = "Check your API token and network connection
 const queryClient = new QueryClient();
 
 function OnCallSchedule() {
-  const { onCallEvents, scheduleName, onCallPageUrl, isLoading, isEmpty, hasError } = useOnCallData();
+  const { onCallEvents, scheduleName, onCallPageUrl, isLoading, isEmpty, hasError, refresh } = useOnCallData();
   const { timeData, userData, scheduleEvents } = useSchedule({ events: onCallEvents });
   const [markdown, setMarkdown] = useState("");
 
@@ -61,6 +61,7 @@ function OnCallSchedule() {
           onTimeRangeChange={setTimeRange}
           onOffsetChange={setOffset}
           onUserSelect={setSelectedUser}
+          onRefresh={refresh}
           onCopyAsPng={() => copyAsPng({ timeRange, timeWindow, events: scheduleEvents })}
         />
       }

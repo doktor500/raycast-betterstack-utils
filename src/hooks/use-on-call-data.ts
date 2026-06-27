@@ -1,6 +1,6 @@
 import { getPreferenceValues, showToast, Toast } from "@raycast/api";
 import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getRota, getOnCallEvents } from "@/api/betterstack-schedule-api";
 import { BASE_URL } from "@/api/betterstack-client";
 import { OnCallEvent, resolveOverrideConflicts } from "@/domain/on-call-event";
@@ -18,12 +18,16 @@ interface OnCallData {
   isLoading: boolean;
   isEmpty: boolean;
   hasError: boolean;
+  refresh: () => void;
 }
 
 type ScheduleData = Optional<{ scheduleName: string; onCallPageUrl: Optional<string>; events: OnCallEvent[] }>;
 
+const ON_CALL_DATA_QUERY_KEY = ["on-call-data"];
+
 export function useOnCallData(): OnCallData {
-  const { data, isLoading, isError, error } = useQuery({ queryKey: ["on-call-data"], queryFn: fetchScheduleData });
+  const queryClient = useQueryClient();
+  const { data, isLoading, isError, error } = useQuery({ queryKey: ON_CALL_DATA_QUERY_KEY, queryFn: fetchScheduleData });
 
   useEffect(() => {
     if (isError) {
@@ -39,6 +43,7 @@ export function useOnCallData(): OnCallData {
     isLoading,
     isEmpty: !isLoading && !isError && data === null,
     hasError: isError,
+    refresh: () => void queryClient.invalidateQueries({ queryKey: ON_CALL_DATA_QUERY_KEY }),
   };
 }
 
