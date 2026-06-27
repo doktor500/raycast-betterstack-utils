@@ -21,6 +21,12 @@
       "title": "Create Incident",
       "description": "File a new BetterStack incident",
       "mode": "view"
+    },
+    {
+      "name": "incidents",
+      "title": "Incidents",
+      "description": "View and manage active incidents",
+      "mode": "view"
     }
   ],
   "preferences": [

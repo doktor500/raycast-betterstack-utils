@@ -24,6 +24,8 @@ declare namespace Preferences {
   export type OnCallSchedule = ExtensionPreferences & {}
   /** Preferences accessible in the `create-incident` command */
   export type CreateIncident = ExtensionPreferences & {}
+  /** Preferences accessible in the `incidents` command */
+  export type Incidents = ExtensionPreferences & {}
 }
 
 declare namespace Arguments {
@@ -31,5 +33,7 @@ declare namespace Arguments {
   export type OnCallSchedule = {}
   /** Arguments passed to the `create-incident` command */
   export type CreateIncident = {}
+  /** Arguments passed to the `incidents` command */
+  export type Incidents = {}
 }
 
