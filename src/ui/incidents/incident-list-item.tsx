@@ -11,9 +11,9 @@ interface IncidentListItemProps {
 }
 
 const STATUS_COLOR: Record<IncidentStatus, Color> = {
-  Started: Color.Red,
-  Acknowledged: Color.Yellow,
-  Resolved: Color.Green,
+  [IncidentStatus.Started]: Color.Red,
+  [IncidentStatus.Acknowledged]: Color.Yellow,
+  [IncidentStatus.Resolved]: Color.Green,
 };
 
 export function IncidentListItem({ incident, webUrl, onAcknowledge, onResolve, onRefresh }: IncidentListItemProps) {

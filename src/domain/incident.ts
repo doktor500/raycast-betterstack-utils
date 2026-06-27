@@ -1,6 +1,12 @@
 import { Optional } from "@/common/utils/optional-utils";
 
-export type IncidentStatus = "Started" | "Acknowledged" | "Resolved";
+export const IncidentStatus = {
+  Started: "Started",
+  Acknowledged: "Acknowledged",
+  Resolved: "Resolved",
+} as const;
+
+export type IncidentStatus = (typeof IncidentStatus)[keyof typeof IncidentStatus];
 
 export interface Incident {
   id: string;

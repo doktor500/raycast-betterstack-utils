@@ -37,7 +37,7 @@ interface IncidentResponse {
 }
 
 const UNTITLED_INCIDENT = "Untitled incident";
-const KNOWN_STATUSES: IncidentStatus[] = ["Started", "Acknowledged", "Resolved"];
+const KNOWN_STATUSES = Object.values(IncidentStatus);
 
 export function buildIncidentWebUrl(incidentId: string, teamId: Optional<string>): string {
   const trimmedTeamId = teamId?.trim();
@@ -102,5 +102,5 @@ function toIncident(data: IncidentApiData): Incident {
 }
 
 function toIncidentStatus(status: Optional<string>): IncidentStatus {
-  return KNOWN_STATUSES.find((knownStatus) => knownStatus === status) ?? "Started";
+  return KNOWN_STATUSES.find((knownStatus) => knownStatus === status) ?? IncidentStatus.Started;
 }

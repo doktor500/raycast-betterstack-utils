@@ -1,18 +1,18 @@
 import { getPreferenceValues } from "@raycast/api";
 import { match } from "ts-pattern";
-import { HttpStatusCodes } from "@/common/utils/http-utils";
+import { HttpMethods, HttpStatusCodes } from "@/common/utils/http-utils";
 
 export const BASE_URL = "https://uptime.betterstack.com";
 export const V2_BASE = `${BASE_URL}/api/v2`;
 export const V3_BASE = `${BASE_URL}/api/v3`;
 
 interface RequestOptions {
-  method?: "GET" | "POST";
+  method?: typeof HttpMethods.GET | typeof HttpMethods.POST;
   body?: unknown;
 }
 
 export async function request<T>(url: string, options: RequestOptions = {}): Promise<T> {
-  const { method = "GET", body } = options;
+  const { method = HttpMethods.GET, body } = options;
 
   const response: Response = await fetch(url, {
     method,
