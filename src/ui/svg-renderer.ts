@@ -51,21 +51,21 @@ export async function renderToSvg(element: ReactNode): Promise<string> {
 }
 
 export function loadFonts(): SatoriFont[] {
-  const readFont = (filename: string): ArrayBuffer => {
-    const fontPath = path.join(environment.assetsPath, "fonts", filename);
-    try {
-      return toArrayBuffer(readFileSync(fontPath));
-    } catch {
-      throw new Error(`Font file not found at ${fontPath}. Ensure ${filename} is present in assets/fonts/.`);
-    }
-  };
-
   return [
     { name: "Inter", data: readFont("Inter-Regular.ttf"), weight: 400, style: "normal" },
     { name: "Inter", data: readFont("Inter-Bold-Static.ttf"), weight: 700, style: "normal" },
     { name: "JetBrainsMono", data: readFont("JetBrainsMono-Regular.ttf"), weight: 400, style: "normal" },
   ];
 }
+
+const readFont = (filename: string): ArrayBuffer => {
+  const fontPath = path.join(environment.assetsPath, "fonts", filename);
+  try {
+    return toArrayBuffer(readFileSync(fontPath));
+  } catch {
+    throw new Error(`Font file not found at ${fontPath}. Ensure ${filename} is present in assets/fonts/.`);
+  }
+};
 
 const toArrayBuffer = (buffer: Buffer): ArrayBuffer => {
   return buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength) as ArrayBuffer;
