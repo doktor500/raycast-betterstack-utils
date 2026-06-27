@@ -1,14 +1,11 @@
-import { getPreferenceValues } from "@raycast/api";
-import { match } from "ts-pattern";
 import { toList } from "@/common/utils/collection-utils";
 import { buildUserFromEmail, User } from "@/domain/user";
 import { asOptional, Optional } from "@/common/utils/optional-utils";
 import { Rota } from "@/domain/rota";
 import { Calendar } from "@/domain/calendar";
 import { OnCallEvent } from "@/domain/on-call-event";
-import { HttpStatusCodes } from "@/common/utils/http-utils";
+import { request, V2_BASE } from "@/api/betterstack-client";
 
-const BASE_URL = "https://uptime.betterstack.com/api/v2";
 const USER_TYPE = "user" as const;
 
 interface IncludedUserAttributes {
@@ -46,7 +43,7 @@ interface EventsApiResponse {
 const THREE_MONTHS_MS = 90 * 24 * 60 * 60 * 1000;
 
 export async function getRota(): Promise<Rota> {
-  const result = await fetchAllPages<{ id: string; attributes: { name: Optional<string> } }>(`${BASE_URL}/on-calls`);
+  const result = await fetchAllPages<{ id: string; attributes: { name: Optional<string> } }>(`${V2_BASE}/on-calls`);
   const calendars: Calendar[] = result.data.map((calendar) => ({ id: calendar.id, name: calendar.attributes.name }));
 
   const teamMembers = toList(result.included)
@@ -61,11 +58,11 @@ export async function getOnCallEvents(calendarId: string, teamMembers: Map<strin
   const to = new Date(Date.now() + THREE_MONTHS_MS).toISOString();
   const params = new URLSearchParams({ from, to });
 
-  let url: Optional<string> = `${BASE_URL}/on-calls/${calendarId}/events?${params}`;
+  let url: Optional<string> = `${V2_BASE}/on-calls/${calendarId}/events?${params}`;
   const allEvents: Event[] = [];
 
   while (url) {
-    const page: EventsApiResponse = await fetchJson<EventsApiResponse>(url);
+    const page: EventsApiResponse = await request<EventsApiResponse>(url);
     allEvents.push(...page.events);
     url = asOptional(page.pagination?.next);
   }
@@ -91,42 +88,12 @@ async function fetchAllPages<T>(url: string): Promise<CalendarApiResponse<T>> {
 
 async function collectPages<T>(currentUrl: Optional<string>): Promise<CalendarApiResponse<T>[]> {
   if (!currentUrl) return [];
-  const page = await fetchJson<CalendarApiResponse<T>>(currentUrl);
+  const page = await request<CalendarApiResponse<T>>(currentUrl);
   const pages = await collectPages<T>(asOptional(page.pagination?.next));
 
   return [page, ...pages];
 }
 
-async function fetchJson<T>(url: string): Promise<T> {
-  const response: Response = await fetch(url, { headers: getHeaders() });
-
-  return match(response)
-    .with({ ok: true }, async (response) => (await response.json()) as T)
-    .with({ status: HttpStatusCodes.UNAUTHORIZED }, invalidTokenError())
-    .otherwise(apiError());
-}
-
-function invalidTokenError() {
-  return () => {
-    throw new Error("Invalid API token. Check your BetterStack API token in extension preferences.");
-  };
-}
-
-function apiError() {
-  return (response: Response) => {
-    throw new Error(`BetterStack API error: ${response.status} ${response.statusText}`);
-  };
-}
-
 function toUser(includedUser: IncludedUser) {
   return { firstName: includedUser.attributes.first_name, email: includedUser.attributes.email };
-}
-
-function getHeaders(): Record<string, string> {
-  const { apiToken } = getPreferenceValues<Preferences>();
-
-  return {
-    Authorization: `Bearer ${apiToken}`,
-    "Content-Type": "application/json",
-  };
 }

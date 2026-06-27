@@ -1,7 +1,7 @@
 import { getPreferenceValues, showToast, Toast } from "@raycast/api";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getRota, getOnCallEvents } from "@/api/betterstack-api";
+import { getRota, getOnCallEvents } from "@/api/betterstack-schedule-api";
 import { OnCallEvent, resolveOverrideConflicts } from "@/domain/on-call-event";
 import { Calendar } from "@/domain/calendar";
 import { toList } from "@/common/utils/collection-utils";
