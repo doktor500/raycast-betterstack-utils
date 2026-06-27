@@ -8,7 +8,7 @@ type FilterByUserSubmenuProps = {
 
 export function FilterByUserSubmenu({ userNames, selectedUser, onUserSelect }: FilterByUserSubmenuProps) {
   if (userNames.length === 0) return null;
-  const title = selectedUser ? `Filter: ${selectedUser}` : "Filter by User";
+  const title = selectedUser ? `Filter: ${selectedUser}` : "Filter by Team Member";
 
   return (
     <ActionPanel.Submenu title={title} shortcut={{ modifiers: ["cmd"], key: "f" }}>
