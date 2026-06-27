@@ -15,6 +15,12 @@
       "title": "On Call Schedule",
       "description": "Shows a 3-month on-call grid for the Primary schedule",
       "mode": "view"
+    },
+    {
+      "name": "create-incident",
+      "title": "Create Incident",
+      "description": "File a new BetterStack incident",
+      "mode": "view"
     }
   ],
   "preferences": [
@@ -29,6 +35,13 @@
       "name": "teamId",
       "title": "Team Id",
       "description": "Your BetterStack team Id. Find it in the URL when viewing your on-call schedule: uptime.betterstack.com/team/t{id}/oncalls",
+      "type": "textfield",
+      "required": false
+    },
+    {
+      "name": "requesterEmail",
+      "title": "Requester Email",
+      "description": "Default e-mail used when creating incidents",
       "type": "textfield",
       "required": false
     }
