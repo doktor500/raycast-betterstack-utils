@@ -1,6 +1,6 @@
 # BetterStack Utils
 
-View your BetterStack on-call primary schedule and manage incidents directly from Raycast.
+View your BetterStack on-call schedule and manage incidents directly from Raycast.
 
 ![betterstack.png](docs/betterstack-oncall.png)
 
@@ -15,27 +15,37 @@ View your BetterStack on-call primary schedule and manage incidents directly fro
 
 ### On Call Schedule
 
-- Shows the team member that is currently on-call
-- Shows an on-call grid for the Primary schedule with monthly and weekly views.
-- Allows to filter the schedule by team member
-- Displays a summary of the team that each team member has been on call on a given month
+Shows who is currently on call and a visual grid of the primary schedule. Supports monthly and weekly views with
+navigation between periods. A monthly summary shows how much time each team member has been on call.
+
+- **Toggle View** — switch between monthly and weekly schedule views.
+- **Previous / Next Period** — navigate backward or forward through the schedule.
+- **Back to Current** — jump back to the current period.
+- **Filter by User** — focus the schedule on a specific team member.
+- **Clear Filter** — remove the active user filter.
+- **Copy Schedule** — copy the current schedule view as an image to your clipboard.
+- **Open Schedule in Browser** — open the on-call schedule in BetterStack (requires Team ID).
+- **Refresh** — reload the schedule.
 
 ### Create Incident
 
 File a new BetterStack incident. Fill in a summary (required), an optional description, and a requester email. Choose
-whether to notify the on-call person via email, SMS, or phone call.
+whether to notify the on-call team member via email, SMS, or phone call.
 
 ### Manage Incidents
 
-View and manage active incidents. For each incident you can:
+View and manage incidents. Use the dropdown to switch between **Active** and **All** incidents. For each incident you
+can:
 
-- **Acknowledge** - acknowledge a started incident.
-- **Resolve** - mark an incident as resolved.
-- **Open in Browser** - open the incident in BetterStack.
-- **Create Incident** - create a new incident without leaving the list.
-- **Refresh** - reload the incident list.
+- **Acknowledge** — acknowledge a started incident.
+- **Resolve** — mark an incident as resolved.
+- **Open in Browser** — open the incident in BetterStack.
+- **Create Incident** — create a new incident without leaving the list.
+- **Refresh** — reload the incident list.
 
 ## Setup
+
+### Required setup
 
 This extension requires a BetterStack API token.
 
