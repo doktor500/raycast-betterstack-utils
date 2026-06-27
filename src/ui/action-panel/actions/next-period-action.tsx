@@ -1,5 +1,5 @@
 import { TimeRange } from "@/domain/time-range";
-import { Action } from "@raycast/api";
+import { Action, Icon } from "@raycast/api";
 
 type NextPeriodActionProps = {
   currentTimeRange: TimeRange;
@@ -12,6 +12,7 @@ export function NextPeriodAction({ currentTimeRange, offset, onOffsetChange }: N
   return (
     <Action
       title={nextLabel}
+      icon={Icon.ArrowRight}
       shortcut={{ modifiers: [], key: "arrowRight" }}
       onAction={() => onOffsetChange(offset + 1)}
     />

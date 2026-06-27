@@ -1,5 +1,5 @@
 import { TimeRange } from "@/domain/time-range";
-import { Action } from "@raycast/api";
+import { Action, Icon } from "@raycast/api";
 import { capitalize } from "@/common/utils/string-utils";
 
 type ToggleTimeRangeActionProps = {
@@ -9,5 +9,11 @@ type ToggleTimeRangeActionProps = {
 
 export function ToggleTimeRangeAction({ currentTimeRange, onTimeRangeChange }: ToggleTimeRangeActionProps) {
   const nextTimeRange = currentTimeRange === TimeRange.MONTH ? TimeRange.WEEK : TimeRange.MONTH;
-  return <Action title={`Show ${capitalize(nextTimeRange)}`} onAction={() => onTimeRangeChange(nextTimeRange)} />;
+  return (
+    <Action
+      title={`Show ${capitalize(nextTimeRange)}`}
+      icon={Icon.Calendar}
+      onAction={() => onTimeRangeChange(nextTimeRange)}
+    />
+  );
 }

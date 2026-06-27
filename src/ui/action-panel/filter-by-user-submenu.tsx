@@ -1,4 +1,4 @@
-import { Action, ActionPanel } from "@raycast/api";
+import { Action, ActionPanel, Icon } from "@raycast/api";
 
 type FilterByUserSubmenuProps = {
   userNames: string[];
@@ -11,7 +11,7 @@ export function FilterByUserSubmenu({ userNames, selectedUser, onUserSelect }: F
   const title = selectedUser ? `Filter: ${selectedUser}` : "Filter by Team Member";
 
   return (
-    <ActionPanel.Submenu title={title} shortcut={{ modifiers: ["cmd"], key: "f" }}>
+    <ActionPanel.Submenu title={title} icon={Icon.Person} shortcut={{ modifiers: ["cmd"], key: "f" }}>
       <Action title="All Users" onAction={() => onUserSelect("")} />
       {userNames.map((name) => (
         <Action key={name} title={name} onAction={() => onUserSelect(name)} />

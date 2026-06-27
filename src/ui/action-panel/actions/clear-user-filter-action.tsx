@@ -1,4 +1,4 @@
-import { Action } from "@raycast/api";
+import { Action, Icon } from "@raycast/api";
 
 type ClearUserFilterActionProps = {
   selectedUser: string;
@@ -10,6 +10,7 @@ export function ClearUserFilterAction({ selectedUser, onUserSelect }: ClearUserF
   return (
     <Action
       title="Clear User Filter"
+      icon={Icon.XMarkCircle}
       shortcut={{ modifiers: ["cmd", "shift"], key: "f" }}
       onAction={() => onUserSelect("")}
     />
