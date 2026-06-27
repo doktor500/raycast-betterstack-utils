@@ -2,6 +2,7 @@ import { getPreferenceValues, showToast, Toast } from "@raycast/api";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getRota, getOnCallEvents } from "@/api/betterstack-schedule-api";
+import { BASE_URL } from "@/api/betterstack-client";
 import { OnCallEvent, resolveOverrideConflicts } from "@/domain/on-call-event";
 import { Calendar } from "@/domain/calendar";
 import { toList } from "@/common/utils/collection-utils";
@@ -59,7 +60,7 @@ function buildOnCallPageUrl(): Optional<string> {
   const { teamId } = getPreferenceValues<Preferences>();
   const trimmedTeamId = teamId?.trim();
 
-  return trimmedTeamId ? `https://uptime.betterstack.com/team/t${trimmedTeamId}/oncalls` : undefined;
+  return trimmedTeamId ? `${BASE_URL}/team/t${trimmedTeamId}/oncalls` : undefined;
 }
 
 function findPrimarySchedule(calendars: Calendar[]): Optional<Calendar> {

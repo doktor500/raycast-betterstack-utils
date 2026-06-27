@@ -1,6 +1,7 @@
 import { Action, ActionPanel, Form, getPreferenceValues, popToRoot, showToast, Toast } from "@raycast/api";
 import { useState } from "react";
 import { createIncident } from "@/api/betterstack-incidents-api";
+import { Optional } from "@/common/utils/optional-utils";
 
 interface IncidentFormValues {
   summary: string;
@@ -13,12 +14,11 @@ interface IncidentFormValues {
 
 export function IncidentForm() {
   const { requesterEmail } = getPreferenceValues<Preferences>();
-  const [summaryError, setSummaryError] = useState<string | undefined>(undefined);
+  const [summaryError, setSummaryError] = useState<Optional<string>>(undefined);
 
   async function handleSubmit(values: IncidentFormValues) {
     if (!values.summary.trim()) {
-      setSummaryError("Summary is required");
-      return;
+      return setSummaryError("Summary is required");
     }
 
     const toast = await showToast({ style: Toast.Style.Animated, title: "Creating incident..." });
@@ -26,8 +26,8 @@ export function IncidentForm() {
     try {
       const incident = await createIncident({
         summary: values.summary.trim(),
-        description: values.description.trim() || undefined,
-        requesterEmail: values.requesterEmail.trim() || undefined,
+        description: values.description.trim(),
+        requesterEmail: values.requesterEmail.trim(),
         email: values.email,
         sms: values.sms,
         call: values.call,
@@ -37,10 +37,10 @@ export function IncidentForm() {
       toast.title = "Incident created";
       toast.message = incident.name;
       await popToRoot();
-    } catch (caughtError) {
+    } catch (error) {
       toast.style = Toast.Style.Failure;
       toast.title = "Failed to create incident";
-      toast.message = caughtError instanceof Error ? caughtError.message : String(caughtError);
+      toast.message = error instanceof Error ? error.message : String(error);
     }
   }
 

@@ -11,7 +11,10 @@ type IncidentFilter = "active" | "all";
 function Incidents() {
   const { teamId } = getPreferenceValues<Preferences>();
   const [filter, setFilter] = useState<IncidentFilter>("active");
-  const { incidents, isLoading, acknowledge, resolve, refresh } = useIncidents(filter === "active");
+  const { incidents, isLoading, acknowledge, resolve, refresh } = useIncidents({
+    activeOnly: filter === "active",
+    teamId
+  });
 
   return (
     <List
@@ -20,10 +23,12 @@ function Incidents() {
         <List.Dropdown
           tooltip="Filter incidents"
           value={filter}
-          onChange={(newValue) => setFilter(newValue as IncidentFilter)}
+          onChange={(newValue) => {
+            if (newValue === "active" || newValue === "all") setFilter(newValue);
+          }}
         >
-          <List.Dropdown.Item title="Active" value="active" />
-          <List.Dropdown.Item title="All" value="all" />
+          <List.Dropdown.Item title="Active" value="active"/>
+          <List.Dropdown.Item title="All" value="all"/>
         </List.Dropdown>
       }
     >
@@ -31,7 +36,7 @@ function Incidents() {
         <IncidentListItem
           key={incident.id}
           incident={incident}
-          teamId={teamId}
+          webUrl={incident.webUrl}
           onAcknowledge={acknowledge}
           onResolve={resolve}
           onRefresh={refresh}
@@ -44,7 +49,7 @@ function Incidents() {
 export function IncidentList() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Incidents />
+      <Incidents/>
     </QueryClientProvider>
   );
 }

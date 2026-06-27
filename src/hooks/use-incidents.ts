@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import { showToast, Toast } from "@raycast/api";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { acknowledgeIncident, listIncidents, resolveIncident } from "@/api/betterstack-incidents-api";
+import { acknowledgeIncident, buildIncidentWebUrl, listIncidents, resolveIncident } from "@/api/betterstack-incidents-api";
 import { Incident } from "@/domain/incident";
+import { Optional } from "@/common/utils/optional-utils";
 import { toList } from "@/common/utils/collection-utils";
 
 const INCIDENTS_QUERY_KEY = ["incidents"];
@@ -13,7 +14,7 @@ interface ActionTitles {
   failure: string;
 }
 
-export function useIncidents(activeOnly: boolean) {
+export function useIncidents({ activeOnly, teamId }: { activeOnly: boolean, teamId: Optional<string> }) {
   const queryClient = useQueryClient();
 
   const { data, isLoading, isError, error } = useQuery({
@@ -37,15 +38,15 @@ export function useIncidents(activeOnly: boolean) {
       await invalidate();
       toast.style = Toast.Style.Success;
       toast.title = titles.success;
-    } catch (caughtError) {
+    } catch (error) {
       toast.style = Toast.Style.Failure;
       toast.title = titles.failure;
-      toast.message = caughtError instanceof Error ? caughtError.message : String(caughtError);
+      toast.message = error instanceof Error ? error.message : String(error);
     }
   };
 
   return {
-    incidents: toList(data),
+    incidents: toList(data).map((incident) => ({ ...incident, webUrl: buildIncidentWebUrl(incident.id, teamId) })),
     isLoading,
     acknowledge: (incident: Incident) =>
       void runAction(() => acknowledgeIncident(incident.id), {
