@@ -13,7 +13,7 @@ function Incidents() {
   const [filter, setFilter] = useState<IncidentFilter>("active");
   const { incidents, isLoading, acknowledge, resolve, refresh } = useIncidents({
     activeOnly: filter === "active",
-    teamId
+    teamId,
   });
 
   return (
@@ -27,8 +27,8 @@ function Incidents() {
             if (newValue === "active" || newValue === "all") setFilter(newValue);
           }}
         >
-          <List.Dropdown.Item title="Active" value="active"/>
-          <List.Dropdown.Item title="All" value="all"/>
+          <List.Dropdown.Item title="Active" value="active" />
+          <List.Dropdown.Item title="All" value="all" />
         </List.Dropdown>
       }
     >
@@ -49,7 +49,7 @@ function Incidents() {
 export function IncidentList() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Incidents/>
+      <Incidents />
     </QueryClientProvider>
   );
 }

@@ -1,7 +1,12 @@
 import { useEffect } from "react";
 import { showToast, Toast } from "@raycast/api";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { acknowledgeIncident, buildIncidentWebUrl, listIncidents, resolveIncident } from "@/api/betterstack-incidents-api";
+import {
+  acknowledgeIncident,
+  buildIncidentWebUrl,
+  listIncidents,
+  resolveIncident,
+} from "@/api/betterstack-incidents-api";
 import { Incident } from "@/domain/incident";
 import { Optional } from "@/common/utils/optional-utils";
 import { toList } from "@/common/utils/collection-utils";
@@ -14,7 +19,7 @@ interface ActionTitles {
   failure: string;
 }
 
-export function useIncidents({ activeOnly, teamId }: { activeOnly: boolean, teamId: Optional<string> }) {
+export function useIncidents({ activeOnly, teamId }: { activeOnly: boolean; teamId: Optional<string> }) {
   const queryClient = useQueryClient();
 
   const { data, isLoading, isError, error } = useQuery({
