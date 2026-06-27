@@ -2,7 +2,9 @@
 
 View your BetterStack on-call schedule and manage incidents directly from Raycast.
 
-![betterstack.png](docs/betterstack-oncall.png)
+![betterstack-schedule.png](docs/betterstack-schedule.png)
+
+[Betterstack Raycast Demo](docs/betterstack-raycast.mp4)
 
 ## Features
 
