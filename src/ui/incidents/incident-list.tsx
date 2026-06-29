@@ -2,7 +2,7 @@ import { getPreferenceValues, List } from "@raycast/api";
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useIncidents } from "@/hooks/use-incidents";
-import { IncidentListItem } from "@/ui/incidents/incident-list-item";
+import { IncidentListItem } from "@/ui/incidents/components/incident-list-item";
 import { capitalize } from "@/common/utils/string-utils";
 
 const queryClient = new QueryClient();

@@ -1,16 +1,16 @@
 import { TimeRange } from "@/domain/time-range";
 import { Optional } from "@/common/utils/optional-utils";
 import { ActionPanel } from "@raycast/api";
-import { ToggleTimeRangeAction } from "@/ui/action-panel/actions/toggle-time-range-action";
-import { PreviousPeriodAction } from "@/ui/action-panel/actions/previous-period-action";
-import { NextPeriodAction } from "@/ui/action-panel/actions/next-period-action";
-import { BackToCurrentAction } from "@/ui/action-panel/actions/back-to-current-action";
-import { CopyScheduleAction } from "@/ui/action-panel/actions/copy-schedule-action";
-import { FilterByUserSubmenu } from "@/ui/action-panel/filter-by-user-submenu";
-import { ClearUserFilterAction } from "@/ui/action-panel/actions/clear-user-filter-action";
-import { OpenScheduleInBrowserAction } from "@/ui/action-panel/actions/open-schedule-in-browser-action";
-import { RefreshAction } from "@/ui/action-panel/actions/refresh-action";
-import { CreateIncidentAction } from "@/ui/action-panel/actions/create-incident-action";
+import { ToggleTimeRangeAction } from "@/ui/schedule/action-panel/actions/toggle-time-range-action";
+import { PreviousPeriodAction } from "@/ui/schedule/action-panel/actions/previous-period-action";
+import { NextPeriodAction } from "@/ui/schedule/action-panel/actions/next-period-action";
+import { BackToCurrentAction } from "@/ui/schedule/action-panel/actions/back-to-current-action";
+import { CopyScheduleAction } from "@/ui/schedule/action-panel/actions/copy-schedule-action";
+import { FilterByUserSubmenu } from "@/ui/schedule/action-panel/filter-by-user-submenu";
+import { ClearUserFilterAction } from "@/ui/schedule/action-panel/actions/clear-user-filter-action";
+import { OpenScheduleInBrowserAction } from "@/ui/schedule/action-panel/actions/open-schedule-in-browser-action";
+import { RefreshAction } from "@/ui/schedule/action-panel/actions/refresh-action";
+import { CreateIncidentAction } from "@/ui/schedule/action-panel/actions/create-incident-action";
 
 type ScheduleActionPanelProps = {
   currentTimeRange: TimeRange;

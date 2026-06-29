@@ -1,6 +1,6 @@
 import { Color, List } from "@raycast/api";
 import { Incident, IncidentStatus } from "@/domain/incident";
-import { IncidentActionPanel } from "@/ui/incidents/incident-action-panel";
+import { IncidentActionPanel } from "@/ui/incidents/action-panel/incident-action-panel";
 
 interface IncidentListItemProps {
   incident: Incident;
