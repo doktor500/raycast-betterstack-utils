@@ -1,4 +1,4 @@
-import { Action, ActionPanel, Icon } from "@raycast/api";
+import { Action, ActionPanel, Icon, Keyboard } from "@raycast/api";
 import { Incident } from "@/domain/incident";
 import { IncidentForm } from "@/ui/incidents/incident-form";
 
@@ -35,18 +35,18 @@ export function IncidentActionPanel({
           shortcut={{ modifiers: ["cmd", "shift"], key: "r" }}
         />
       )}
-      <Action.OpenInBrowser title="Open in Browser" url={webUrl} shortcut={{ modifiers: ["cmd", "shift"], key: "o" }} />
+      <Action.OpenInBrowser title="Open in Browser" url={webUrl} shortcut={Keyboard.Shortcut.Common.OpenWith} />
       <Action.Push
         title="Create Incident"
         icon={Icon.Plus}
         target={<IncidentForm />}
-        shortcut={{ modifiers: ["cmd"], key: "n" }}
+        shortcut={Keyboard.Shortcut.Common.New}
       />
       <Action
         title="Refresh"
         icon={Icon.ArrowClockwise}
         onAction={onRefresh}
-        shortcut={{ modifiers: ["cmd"], key: "r" }}
+        shortcut={Keyboard.Shortcut.Common.Refresh}
       />
     </ActionPanel>
   );

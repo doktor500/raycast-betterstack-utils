@@ -1,4 +1,4 @@
-interface TimeInterval {
+export interface TimeInterval {
   start: number;
   end: number;
 }

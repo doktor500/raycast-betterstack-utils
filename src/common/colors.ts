@@ -37,7 +37,6 @@ export function getColor(value: string): string {
   return ROTA_SVG_PALETTE[parseInt(hash.slice(0, 8), 16) % ROTA_SVG_PALETTE.length] ?? RotaColors.BLUE;
 }
 
-
 export function toRgba(hex: string, alpha: number): string {
   const r = parseInt(hex.slice(1, 3), 16);
   const g = parseInt(hex.slice(3, 5), 16);

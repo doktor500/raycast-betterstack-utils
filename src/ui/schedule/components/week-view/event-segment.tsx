@@ -1,5 +1,5 @@
-import { truncateLabel } from "@/common/utils/string-utils";
 import { Colors } from "@/common/colors";
+import { ellipsisStyle } from "@/ui/styles";
 
 export interface DaySegment {
   startFraction: number;
@@ -12,8 +12,6 @@ interface EventSegmentProps {
   segment: DaySegment;
 }
 
-const TEXT_AVAILABLE_WIDTH = 140; // approx day column width minus left padding and label inset
-
 export function EventSegment({ segment }: EventSegmentProps) {
   const topPercent = segment.startFraction * 100;
   const height = Math.max(12, (segment.endFraction - segment.startFraction) * 456);
@@ -21,14 +19,14 @@ export function EventSegment({ segment }: EventSegmentProps) {
 
   return (
     <div
-      tw={`flex absolute left-[2px] right-[2px] top-[${topPercent}%] h-[${height}px] bg-[${segment.color}] rounded-[3px] overflow-hidden`}
+      tw={`flex items-start absolute left-[2px] right-[2px] top-[${topPercent}%] h-[${height}px] bg-[${segment.color}] rounded-[3px] overflow-hidden`}
     >
       {showName && (
         <span
-          tw={`absolute left-[12px] top-[4px] text-[16px] font-semibold text-[${Colors.DARK}]`}
-          style={{ whiteSpace: "nowrap" }}
+          tw={`w-full pt-[4px] pl-[12px] pr-[6px] text-[16px] font-semibold text-[${Colors.DARK}]`}
+          style={ellipsisStyle}
         >
-          {truncateLabel(segment.label, TEXT_AVAILABLE_WIDTH, 14)}
+          {segment.label}
         </span>
       )}
     </div>

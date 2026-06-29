@@ -34,6 +34,7 @@
   },
   "include": [
     "src",
+    "test",
     "raycast-env.d.ts"
   ]
 }

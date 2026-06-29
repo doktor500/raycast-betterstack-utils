@@ -5,32 +5,23 @@ import { OnCallSummary } from "@/domain/on-call-summary";
 interface SummaryBlockProps {
   year: number;
   month: number;
-  summary: OnCallSummary[];
-  bg?: string;
+  summary: OnCallSummary;
+  backgroundColor: string;
 }
 
-function formatDaysHours(totalHours: number): string {
-  const days = Math.floor(totalHours / 24);
-  const hours = Math.round(totalHours % 24);
-  if (days > 0 && hours > 0) return `${days}d ${hours}h`;
-  if (days > 0) return `${days}d`;
-  return `${hours}h`;
-}
-
-export function SummaryBlock({ year, month, summary, bg = "bg-dark" }: SummaryBlockProps) {
+export function SummaryBlock({ year, month, summary, backgroundColor }: SummaryBlockProps) {
   if (summary.length === 0) return null;
 
   const monthLabel = formatMonth({ year, month });
   const [monthName, yearLabel] = monthLabel.split(" ");
 
   return (
-    <div tw={cn("flex w-[1160px] rounded-[10px] border-[0.5px] border-frost/30 overflow-hidden", bg)}>
+    <div tw={cn("flex w-[1160px] rounded-[10px] border-[0.5px] overflow-hidden mt-6", backgroundColor)}>
       <div tw="flex w-[478px] py-[14px]">
         <div tw="flex w-[330px]" />
         <div tw="flex flex-col flex-1 justify-center items-center">
           <span tw="text-[18px] font-bold text-frost">{monthName}</span>
-          <div tw="flex h-[6px]" />
-          <span tw="text-[18px] font-bold text-frost">{yearLabel}</span>
+          <span tw="text-[18px] font-bold text-frost mt-3">{yearLabel}</span>
         </div>
       </div>
       <div tw="flex py-[14px]">
@@ -52,4 +43,13 @@ export function SummaryBlock({ year, month, summary, bg = "bg-dark" }: SummaryBl
       </div>
     </div>
   );
+}
+
+function formatDaysHours(totalHours: number): string {
+  const days = Math.floor(totalHours / 24);
+  const hours = Math.round(totalHours % 24);
+  if (days > 0 && hours > 0) return `${days}d ${hours}h`;
+  if (days > 0) return `${days}d`;
+
+  return `${hours}h`;
 }

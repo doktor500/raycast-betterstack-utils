@@ -1,8 +1,11 @@
 import { OnCallEvent } from "@/domain/on-call-event";
 import { getColor } from "@/common/colors";
 import { formatUserName } from "@/domain/user";
+import { TimeWindow } from "@/common/utils/date-utils";
 
-export type OnCallSummary = TeamMemberOnCallTime & {
+export type OnCallSummary = TeamMemberOnCallSummary[];
+
+type TeamMemberOnCallSummary = TeamMemberOnCallTime & {
   teamMember: string;
   color: string;
 };
@@ -12,18 +15,13 @@ type TeamMemberOnCallTime = {
   hours: number;
 };
 
-type TimeWindow = {
-  start: Date;
-  end: Date;
-};
-
 type MonthlyOnCallSummaryData = {
   year: number;
   month: number;
   events: OnCallEvent[];
 };
 
-export function computeOnCallSummary({ year, month, events }: MonthlyOnCallSummaryData): OnCallSummary[] {
+export function computeOnCallSummary({ year, month, events }: MonthlyOnCallSummaryData): OnCallSummary {
   const monthWindow: TimeWindow = { start: new Date(year, month, 1), end: new Date(year, month + 1, 1) };
   const hoursByTeamMember = accumulateHours(events, monthWindow);
 

@@ -1,54 +1,42 @@
-import { type WeekSpanBar } from "@/ui/schedule/components/month-view/span-bars";
-import { isSameDay, type CalendarMonth } from "@/common/utils/date-utils";
+import { activeRange, WeekData } from "@/domain/calendar-month";
+import { clipTimelineToRange } from "@/domain/week-timeline";
+import { isToday, type YearMonth } from "@/common/utils/date-utils";
 import { DayColumn } from "@/ui/schedule/components/month-view/day-column";
 import { Grid } from "@/ui/schedule/components/month-view/grid";
 import { SpanBar } from "@/ui/schedule/components/month-view/span-bar";
 import { CurrentTimeMarker } from "@/ui/schedule/components/month-view/current-time-marker";
 
 interface WeekGroupProps {
-  days: Date[];
-  weekTimeline: WeekSpanBar[];
-  today: Date;
-  currentCalendarMonth: CalendarMonth;
+  week: WeekData;
+  yearMonth: YearMonth;
   showTodayMarker: boolean;
-  columnBg: string;
-  rowHeight: number;
+  backgroundColor: string;
   showWeekendStripes: boolean;
 }
 
-export function WeekGroup({
-  days,
-  weekTimeline,
-  today,
-  currentCalendarMonth,
-  showTodayMarker,
-  columnBg,
-  rowHeight,
-  showWeekendStripes,
-}: WeekGroupProps) {
-  const todayIndex = days.findIndex((day) => isSameDay(day, today));
-  const { year, month } = currentCalendarMonth;
-  const isTodayInCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+export function WeekGroup(props: WeekGroupProps) {
+  const { week, yearMonth, showTodayMarker, backgroundColor, showWeekendStripes } = props;
+  const range = activeRange(week.days, yearMonth);
+  const clippedTimeline = clipTimelineToRange(week.timeline, range);
+  const todayIndex = week.days.findIndex(isToday);
+  const isTodayActive = todayIndex >= range.firstDay && todayIndex <= range.lastDay;
 
   return (
-    <div tw={`flex relative w-full h-[${rowHeight}px]`}>
-      {days.map((day, index) => (
+    <div tw={`flex relative w-full h-[93px]`}>
+      {week.days.map((day, index) => (
         <DayColumn
           key={index}
           day={day}
-          currentCalendarMonth={currentCalendarMonth}
-          columnBg={columnBg}
-          rowHeight={rowHeight}
+          isActive={index >= range.firstDay && index <= range.lastDay}
+          backgroundColor={backgroundColor}
           showWeekendStripes={showWeekendStripes}
         />
       ))}
-      <Grid days={days} currentCalendarMonth={currentCalendarMonth} />
-      {weekTimeline.map((bar, index) => (
-        <SpanBar key={index} bar={bar} />
+      <Grid days={week.days} range={range} />
+      {clippedTimeline.map((timeline, index) => (
+        <SpanBar key={index} timeline={timeline} />
       ))}
-      {showTodayMarker && todayIndex >= 0 && isTodayInCurrentMonth && (
-        <CurrentTimeMarker index={todayIndex} today={today} rowHeight={rowHeight} />
-      )}
+      {showTodayMarker && isTodayActive && <CurrentTimeMarker index={todayIndex} />}
     </div>
   );
 }

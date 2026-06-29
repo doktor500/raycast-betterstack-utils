@@ -1,4 +1,4 @@
-import { Action } from "@raycast/api";
+import { Action, Keyboard } from "@raycast/api";
 
 type OpenScheduleInBrowserActionProps = {
   url: string;
@@ -6,10 +6,6 @@ type OpenScheduleInBrowserActionProps = {
 
 export function OpenScheduleInBrowserAction({ url }: OpenScheduleInBrowserActionProps) {
   return (
-    <Action.OpenInBrowser
-      title="Open Schedule in Browser"
-      url={url}
-      shortcut={{ modifiers: ["cmd", "shift"], key: "o" }}
-    />
+    <Action.OpenInBrowser title="Open Schedule in Browser" url={url} shortcut={Keyboard.Shortcut.Common.OpenWith} />
   );
 }

@@ -1,4 +1,5 @@
 import { getColor } from "@/common/colors";
+import { DAY_MS } from "@/common/utils/date-utils";
 import { OnCallEvent } from "@/domain/on-call-event";
 import { formatUserName } from "@/domain/user";
 import { DaySegment, EventSegment } from "@/ui/schedule/components/week-view/event-segment";
@@ -20,7 +21,6 @@ export function DayEvents({ events, day }: DayEventsProps) {
 }
 
 function getDaySegments(events: OnCallEvent[], dayStart: Date): DaySegment[] {
-  const DAY_MS = 24 * 3600 * 1000;
   const dayStartMs = new Date(dayStart.getFullYear(), dayStart.getMonth(), dayStart.getDate()).getTime();
   const dayEndMs = dayStartMs + DAY_MS;
 

@@ -75,8 +75,7 @@ async function copyAsPng(props: { timeRange: TimeRange; timeWindow: TimeWindow; 
   const data = { events, timeWindow };
 
   try {
-    const svg =
-      timeRange === WEEK ? await buildWeekViewSvg(data) : await buildMonthViewSvg({ ...data, forExport: true });
+    const svg = timeRange === WEEK ? await buildWeekViewSvg(data) : await buildMonthViewSvg(data);
     await exportSvgToClipboard(svg, environment.supportPath);
     toast.style = Toast.Style.Success;
     toast.title = "Schedule copied to clipboard";

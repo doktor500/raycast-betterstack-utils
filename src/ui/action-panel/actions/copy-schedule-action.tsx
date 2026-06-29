@@ -1,4 +1,4 @@
-import { Action, Icon } from "@raycast/api";
+import { Action, Icon, Keyboard } from "@raycast/api";
 
 type CopyScheduleActionProps = {
   onCopyAsPng: () => void;
@@ -9,7 +9,7 @@ export function CopyScheduleAction({ onCopyAsPng }: CopyScheduleActionProps) {
     <Action
       title="Copy Schedule to Clipboard"
       icon={Icon.Clipboard}
-      shortcut={{ modifiers: ["cmd", "shift"], key: "c" }}
+      shortcut={Keyboard.Shortcut.Common.Copy}
       onAction={onCopyAsPng}
     />
   );

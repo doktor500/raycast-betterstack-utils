@@ -3,7 +3,7 @@ interface CurrentTimeMarkerProps {
 }
 
 export function CurrentTimeMarker({ markerTime }: CurrentTimeMarkerProps) {
-  const topPercent = markerTime * 100;
+  const topPercent = markerTime * 100 - 2;
 
   return (
     <div

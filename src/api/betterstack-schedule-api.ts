@@ -5,6 +5,7 @@ import { Rota } from "@/domain/rota";
 import { Calendar } from "@/domain/calendar";
 import { OnCallEvent } from "@/domain/on-call-event";
 import { request, V2_BASE } from "@/api/betterstack-client";
+import { DAY_MS } from "@/common/utils/date-utils";
 
 const USER_TYPE = "user" as const;
 
@@ -40,7 +41,7 @@ interface EventsApiResponse {
   pagination?: { next?: string | null };
 }
 
-const THREE_MONTHS_MS = 90 * 24 * 60 * 60 * 1000;
+const THREE_MONTHS_MS = 3 * 30 * DAY_MS;
 
 export async function getRota(): Promise<Rota> {
   const result = await fetchAllPages<{ id: string; attributes: { name: Optional<string> } }>(`${V2_BASE}/on-calls`);

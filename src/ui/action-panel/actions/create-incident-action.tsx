@@ -1,4 +1,4 @@
-import { Action, Icon } from "@raycast/api";
+import { Action, Icon, Keyboard } from "@raycast/api";
 import { IncidentForm } from "@/ui/incidents/incident-form";
 
 export function CreateIncidentAction() {
@@ -7,7 +7,7 @@ export function CreateIncidentAction() {
       title="Create Incident"
       icon={Icon.Plus}
       target={<IncidentForm />}
-      shortcut={{ modifiers: ["cmd"], key: "n" }}
+      shortcut={Keyboard.Shortcut.Common.New}
     />
   );
 }

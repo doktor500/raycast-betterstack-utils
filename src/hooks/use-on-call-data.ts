@@ -27,7 +27,10 @@ const ON_CALL_DATA_QUERY_KEY = ["on-call-data"];
 
 export function useOnCallData(): OnCallData {
   const queryClient = useQueryClient();
-  const { data, isLoading, isError, error } = useQuery({ queryKey: ON_CALL_DATA_QUERY_KEY, queryFn: fetchScheduleData });
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ON_CALL_DATA_QUERY_KEY,
+    queryFn: fetchScheduleData,
+  });
 
   useEffect(() => {
     if (isError) {

@@ -1,79 +1,52 @@
-import { type CalendarMonth } from "@/common/utils/date-utils";
-import { Optional } from "@/common/utils/optional-utils";
+import { DayRange } from "@/domain/week-timeline";
+import { rangeOf } from "@/common/utils/collection-utils";
 
 interface GridProps {
   days: Date[];
-  currentCalendarMonth: CalendarMonth;
+  range: DayRange;
 }
 
-type DayColumnProps = {
-  day: Date;
-  previousDay: Optional<Date>;
-  isLastColumn: boolean;
-  currentCalendarMonth: CalendarMonth;
-};
-
-export function Grid({ days, currentCalendarMonth }: GridProps) {
+export function Grid({ days, range }: GridProps) {
   return (
     <div tw="flex absolute inset-0">
-      <VerticalLines days={days} currentCalendarMonth={currentCalendarMonth} />
-      <HorizontalBorder days={days} currentCalendarMonth={currentCalendarMonth} position="top" />
-      <HorizontalBorder days={days} currentCalendarMonth={currentCalendarMonth} position="bottom" />
+      <VerticalLines days={days} range={range} />
+      <HorizontalBorder days={days} range={range} position="top" />
+      <HorizontalBorder days={days} range={range} position="bottom" />
     </div>
   );
 }
 
-function VerticalLines({ days, currentCalendarMonth }: { days: Date[]; currentCalendarMonth: CalendarMonth }) {
+function VerticalLines({ days, range }: { days: Date[]; range: DayRange }) {
   return (
     <div tw="flex absolute inset-0">
-      {days.map((day, index) => (
-        <DayColumn
-          key={index}
-          day={day}
-          previousDay={index > 0 ? days[index - 1] : undefined}
-          isLastColumn={index === days.length - 1}
-          currentCalendarMonth={currentCalendarMonth}
-        />
-      ))}
+      {rangeOf(days.length).map((index) => {
+        const inMonth = index >= range.firstDay && index <= range.lastDay;
+        const isLastColumn = index === days.length - 1;
+
+        return (
+          <div key={index} tw="flex flex-1 relative h-full">
+            {inMonth && isLastColumn && (
+              <div tw="flex absolute top-0 bottom-0 right-0 w-px bg-dim" style={{ opacity: 0.3 }} />
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
 
-function DayColumn({ day, previousDay, isLastColumn, currentCalendarMonth }: DayColumnProps) {
-  const inMonth = isDate(day).inCalendarMonth(currentCalendarMonth);
-  const prevInMonth = previousDay && isDate(previousDay).inCalendarMonth(currentCalendarMonth);
-  const drawLeftBorder = inMonth || prevInMonth;
-
-  return (
-    <div tw="flex flex-1 relative h-full">
-      {drawLeftBorder && <div tw="flex absolute top-0 bottom-0 left-0 w-px bg-dim" style={{ opacity: 0.3 }} />}
-      {inMonth && isLastColumn && (
-        <div tw="flex absolute top-0 bottom-0 right-0 w-px bg-dim" style={{ opacity: 0.3 }} />
-      )}
-    </div>
-  );
-}
-
-function HorizontalBorder(props: { days: Date[]; currentCalendarMonth: CalendarMonth; position: "top" | "bottom" }) {
-  const { days, currentCalendarMonth, position } = props;
+function HorizontalBorder(props: { days: Date[]; range: DayRange; position: "top" | "bottom" }) {
+  const { days, range, position } = props;
 
   return (
     <div tw={`flex absolute ${position}-0 left-0 right-0`}>
-      {days.map((day, index) => (
-        <div
-          key={index}
-          tw={isDate(day).inCalendarMonth(currentCalendarMonth) ? "flex flex-1 h-px bg-dim" : "flex flex-1 h-px"}
-          style={{ opacity: 0.3 }}
-        />
-      ))}
+      {days.map((_, index) => {
+        const inMonth = index >= range.firstDay && index <= range.lastDay;
+
+        return (
+          <div key={index} tw={inMonth ? "flex flex-1 h-px bg-dim" : "flex flex-1 h-px"} style={{ opacity: 0.3 }} />
+        );
+      })}
     </div>
   );
 }
-
-const isDate = (date: Date) => {
-  return {
-    inCalendarMonth: (calendarMonth: CalendarMonth) => {
-      return date.getFullYear() === calendarMonth.year && date.getMonth() === calendarMonth.month;
-    },
-  };
-};

@@ -1,4 +1,4 @@
-import { Action, Icon } from "@raycast/api";
+import { Action, Icon, Keyboard } from "@raycast/api";
 
 type RefreshActionProps = {
   onRefresh: () => void;
@@ -10,7 +10,7 @@ export function RefreshAction({ onRefresh }: RefreshActionProps) {
       title="Refresh"
       icon={Icon.ArrowClockwise}
       onAction={onRefresh}
-      shortcut={{ modifiers: ["cmd"], key: "r" }}
+      shortcut={Keyboard.Shortcut.Common.Refresh}
     />
   );
 }
