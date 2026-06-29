@@ -1,5 +1,5 @@
-import { getThemeColor } from "@/common/colors";
 import { truncateLabel } from "@/common/utils/string-utils";
+import { Colors } from "@/common/colors";
 
 export interface DaySegment {
   startFraction: number;
@@ -17,7 +17,6 @@ const TEXT_AVAILABLE_WIDTH = 140; // approx day column width minus left padding 
 export function EventSegment({ segment }: EventSegmentProps) {
   const topPercent = segment.startFraction * 100;
   const height = Math.max(12, (segment.endFraction - segment.startFraction) * 456);
-  const themeColor = getThemeColor(segment.color);
   const showName = height >= 24;
 
   return (
@@ -26,7 +25,7 @@ export function EventSegment({ segment }: EventSegmentProps) {
     >
       {showName && (
         <span
-          tw={`absolute left-[12px] top-[4px] text-[16px] font-semibold text-[${themeColor}]`}
+          tw={`absolute left-[12px] top-[4px] text-[16px] font-semibold text-[${Colors.DARK}]`}
           style={{ whiteSpace: "nowrap" }}
         >
           {truncateLabel(segment.label, TEXT_AVAILABLE_WIDTH, 14)}

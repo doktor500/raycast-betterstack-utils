@@ -1,4 +1,3 @@
-import React from "react";
 import { fractionOfDayElapsed, getCurrentWeekDays, isSameDay, TimeWindow } from "@/common/utils/date-utils";
 import { OnCallEvent } from "@/domain/on-call-event";
 import { OnCallUser } from "@/domain/user";
@@ -35,7 +34,7 @@ function WeekScheduleView({ events, timeWindow, onCallUser }: WeekViewProps) {
             day={day}
             dayIndex={dayIndex}
             isToday={dayIndex === todayIndex}
-            markerTime={dayIndex === todayIndex ? fractionOfDayElapsed(today) : undefined}
+            {...(dayIndex === todayIndex ? { markerTime: fractionOfDayElapsed(today) } : {})}
           />
         ))}
       </div>

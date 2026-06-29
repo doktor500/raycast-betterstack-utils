@@ -1,5 +1,5 @@
 import { type WeekSpanBar } from "@/ui/schedule/components/month-view/span-bars";
-import { Colors, getThemeColor, toRgba } from "@/common/colors";
+import { Colors, toRgba } from "@/common/colors";
 
 interface SpanBarProps {
   bar: WeekSpanBar;
@@ -15,7 +15,6 @@ export function SpanBar({ bar }: SpanBarProps) {
   const barLeft = (startFrac + 3 / VIEWPORT_WIDTH) * 100;
   const barWidth = Math.max((endFrac - startFrac - 2 * (3 / VIEWPORT_WIDTH)) * 100, 0.2);
   const barTop = 30 + bar.lane * 46;
-  const themeColor = getThemeColor(bar.color);
   const barPx = (barWidth / 100) * VIEWPORT_WIDTH;
   const textWidth = Math.max(barPx - TEXT_PADDING_LEFT - TEXT_PADDING_RIGHT, 0);
   const borderRadius = Math.min(6, Math.floor(barPx / 3));
@@ -28,7 +27,7 @@ export function SpanBar({ bar }: SpanBarProps) {
     >
       {showLabel && (
         <span
-          tw={`pl-[${TEXT_PADDING_LEFT}px] text-[19px] font-semibold text-[${themeColor}]`}
+          tw={`pl-[${TEXT_PADDING_LEFT}px] text-[19px] font-semibold text-[${Colors.DARK}]`}
           style={{
             display: "block",
             width: `${textWidth}px`,

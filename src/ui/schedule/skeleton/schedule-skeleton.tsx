@@ -1,4 +1,3 @@
-import React from "react";
 import { renderToSvg } from "@/ui/svg-renderer";
 import { rangeOf } from "@/common/utils/collection-utils";
 import { Colors, toRgba } from "@/common/colors";

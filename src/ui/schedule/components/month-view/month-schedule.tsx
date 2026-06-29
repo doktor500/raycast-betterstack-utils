@@ -1,4 +1,3 @@
-import React from "react";
 import { addDays, startOfWeek, TimeWindow } from "@/common/utils/date-utils";
 import { rangeOf } from "@/common/utils/collection-utils";
 import { buildWeekSpanBars } from "@/ui/schedule/components/month-view/span-bars";

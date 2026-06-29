@@ -34,28 +34,13 @@ const ROTA_SVG_PALETTE = [
 export function getColor(value: string): string {
   const hash = createHash("shake256").update(value).digest("hex");
 
-  return ROTA_SVG_PALETTE[parseInt(hash.slice(0, 8), 16) % ROTA_SVG_PALETTE.length];
+  return ROTA_SVG_PALETTE[parseInt(hash.slice(0, 8), 16) % ROTA_SVG_PALETTE.length] ?? RotaColors.BLUE;
 }
 
-export function getThemeColor(bgHex: string): string {
-  return relativeLuminance(bgHex) > 0.179 ? Colors.DARK : Colors.WHITE;
-}
 
 export function toRgba(hex: string, alpha: number): string {
   const r = parseInt(hex.slice(1, 3), 16);
   const g = parseInt(hex.slice(3, 5), 16);
   const b = parseInt(hex.slice(5, 7), 16);
   return `rgba(${r},${g},${b},${alpha})`;
-}
-
-function relativeLuminance(hex: string): number {
-  const r = linearize(parseInt(hex.slice(1, 3), 16) / 255);
-  const g = linearize(parseInt(hex.slice(3, 5), 16) / 255);
-  const b = linearize(parseInt(hex.slice(5, 7), 16) / 255);
-
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-}
-
-function linearize(c: number): number {
-  return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
 }
