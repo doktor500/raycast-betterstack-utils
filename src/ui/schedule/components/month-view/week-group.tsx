@@ -27,6 +27,8 @@ export function WeekGroup({
   showWeekendStripes,
 }: WeekGroupProps) {
   const todayIndex = days.findIndex((day) => isSameDay(day, today));
+  const { year, month } = currentCalendarMonth;
+  const isTodayInCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
 
   return (
     <div tw={`flex relative w-full h-[${rowHeight}px]`}>
@@ -44,7 +46,7 @@ export function WeekGroup({
       {weekTimeline.map((bar, index) => (
         <SpanBar key={index} bar={bar} />
       ))}
-      {showTodayMarker && todayIndex >= 0 && (
+      {showTodayMarker && todayIndex >= 0 && isTodayInCurrentMonth && (
         <CurrentTimeMarker index={todayIndex} today={today} rowHeight={rowHeight} />
       )}
     </div>
