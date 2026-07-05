@@ -1,4 +1,4 @@
-import { request, V2_BASE } from "@/api/betterstack-client";
+import { fetchAllPages, V2_BASE } from "@/api/betterstack-client";
 import { asOptional, Optional } from "@/common/utils/optional-utils";
 import { StatusPage, StatusPageState } from "@/domain/status-page";
 
@@ -15,11 +15,6 @@ export interface StatusPageApiAttributes {
   aggregate_state?: Optional<string>;
 }
 
-interface StatusPageListResponse {
-  data: StatusPageApiData[];
-  pagination?: { next?: string | null };
-}
-
 const KNOWN_STATES = Object.values(StatusPageState);
 
 export function buildStatusPageUrl(statusPage: StatusPage): string {
@@ -30,14 +25,7 @@ export function buildStatusPageUrl(statusPage: StatusPage): string {
 
 export async function listStatusPages(): Promise<StatusPage[]> {
   const params = new URLSearchParams({ per_page: "50" });
-  const allStatusPages: StatusPageApiData[] = [];
-  let url: Optional<string> = `${V2_BASE}/status-pages?${params}`;
-
-  while (url) {
-    const page: StatusPageListResponse = await request<StatusPageListResponse>(url);
-    allStatusPages.push(...page.data);
-    url = asOptional(page.pagination?.next);
-  }
+  const allStatusPages = await fetchAllPages<StatusPageApiData>(`${V2_BASE}/status-pages?${params}`);
 
   return allStatusPages.map(toStatusPage);
 }

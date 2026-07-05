@@ -1,5 +1,5 @@
-import { request, V2_BASE } from "@/api/betterstack-client";
-import { asOptional, Optional } from "@/common/utils/optional-utils";
+import { fetchAllPages, V2_BASE } from "@/api/betterstack-client";
+import { Optional } from "@/common/utils/optional-utils";
 import { StatusPageSection } from "@/domain/status-page-section";
 import { ResourceStatus, StatusHistoryDay, StatusPageResource } from "@/domain/status-page-resource";
 
@@ -27,39 +27,22 @@ export interface StatusPageResourceApiData {
   };
 }
 
-interface PaginatedResponse<T> {
-  data: T[];
-  pagination?: { next?: string | null };
-}
-
 const KNOWN_STATUSES = Object.values(ResourceStatus);
 
 export async function listStatusPageSections(statusPageId: string): Promise<StatusPageSection[]> {
   const params = new URLSearchParams({ per_page: "50" });
-  let url: Optional<string> = `${V2_BASE}/status-pages/${statusPageId}/sections?${params}`;
-  const allSections: StatusPageSectionApiData[] = [];
-
-  while (url) {
-    const page: PaginatedResponse<StatusPageSectionApiData> =
-      await request<PaginatedResponse<StatusPageSectionApiData>>(url);
-    allSections.push(...page.data);
-    url = asOptional(page.pagination?.next);
-  }
+  const allSections = await fetchAllPages<StatusPageSectionApiData>(
+    `${V2_BASE}/status-pages/${statusPageId}/sections?${params}`,
+  );
 
   return allSections.map(toStatusPageSection);
 }
 
 export async function listStatusPageResources(statusPageId: string): Promise<StatusPageResource[]> {
   const params = new URLSearchParams({ per_page: "50" });
-  let url: Optional<string> = `${V2_BASE}/status-pages/${statusPageId}/resources?${params}`;
-  const allResources: StatusPageResourceApiData[] = [];
-
-  while (url) {
-    const page: PaginatedResponse<StatusPageResourceApiData> =
-      await request<PaginatedResponse<StatusPageResourceApiData>>(url);
-    allResources.push(...page.data);
-    url = asOptional(page.pagination?.next);
-  }
+  const allResources = await fetchAllPages<StatusPageResourceApiData>(
+    `${V2_BASE}/status-pages/${statusPageId}/resources?${params}`,
+  );
 
   return allResources.map(toStatusPageResource);
 }
