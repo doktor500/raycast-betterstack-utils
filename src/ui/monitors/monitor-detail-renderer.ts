@@ -18,7 +18,7 @@ export function buildMonitorDetailMarkdown(monitor: Monitor, availability: Avail
 
 function buildHeader(monitor: Monitor): string {
   const status = `${MONITOR_STATUS_EMOJI[monitor.status]} ${MONITOR_STATUS_LABEL[monitor.status]}`;
-  return `# ${monitor.name}\n\n**Status:** ${status}`;
+  return `## ${monitor.name}\n\n**Status:** ${status}`;
 }
 
 function buildDetailsSection(monitor: Monitor): string {
