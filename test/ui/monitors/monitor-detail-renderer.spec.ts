@@ -34,9 +34,18 @@ const periods: MonitorAvailabilityPeriod[] = [
 ];
 
 describe("buildMonitorDetailMarkdown", () => {
-  it("renders the header with status emoji and name", () => {
-    const markdown = buildMonitorDetailMarkdown(monitor, { periods, isLoading: false, isError: false });
+  it("renders the header with the status emoji when no status icon is available", () => {
+    const markdown = buildMonitorDetailMarkdown(monitor, { periods, isLoading: false, isError: false }, undefined);
     expect(markdown).toContain("## 🟢 Homepage");
+  });
+
+  it("inlines the pulsing status icon in the header when provided", () => {
+    const markdown = buildMonitorDetailMarkdown(
+      monitor,
+      { periods, isLoading: false, isError: false },
+      "data:image/png;base64,AAAA",
+    );
+    expect(markdown).toContain("## ![status](data:image/png;base64,AAAA) Homepage");
   });
 
   it("renders the details table with formatted values", () => {

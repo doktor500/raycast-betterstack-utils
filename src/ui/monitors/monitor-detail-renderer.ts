@@ -14,13 +14,19 @@ export interface AvailabilityState {
   isError: boolean;
 }
 
-export function buildMonitorDetailMarkdown(monitor: Monitor, availability: AvailabilityState): string {
-  return [buildHeader(monitor), buildAvailabilitySection(availability), buildDetailsSection(monitor)].join("\n\n");
+export function buildMonitorDetailMarkdown(
+  monitor: Monitor,
+  availability: AvailabilityState,
+  statusIconUri?: Optional<string>,
+): string {
+  return [buildHeader(monitor, statusIconUri), buildAvailabilitySection(availability), buildDetailsSection(monitor)].join(
+    "\n\n",
+  );
 }
 
-function buildHeader(monitor: Monitor): string {
-  const status = `${MONITOR_STATUS_EMOJI[monitor.status]}`;
-  return `## ${status} ${monitor.name}`;
+function buildHeader(monitor: Monitor, statusIconUri: Optional<string>): string {
+  const icon = statusIconUri ? `![status](${statusIconUri})` : MONITOR_STATUS_EMOJI[monitor.status];
+  return `## ${icon} ${monitor.name}`;
 }
 
 function buildDetailsSection(monitor: Monitor): string {
