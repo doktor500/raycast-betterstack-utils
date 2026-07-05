@@ -7,8 +7,6 @@ import { rangeOf } from "@/common/utils/collection-utils";
 
 const FRAME_COUNT = 2;
 
-const framesCache = new Map<string, Promise<string[]>>();
-
 export function buildPulseFrames(color: string): string[] {
   return rangeOf(FRAME_COUNT).map((frame) => {
     const radius = 6 + frame;
@@ -22,18 +20,8 @@ export function buildPulseFrames(color: string): string[] {
 }
 
 export function getPulseFrames(state: StatusPageState, appearance: Appearance): Promise<string[]> {
-  const cacheKey = `${state}:${appearance}`;
-  const cached = framesCache.get(cacheKey);
-  if (cached) return cached;
-
   const color = appearance === Appearance.LIGHT ? STATE_COLOR[state].light : STATE_COLOR[state].dark;
   const frames = buildPulseFrames(color);
-  const images = Promise.all(
-    frames.map((svg) => toImageDataUri(svg, environment.supportPath, environment.raycastVersion)),
-  ).catch((error) => {
-    framesCache.delete(cacheKey);
-    throw error;
-  });
-  framesCache.set(cacheKey, images);
-  return images;
+
+  return Promise.all(frames.map((svg) => toImageDataUri(svg, environment.supportPath, environment.raycastVersion)));
 }
