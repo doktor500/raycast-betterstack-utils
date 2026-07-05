@@ -2,6 +2,7 @@ import { DateTime } from "luxon";
 import { Monitor } from "@/domain/monitor";
 import { MonitorAvailabilityPeriod } from "@/domain/monitor-sla";
 import { capitalize } from "@/common/utils/string-utils";
+import { stripProtocol } from "@/common/utils/url-utils";
 import { Optional } from "@/common/utils/optional-utils";
 import { formatDuration } from "@/common/utils/date-utils";
 import { MONITOR_STATUS_EMOJI, MONITOR_STATUS_LABEL } from "@/ui/monitors/monitor-status";
@@ -13,7 +14,7 @@ export interface AvailabilityState {
 }
 
 export function buildMonitorDetailMarkdown(monitor: Monitor, availability: AvailabilityState): string {
-  return [buildHeader(monitor), buildDetailsSection(monitor), buildAvailabilitySection(availability)].join("\n\n");
+  return [buildHeader(monitor), buildAvailabilitySection(availability), buildDetailsSection(monitor)].join("\n\n");
 }
 
 function buildHeader(monitor: Monitor): string {
@@ -24,7 +25,7 @@ function buildHeader(monitor: Monitor): string {
 function buildDetailsSection(monitor: Monitor): string {
   const rows: string[] = ["| Field | Value |", "| --- | --- |"];
 
-  rows.push(`| URL | [${monitor.url}](${monitor.url}) |`);
+  rows.push(`| URL | ${stripProtocol(monitor.url)} |`);
   if (monitor.monitorType) rows.push(`| Type | ${capitalize(monitor.monitorType)} |`);
   if (monitor.httpMethod) rows.push(`| Method | ${monitor.httpMethod.toUpperCase()} |`);
   if (monitor.checkFrequency !== undefined)
