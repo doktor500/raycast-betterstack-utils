@@ -1,5 +1,6 @@
 import { DateTime } from "luxon";
 import { request, V2_BASE } from "@/api/betterstack-client";
+import { Optional } from "@/common/utils/optional-utils";
 import { MonitorSla } from "@/domain/monitor-sla";
 
 export interface MonitorSlaApiData {
@@ -9,11 +10,11 @@ export interface MonitorSlaApiData {
 }
 
 export interface MonitorSlaApiAttributes {
-  availability?: number;
-  total_downtime?: number;
-  number_of_incidents?: number;
-  longest_incident?: number;
-  average_incident?: number;
+  availability?: Optional<number>;
+  total_downtime?: Optional<number>;
+  number_of_incidents?: Optional<number>;
+  longest_incident?: Optional<number>;
+  average_incident?: Optional<number>;
 }
 
 interface MonitorSlaResponse {
