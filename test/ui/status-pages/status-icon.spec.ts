@@ -6,15 +6,22 @@ vi.mock("@raycast/api", () => ({
 }));
 
 import { describe, expect, it } from "vitest";
-import { buildPulseRingSvg } from "@/ui/status-pages/status-icon";
+import { buildPulseFrames } from "@/ui/status-pages/status-icon";
 
-describe("buildPulseRingSvg", () => {
-  it("draws a filled dot and a ring in the given color", () => {
-    const svg = buildPulseRingSvg("#FF6363");
+describe("buildPulseFrames", () => {
+  it("builds a sequence of frames with a growing, fading ring in the given color", () => {
+    const frames = buildPulseFrames("#FF6363");
 
-    expect(svg).toContain("<svg");
-    expect(svg.match(/#FF6363/g)).toHaveLength(2);
-    expect(svg).toContain('fill="#FF6363"');
-    expect(svg).toContain('stroke="#FF6363"');
+    expect(frames).toHaveLength(6);
+    frames.forEach((svg) => {
+      expect(svg).toContain("<svg");
+      expect(svg).toContain('fill="#FF6363"');
+      expect(svg).toContain('stroke="#FF6363"');
+    });
+
+    expect(frames[0]).toContain('r="6"');
+    expect(frames[0]).toContain('opacity="0.45"');
+    expect(frames[frames.length - 1]).toContain('r="11"');
+    expect(frames[frames.length - 1]).toContain('opacity="0.00"');
   });
 });
