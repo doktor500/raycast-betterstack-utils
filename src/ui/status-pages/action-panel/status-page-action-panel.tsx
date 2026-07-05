@@ -11,9 +11,9 @@ interface StatusPageActionPanelProps {
 export function StatusPageActionPanel({ url, onRefresh }: StatusPageActionPanelProps) {
   return (
     <ActionPanel>
-      <RefreshAction onRefresh={onRefresh} />
-      <CopyStatusPageUrlAction url={url} />
       <OpenStatusPageInBrowserAction url={url} />
+      <CopyStatusPageUrlAction url={url} />
+      <RefreshAction onRefresh={onRefresh} />
     </ActionPanel>
   );
 }
