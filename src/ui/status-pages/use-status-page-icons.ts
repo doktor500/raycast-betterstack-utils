@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Icon, Image } from "@raycast/api";
+import { Icon, Image, environment } from "@raycast/api";
 import { getPulseFrames } from "@/ui/status-pages/status-icon";
 import { STATE_COLOR } from "@/ui/status-pages/status-colors";
 import { StatusPageState } from "@/domain/status-page";
@@ -23,7 +23,7 @@ export function useStatusPageIcons(): Record<StatusPageState, Image.ImageLike> {
 
   useEffect(() => {
     ALL_STATES.forEach((state) => {
-      void getPulseFrames(state)
+      void getPulseFrames(state, environment.appearance)
         .then((images) => setFrames((current) => ({ ...current, [state]: images })))
         .catch(() => {});
     });
