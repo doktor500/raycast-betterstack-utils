@@ -28,6 +28,8 @@ declare namespace Preferences {
   export type Incidents = ExtensionPreferences & {}
   /** Preferences accessible in the `status-pages` command */
   export type StatusPages = ExtensionPreferences & {}
+  /** Preferences accessible in the `monitors` command */
+  export type Monitors = ExtensionPreferences & {}
 }
 
 declare namespace Arguments {
@@ -39,5 +41,7 @@ declare namespace Arguments {
   export type Incidents = {}
   /** Arguments passed to the `status-pages` command */
   export type StatusPages = {}
+  /** Arguments passed to the `monitors` command */
+  export type Monitors = {}
 }
 

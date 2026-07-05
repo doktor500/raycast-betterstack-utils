@@ -33,6 +33,12 @@
       "title": "Status Pages",
       "description": "View your BetterStack status pages and open them in the browser",
       "mode": "view"
+    },
+    {
+      "name": "monitors",
+      "title": "Monitors",
+      "description": "View your BetterStack monitors and open them in the browser",
+      "mode": "view"
     }
   ],
   "preferences": [
