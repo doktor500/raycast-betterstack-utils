@@ -39,15 +39,15 @@ export function usePulseIcons<State extends string>(
   );
 }
 
-export function usePulseFrame(color: Color.Dynamic): Optional<string> {
+export function usePulseFrame(color: Color.Dynamic, size?: number): Optional<string> {
   const [frames, setFrames] = useState<Optional<string[]>>(undefined);
   const [frameIndex, setFrameIndex] = useState(0);
 
   useEffect(() => {
-    void getPulseFrames(color, environment.appearance)
+    void getPulseFrames(color, environment.appearance, size)
       .then(setFrames)
       .catch(() => {});
-  }, [color]);
+  }, [color, size]);
 
   useEffect(() => {
     const interval = setInterval(() => setFrameIndex((index) => index + 1), FRAME_INTERVAL_MS);

@@ -23,7 +23,7 @@ export function MonitorDetail({ monitor }: MonitorDetailProps) {
 
 function MonitorDetailContent({ monitor }: MonitorDetailProps) {
   const { periods, isLoading, isError, refresh } = useMonitorAvailability(monitor.id, monitor.createdAt);
-  const statusIconUri = usePulseFrame(MONITOR_STATUS_COLOR[monitor.status]);
+  const statusIconUri = usePulseFrame(MONITOR_STATUS_COLOR[monitor.status], 24);
   const markdown = buildMonitorDetailMarkdown(monitor, { periods, isLoading, isError }, statusIconUri);
 
   return (

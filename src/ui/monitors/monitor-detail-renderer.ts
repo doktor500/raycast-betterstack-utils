@@ -5,7 +5,6 @@ import { capitalize } from "@/common/utils/string-utils";
 import { stripProtocol } from "@/common/utils/url-utils";
 import { Optional } from "@/common/utils/optional-utils";
 import { formatDuration } from "@/common/utils/date-utils";
-import { MONITOR_STATUS_EMOJI } from "@/ui/monitors/monitor-status";
 import { isNotEmpty } from "@/common/utils/collection-utils";
 
 export interface AvailabilityState {
@@ -27,8 +26,8 @@ export function buildMonitorDetailMarkdown(
 }
 
 function buildHeader(monitor: Monitor, statusIconUri: Optional<string>): string {
-  const icon = statusIconUri ? `![status](${statusIconUri})` : MONITOR_STATUS_EMOJI[monitor.status];
-  return `## ${icon} ${monitor.name}`;
+  const icon = statusIconUri ? `![status](${statusIconUri}) ` : "";
+  return `## ${icon}${monitor.name}`;
 }
 
 function buildDetailsSection(monitor: Monitor): string {

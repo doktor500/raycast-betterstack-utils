@@ -18,12 +18,3 @@ export const MONITOR_STATUS_LABEL: Record<MonitorStatus, string> = {
   [MonitorStatus.VALIDATING]: "Validating",
   [MonitorStatus.MAINTENANCE]: "Maintenance",
 };
-
-export const MONITOR_STATUS_EMOJI: Record<MonitorStatus, string> = {
-  [MonitorStatus.UP]: "🟢",
-  [MonitorStatus.DOWN]: "🔴",
-  [MonitorStatus.PAUSED]: "⚪",
-  [MonitorStatus.PENDING]: "🟡",
-  [MonitorStatus.VALIDATING]: "🟡",
-  [MonitorStatus.MAINTENANCE]: "🔵",
-};

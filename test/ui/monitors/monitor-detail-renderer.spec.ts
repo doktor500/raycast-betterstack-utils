@@ -34,9 +34,10 @@ const periods: MonitorAvailabilityPeriod[] = [
 ];
 
 describe("buildMonitorDetailMarkdown", () => {
-  it("renders the header with the status emoji when no status icon is available", () => {
+  it("renders the header with just the name when no status icon is available", () => {
     const markdown = buildMonitorDetailMarkdown(monitor, { periods, isLoading: false, isError: false }, undefined);
-    expect(markdown).toContain("## 🟢 Homepage");
+    expect(markdown).toContain("## Homepage");
+    expect(markdown).not.toContain("![status]");
   });
 
   it("inlines the pulsing status icon in the header when provided", () => {
