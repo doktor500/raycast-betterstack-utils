@@ -6,18 +6,7 @@ vi.mock("@raycast/api", () => ({
 }));
 
 import { describe, expect, it } from "vitest";
-import { buildPulseRingSvg, buildPulseSvg } from "@/ui/status-pages/status-icon";
-
-describe("buildPulseRingSvg", () => {
-  it("draws a filled dot and a ring in the given color", () => {
-    const svg = buildPulseRingSvg("#FF6363");
-
-    expect(svg).toContain("<svg");
-    expect(svg.match(/#FF6363/g)).toHaveLength(2);
-    expect(svg).toContain('fill="#FF6363"');
-    expect(svg).toContain('stroke="#FF6363"');
-  });
-});
+import { buildPulseSvg } from "@/ui/status-pages/status-icon";
 
 describe("buildPulseSvg", () => {
   it("draws an animated ring and a filled dot in the given color when animated", () => {

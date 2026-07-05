@@ -1,22 +1,22 @@
 import { List } from "@raycast/api";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useStatusPages } from "@/hooks/use-status-pages";
-import { useStatusPageIcons } from "@/ui/status-pages/use-status-page-icons";
+import { useStatusPagePulseImage } from "@/ui/status-pages/use-status-page-pulse-image";
 import { StatusPageListItem } from "@/ui/status-pages/components/status-page-list-item";
 
 const queryClient = new QueryClient();
 
 function StatusPages() {
   const { statusPages, isLoading, refresh } = useStatusPages();
-  const icons = useStatusPageIcons();
+  const pulseImages = useStatusPagePulseImage();
 
   return (
-    <List isLoading={isLoading}>
+    <List isLoading={isLoading} isShowingDetail>
       {statusPages.map((statusPage) => (
         <StatusPageListItem
           key={statusPage.id}
           statusPage={statusPage}
-          icon={icons[statusPage.state]}
+          pulseMarkdown={pulseImages[statusPage.state]}
           onRefresh={refresh}
         />
       ))}
