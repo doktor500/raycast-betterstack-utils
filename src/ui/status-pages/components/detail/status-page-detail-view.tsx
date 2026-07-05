@@ -23,7 +23,7 @@ function StatusPageDetailView({ statusPage, sections }: StatusPageDetailViewProp
 
   return (
     <div tw="flex flex-col bg-dark w-[1160px] p-[24px]" style={{ gap: "32px" }}>
-      <div tw="flex items-center justify-between">
+      <div tw="flex items-center justify-between w-[1112px]">
         <span tw={`text-[24px] font-bold text-[${palette.heading}]`}>{statusPage.name}</span>
         <span tw={`text-[16px] font-semibold text-[${badgeColor}]`}>{capitalize(statusPage.state)}</span>
       </div>
