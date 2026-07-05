@@ -11,7 +11,7 @@ export function SectionBlock({ section, appearance }: SectionBlockProps) {
   const palette = getSchedulePalette(appearance);
 
   return (
-    <div tw="flex flex-col w-[1160px]" style={{ gap: "16px" }}>
+    <div tw="flex flex-col w-[1112px]" style={{ gap: "16px" }}>
       <span tw={`text-[20px] font-bold text-[${palette.heading}]`}>{section.name}</span>
       {section.resources.map((resource) => (
         <ResourceRow key={resource.id} resource={resource} appearance={appearance} />

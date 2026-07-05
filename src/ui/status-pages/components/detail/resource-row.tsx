@@ -13,7 +13,7 @@ export function ResourceRow({ resource, appearance }: ResourceRowProps) {
   const dotColor = RESOURCE_STATUS_COLOR[resource.status][appearance];
 
   return (
-    <div tw="flex flex-col w-[1160px]" style={{ gap: "8px" }}>
+    <div tw="flex flex-col w-[1112px]" style={{ gap: "8px" }}>
       <div tw="flex items-center justify-between">
         <div tw="flex items-center" style={{ gap: "8px" }}>
           <div tw={`flex w-[10px] h-[10px] rounded-full bg-[${dotColor}]`} />

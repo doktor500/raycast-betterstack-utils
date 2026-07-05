@@ -2,7 +2,7 @@ import { Appearance } from "@/common/colors";
 import { StatusHistoryDay } from "@/domain/status-page-resource";
 import { RESOURCE_STATUS_COLOR } from "@/ui/status-pages/status-colors";
 
-const TIMELINE_WIDTH = 1120;
+const TIMELINE_WIDTH = 1112;
 const BAR_HEIGHT = 32;
 const BAR_GAP = 2;
 
