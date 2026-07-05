@@ -1,3 +1,11 @@
+import { vi } from "vitest";
+
+vi.mock("@raycast/api", () => ({
+  getPreferenceValues: vi.fn(() => ({
+    apiToken: "test-token",
+  })),
+}));
+
 import { describe, expect, it } from "vitest";
 import { buildStatusPageUrl, toStatusPage } from "@/api/betterstack-status-pages-api";
 import { StatusPageState } from "@/domain/status-page";
