@@ -26,6 +26,8 @@ declare namespace Preferences {
   export type CreateIncident = ExtensionPreferences & {}
   /** Preferences accessible in the `incidents` command */
   export type Incidents = ExtensionPreferences & {}
+  /** Preferences accessible in the `status-pages` command */
+  export type StatusPages = ExtensionPreferences & {}
 }
 
 declare namespace Arguments {
@@ -35,5 +37,7 @@ declare namespace Arguments {
   export type CreateIncident = {}
   /** Arguments passed to the `incidents` command */
   export type Incidents = {}
+  /** Arguments passed to the `status-pages` command */
+  export type StatusPages = {}
 }
 

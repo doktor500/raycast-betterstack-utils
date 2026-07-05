@@ -27,6 +27,12 @@
       "title": "Incidents",
       "description": "View and manage active incidents",
       "mode": "view"
+    },
+    {
+      "name": "status-pages",
+      "title": "Status Pages",
+      "description": "View your BetterStack status pages and open them in the browser",
+      "mode": "view"
     }
   ],
   "preferences": [
