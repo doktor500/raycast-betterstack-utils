@@ -5,10 +5,10 @@ import { STATE_COLOR } from "@/ui/status-pages/status-colors";
 import { StatusPageState } from "@/domain/status-page";
 
 const ALL_STATES: StatusPageState[] = [
-  StatusPageState.Operational,
-  StatusPageState.Degraded,
-  StatusPageState.Downtime,
-  StatusPageState.Maintenance,
+  StatusPageState.OPERATIONAL,
+  StatusPageState.DEGRADED,
+  StatusPageState.DOWNTIME,
+  StatusPageState.MAINTENANCE,
 ];
 
 const FRAME_INTERVAL_MS = 500;
@@ -40,9 +40,9 @@ export function useStatusPageIcons(): Record<StatusPageState, Image.ImageLike> {
   };
 
   return {
-    [StatusPageState.Operational]: iconFor(StatusPageState.Operational),
-    [StatusPageState.Degraded]: iconFor(StatusPageState.Degraded),
-    [StatusPageState.Downtime]: iconFor(StatusPageState.Downtime),
-    [StatusPageState.Maintenance]: iconFor(StatusPageState.Maintenance),
+    [StatusPageState.OPERATIONAL]: iconFor(StatusPageState.OPERATIONAL),
+    [StatusPageState.DEGRADED]: iconFor(StatusPageState.DEGRADED),
+    [StatusPageState.DOWNTIME]: iconFor(StatusPageState.DOWNTIME),
+    [StatusPageState.MAINTENANCE]: iconFor(StatusPageState.MAINTENANCE),
   };
 }

@@ -1,10 +1,10 @@
 import { Optional } from "@/common/utils/optional-utils";
 
 export const StatusPageState = {
-  Operational: "operational",
-  Degraded: "degraded",
-  Downtime: "downtime",
-  Maintenance: "maintenance",
+  OPERATIONAL: "operational",
+  DEGRADED: "degraded",
+  DOWNTIME: "downtime",
+  MAINTENANCE: "maintenance",
 } as const;
 
 export type StatusPageState = (typeof StatusPageState)[keyof typeof StatusPageState];

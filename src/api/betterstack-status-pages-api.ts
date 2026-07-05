@@ -30,8 +30,8 @@ export function buildStatusPageUrl(statusPage: StatusPage): string {
 
 export async function listStatusPages(): Promise<StatusPage[]> {
   const params = new URLSearchParams({ per_page: "50" });
-  let url: Optional<string> = `${V2_BASE}/status-pages?${params}`;
   const allStatusPages: StatusPageApiData[] = [];
+  let url: Optional<string> = `${V2_BASE}/status-pages?${params}`;
 
   while (url) {
     const page: StatusPageListResponse = await request<StatusPageListResponse>(url);
@@ -55,5 +55,5 @@ export function toStatusPage(data: StatusPageApiData): StatusPage {
 }
 
 function toStatusPageState(state: Optional<string>): StatusPageState {
-  return KNOWN_STATES.find((knownState) => knownState === state) ?? StatusPageState.Operational;
+  return KNOWN_STATES.find((knownState) => knownState === state) ?? StatusPageState.OPERATIONAL;
 }

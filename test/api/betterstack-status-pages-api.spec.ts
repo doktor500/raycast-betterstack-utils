@@ -17,7 +17,7 @@ describe("buildStatusPageUrl", () => {
       name: "Acme",
       subdomain: "acme",
       customDomain: "status.acme.com",
-      state: StatusPageState.Operational,
+      state: StatusPageState.OPERATIONAL,
     });
 
     expect(url).toBe("https://status.acme.com");
@@ -29,7 +29,7 @@ describe("buildStatusPageUrl", () => {
       name: "Acme",
       subdomain: "acme",
       customDomain: undefined,
-      state: StatusPageState.Operational,
+      state: StatusPageState.OPERATIONAL,
     });
 
     expect(url).toBe("https://acme.betteruptime.com");
@@ -54,7 +54,7 @@ describe("toStatusPage", () => {
       name: "Acme Inc",
       subdomain: "acme",
       customDomain: "status.acme.com",
-      state: StatusPageState.Degraded,
+      state: StatusPageState.DEGRADED,
     });
   });
 
@@ -75,6 +75,6 @@ describe("toStatusPage", () => {
       attributes: { subdomain: "acme", aggregate_state: "something-new" },
     });
 
-    expect(statusPage.state).toBe(StatusPageState.Operational);
+    expect(statusPage.state).toBe(StatusPageState.OPERATIONAL);
   });
 });
