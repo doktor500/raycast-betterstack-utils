@@ -55,8 +55,8 @@ describe("buildAvailabilityWindows", () => {
     expect(windows.map((window) => window.label)).toEqual([
       "Today",
       "Last 7 days",
-      "Last month",
-      "Last year",
+      "Last 30 days",
+      "Last 365 days",
       "All time",
     ]);
   });

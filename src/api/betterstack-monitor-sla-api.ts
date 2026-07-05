@@ -37,8 +37,8 @@ export function buildAvailabilityWindows(now: DateTime): AvailabilityWindow[] {
   return [
     { label: "Today", range: { from: today, to: today } },
     { label: "Last 7 days", range: { from: now.minus({ days: 7 }).toISODate() ?? "", to: today } },
-    { label: "Last month", range: { from: now.minus({ months: 1 }).toISODate() ?? "", to: today } },
-    { label: "Last year", range: { from: now.minus({ years: 1 }).toISODate() ?? "", to: today } },
+    { label: "Last 30 days", range: { from: now.minus({ months: 1 }).toISODate() ?? "", to: today } },
+    { label: "Last 365 days", range: { from: now.minus({ years: 1 }).toISODate() ?? "", to: today } },
     { label: "All time", range: {} },
   ];
 }

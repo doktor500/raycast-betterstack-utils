@@ -33,16 +33,15 @@ const periods: MonitorAvailabilityPeriod[] = [
 ];
 
 describe("buildMonitorDetailMarkdown", () => {
-  it("renders the header with status emoji and label", () => {
+  it("renders the header with status emoji and name", () => {
     const markdown = buildMonitorDetailMarkdown(monitor, { periods, isLoading: false, isError: false });
-    expect(markdown).toContain("# Homepage");
-    expect(markdown).toContain("**Status:** 🟢 Up");
+    expect(markdown).toContain("## 🟢 Homepage");
   });
 
   it("renders the details table with formatted values", () => {
     const markdown = buildMonitorDetailMarkdown(monitor, { periods, isLoading: false, isError: false });
-    expect(markdown).toContain("## Details");
-    expect(markdown).toContain("| URL | [https://example.com](https://example.com) |");
+    expect(markdown).toContain("### Details");
+    expect(markdown).toContain("| URL | example.com |");
     expect(markdown).toContain("| Type | Http |");
     expect(markdown).toContain("| Method | GET |");
     expect(markdown).toContain("| Check frequency | 3m |");
@@ -76,7 +75,7 @@ describe("buildMonitorDetailMarkdown", () => {
 
   it("renders the availability table with formatted values", () => {
     const markdown = buildMonitorDetailMarkdown(monitor, { periods, isLoading: false, isError: false });
-    expect(markdown).toContain("## Availability");
+    expect(markdown).toContain("### Availability");
     expect(markdown).toContain("| Time Period | Availability | Downtime | Incidents | Longest incident | Avg. incident |");
     expect(markdown).toContain("| Today | 100% | 0s | 0 | 0s | 0s |");
     expect(markdown).toContain("| Last 7 days | 99.98% | 10m | 3 | 5m | 3m 20s |");
