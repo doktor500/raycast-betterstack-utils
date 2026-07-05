@@ -14,8 +14,8 @@ function MonitorStatusHeader({ monitor }: { monitor: Monitor }) {
   const color = MONITOR_STATUS_COLOR[monitor.status][appearance];
 
   return (
-    <div tw="flex items-center justify-center w-[1160px] h-[72px]">
-      <div tw={`w-[32px] h-[32px] rounded-full bg-[${color}]`} />
+    <div tw="flex items-center w-[1160px] h-[48px]">
+      <div tw={`w-[28px] h-[28px] rounded-full bg-[${color}]`} />
       <span tw={`text-[28px] font-bold pl-4 text-[${palette.heading}]`}>{monitor.name}</span>
     </div>
   );
