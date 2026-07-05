@@ -13,7 +13,7 @@ export function WeekBlock({ days, events, appearance }: WeekBlockProps) {
   const todayIndex = days.findIndex(isToday);
 
   return (
-    <div tw="flex w-[1160px]">
+    <div tw="flex flex-1">
       {days.map((day, dayIndex) => {
         const additionalProps = dayIndex === todayIndex ? { markerTime: fractionOfDayElapsed(today()) } : {};
 
