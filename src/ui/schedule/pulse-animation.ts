@@ -1,7 +1,7 @@
 import { Colors, getThemeColor } from "@/common/colors";
 import { Optional } from "@/common/utils/optional-utils";
 
-const PULSABLE_SIZES = [32, 28];
+const PULSABLE_SIZES = [32, 24];
 
 export function pulseAnimation(svg: string): string {
   for (const match of svg.matchAll(/<path ([^>]*?)\s*\/>/g)) {

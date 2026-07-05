@@ -15,14 +15,14 @@ describe("pulseAnimation", () => {
     expect(result).toContain('values="18;30"');
   });
 
-  it("adds a growing pulse ring around a 28x28 shape, scaled to its size", () => {
-    const result = pulseAnimation(path(28, 28));
+  it("adds a growing pulse ring around a 24x24 shape, scaled to its size", () => {
+    const result = pulseAnimation(path(24, 24));
 
-    expect(result).toContain('cx="24" cy="34"');
-    expect(result).toContain('<circle cx="24" cy="34" r="14"');
+    expect(result).toContain('cx="22" cy="32"');
+    expect(result).toContain('<circle cx="22" cy="32" r="12"');
+    expect(result).toContain('values="12;24"');
+    expect(result).toContain('<circle cx="22" cy="32" r="14"');
     expect(result).toContain('values="14;26"');
-    expect(result).toContain('<circle cx="24" cy="34" r="16"');
-    expect(result).toContain('values="16;28"');
   });
 
   it("leaves unrelated static dot sizes untouched", () => {
