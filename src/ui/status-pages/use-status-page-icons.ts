@@ -11,7 +11,7 @@ const ALL_STATES: StatusPageState[] = [
   StatusPageState.Maintenance,
 ];
 
-const FRAME_INTERVAL_MS = 700;
+const FRAME_INTERVAL_MS = 500;
 
 function fallbackIcon(state: StatusPageState): Image.ImageLike {
   return { source: Icon.CircleFilled, tintColor: STATE_COLOR[state] };

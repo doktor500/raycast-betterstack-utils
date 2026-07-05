@@ -3,7 +3,7 @@ import { toImageDataUri } from "@/common/utils/svg-utils";
 import { StatusPageState } from "@/domain/status-page";
 import { STATE_HEX } from "@/ui/status-pages/status-colors";
 
-const FRAME_COUNT = 4;
+const FRAME_COUNT = 2;
 
 const framesCache = new Map<StatusPageState, Promise<string[]>>();
 
