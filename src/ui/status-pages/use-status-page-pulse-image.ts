@@ -23,7 +23,7 @@ export function useStatusPagePulseImage(): Record<StatusPageState, string> {
     ALL_STATES.forEach((state) => {
       void getPulseImage(state)
         .then((dataUri) => setMarkdown((current) => ({ ...current, [state]: `![pulse](${dataUri})` })))
-        .catch(() => {});
+        .catch(() => setMarkdown((current) => ({ ...current, [state]: "" })));
     });
   }, []);
 
