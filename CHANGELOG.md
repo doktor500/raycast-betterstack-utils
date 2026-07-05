@@ -1,5 +1,12 @@
 # betterstack-utils Changelog
 
+## [Monitors and status pages] - {PR_MERGE_DATE}
+
+- Added a **Monitors** command to view your BetterStack monitors, see availability and status details, and open them
+  in the browser.
+- Added a **Status Pages** command to view your BetterStack status pages, their sections and resources, and open
+  them in the browser.
+
 ## [Bugfix] - {PR_MERGE_DATE}
 
 - Fixed an issue where light themes were not displaying the schedule grid colors and borders properly.
