@@ -19,6 +19,7 @@ export interface Monitor {
   status: MonitorStatus;
   checkFrequency: Optional<number>;
   lastCheckedAt: Optional<string>;
+  createdAt: Optional<string>;
   httpMethod: Optional<string>;
   requestTimeout: Optional<number>;
   recoveryPeriod: Optional<number>;

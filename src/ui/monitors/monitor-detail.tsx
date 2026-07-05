@@ -20,7 +20,7 @@ export function MonitorDetail({ monitor }: MonitorDetailProps) {
 }
 
 function MonitorDetailContent({ monitor }: MonitorDetailProps) {
-  const { periods, isLoading, isError, refresh } = useMonitorAvailability(monitor.id);
+  const { periods, isLoading, isError, refresh } = useMonitorAvailability(monitor.id, monitor.createdAt);
   const markdown = buildMonitorDetailMarkdown(monitor, { periods, isLoading, isError });
 
   return (

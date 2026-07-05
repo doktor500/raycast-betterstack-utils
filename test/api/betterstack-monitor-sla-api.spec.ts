@@ -72,4 +72,16 @@ describe("buildAvailabilityWindows", () => {
       {},
     ]);
   });
+
+  it("includes the day count in the All time label when createdAt is known", () => {
+    const createdAt = now.minus({ days: 100 }).toISO() ?? undefined;
+    const windows = buildAvailabilityWindows(now, createdAt);
+
+    expect(windows.at(-1)?.label).toBe("All time (Last 100 days)");
+  });
+
+  it("falls back to a plain All time label when createdAt is missing or invalid", () => {
+    expect(buildAvailabilityWindows(now).at(-1)?.label).toBe("All time");
+    expect(buildAvailabilityWindows(now, "not-a-date").at(-1)?.label).toBe("All time");
+  });
 });

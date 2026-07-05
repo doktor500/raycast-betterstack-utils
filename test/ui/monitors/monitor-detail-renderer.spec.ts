@@ -19,6 +19,7 @@ const monitor: Monitor = {
   status: MonitorStatus.UP,
   checkFrequency: 180,
   lastCheckedAt: undefined,
+  createdAt: undefined,
   httpMethod: "get",
   requestTimeout: 30,
   recoveryPeriod: 0,
@@ -46,8 +47,6 @@ describe("buildMonitorDetailMarkdown", () => {
     expect(markdown).toContain("| Method | GET |");
     expect(markdown).toContain("| Check frequency | 3m |");
     expect(markdown).toContain("| Request timeout | 30s |");
-    expect(markdown).toContain("| Recovery period | 0s |");
-    expect(markdown).toContain("| Last checked | Never |");
     expect(markdown).toContain("| Regions | US, EU |");
     expect(markdown).toContain("| SSL expiration | 30 days |");
     expect(markdown).toContain("| Domain expiration | 365 days |");
@@ -69,8 +68,9 @@ describe("buildMonitorDetailMarkdown", () => {
     expect(markdown).not.toContain("| Type |");
     expect(markdown).not.toContain("| Method |");
     expect(markdown).not.toContain("| Regions |");
+    expect(markdown).not.toContain("| Recovery period |");
+    expect(markdown).not.toContain("| Last checked |");
     expect(markdown).toContain("| URL |");
-    expect(markdown).toContain("| Last checked | Never |");
   });
 
   it("renders the availability table with formatted values", () => {

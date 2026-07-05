@@ -31,7 +31,7 @@ export interface AvailabilityWindow {
   range: AvailabilityRange;
 }
 
-export function buildAvailabilityWindows(now: DateTime): AvailabilityWindow[] {
+export function buildAvailabilityWindows(now: DateTime, createdAt?: Optional<string>): AvailabilityWindow[] {
   const today = now.toISODate() ?? "";
 
   return [
@@ -39,8 +39,16 @@ export function buildAvailabilityWindows(now: DateTime): AvailabilityWindow[] {
     { label: "Last 7 days", range: { from: now.minus({ days: 7 }).toISODate() ?? "", to: today } },
     { label: "Last 30 days", range: { from: now.minus({ months: 1 }).toISODate() ?? "", to: today } },
     { label: "Last 365 days", range: { from: now.minus({ years: 1 }).toISODate() ?? "", to: today } },
-    { label: "All time", range: {} },
+    { label: buildAllTimeLabel(now, createdAt), range: {} },
   ];
+}
+
+function buildAllTimeLabel(now: DateTime, createdAt: Optional<string>): string {
+  const created = createdAt ? DateTime.fromISO(createdAt) : undefined;
+  if (!created?.isValid) return "All time";
+
+  const days = Math.floor(now.diff(created, "days").days);
+  return `All time (Last ${days} days)`;
 }
 
 export async function getMonitorSla(monitorId: string, range: AvailabilityRange): Promise<MonitorSla> {

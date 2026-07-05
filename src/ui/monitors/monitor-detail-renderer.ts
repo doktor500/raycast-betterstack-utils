@@ -6,6 +6,7 @@ import { stripProtocol } from "@/common/utils/url-utils";
 import { Optional } from "@/common/utils/optional-utils";
 import { formatDuration } from "@/common/utils/date-utils";
 import { MONITOR_STATUS_EMOJI } from "@/ui/monitors/monitor-status";
+import { isNotEmpty } from "@/common/utils/collection-utils";
 
 export interface AvailabilityState {
   periods: MonitorAvailabilityPeriod[];
@@ -28,19 +29,13 @@ function buildDetailsSection(monitor: Monitor): string {
   rows.push(`| URL | ${stripProtocol(monitor.url)} |`);
   if (monitor.monitorType) rows.push(`| Type | ${capitalize(monitor.monitorType)} |`);
   if (monitor.httpMethod) rows.push(`| Method | ${monitor.httpMethod.toUpperCase()} |`);
-  if (monitor.checkFrequency !== undefined)
-    rows.push(`| Check frequency | ${formatDuration(monitor.checkFrequency)} |`);
-  if (monitor.requestTimeout !== undefined)
-    rows.push(`| Request timeout | ${formatDuration(monitor.requestTimeout)} |`);
-  if (monitor.recoveryPeriod !== undefined)
-    rows.push(`| Recovery period | ${formatDuration(monitor.recoveryPeriod)} |`);
-  rows.push(`| Last checked | ${formatLastChecked(monitor.lastCheckedAt)} |`);
-  if (monitor.regions.length > 0) {
-    rows.push(`| Regions | ${monitor.regions.map((region) => region.toUpperCase()).join(", ")} |`);
-  }
-  if (monitor.sslExpiration !== undefined) rows.push(`| SSL expiration | ${formatDays(monitor.sslExpiration)} |`);
-  if (monitor.domainExpiration !== undefined)
-    rows.push(`| Domain expiration | ${formatDays(monitor.domainExpiration)} |`);
+  if (monitor.checkFrequency) rows.push(`| Check frequency | ${formatDuration(monitor.checkFrequency)} |`);
+  if (monitor.requestTimeout) rows.push(`| Request timeout | ${formatDuration(monitor.requestTimeout)} |`);
+  if (monitor.recoveryPeriod) rows.push(`| Recovery period | ${formatDuration(monitor.recoveryPeriod)} |`);
+  if (monitor.lastCheckedAt) rows.push(`| Last checked | ${formatLastChecked(monitor.lastCheckedAt)} |`);
+  if (isNotEmpty(monitor.regions)) rows.push(`| Regions | ${monitor.regions.join(", ").toUpperCase()} |`);
+  if (monitor.sslExpiration) rows.push(`| SSL expiration | ${formatDays(monitor.sslExpiration)} |`);
+  if (monitor.domainExpiration) rows.push(`| Domain expiration | ${formatDays(monitor.domainExpiration)} |`);
 
   return `### Details\n\n${rows.join("\n")}`;
 }

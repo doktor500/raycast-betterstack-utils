@@ -16,6 +16,7 @@ export interface MonitorApiAttributes {
   status?: Optional<string>;
   check_frequency?: Optional<number>;
   last_checked_at?: Optional<string>;
+  created_at?: Optional<string>;
   http_method?: Optional<string>;
   request_timeout?: Optional<number>;
   recovery_period?: Optional<number>;
@@ -52,6 +53,7 @@ export function toMonitor(data: MonitorApiData): Monitor {
     status: toMonitorStatus(attributes.status),
     checkFrequency: asOptional(attributes.check_frequency),
     lastCheckedAt: asOptional(attributes.last_checked_at),
+    createdAt: asOptional(attributes.created_at),
     httpMethod: asOptional(attributes.http_method),
     requestTimeout: asOptional(attributes.request_timeout),
     recoveryPeriod: asOptional(attributes.recovery_period),
