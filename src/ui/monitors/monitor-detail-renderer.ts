@@ -27,7 +27,7 @@ export function buildMonitorDetailMarkdown(
 
 function buildHeader(monitor: Monitor, statusIconUri: Optional<string>): string {
   const icon = statusIconUri ? `<img src="${statusIconUri}" style="vertical-align: middle" /> ` : "";
-  return `## ${icon}${monitor.name}`;
+  return `<h2 style="text-align: center">${icon}${monitor.name}</h2>`;
 }
 
 function buildDetailsSection(monitor: Monitor): string {

@@ -34,20 +34,20 @@ const periods: MonitorAvailabilityPeriod[] = [
 ];
 
 describe("buildMonitorDetailMarkdown", () => {
-  it("renders the header with just the name when no status icon is available", () => {
+  it("renders the header with just the name, centered, when no status icon is available", () => {
     const markdown = buildMonitorDetailMarkdown(monitor, { periods, isLoading: false, isError: false }, undefined);
-    expect(markdown).toContain("## Homepage");
+    expect(markdown).toContain('<h2 style="text-align: center">Homepage</h2>');
     expect(markdown).not.toContain("<img");
   });
 
-  it("inlines the pulsing status icon, vertically centered, in the header when provided", () => {
+  it("inlines the pulsing status icon, vertically and horizontally centered, in the header when provided", () => {
     const markdown = buildMonitorDetailMarkdown(
       monitor,
       { periods, isLoading: false, isError: false },
       "data:image/png;base64,AAAA",
     );
     expect(markdown).toContain(
-      '## <img src="data:image/png;base64,AAAA" style="vertical-align: middle" /> Homepage',
+      '<h2 style="text-align: center"><img src="data:image/png;base64,AAAA" style="vertical-align: middle" /> Homepage</h2>',
     );
   });
 
