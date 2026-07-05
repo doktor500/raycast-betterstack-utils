@@ -42,11 +42,11 @@ function buildDetailsSection(monitor: Monitor): string {
   if (monitor.domainExpiration !== undefined)
     rows.push(`| Domain expiration | ${formatDays(monitor.domainExpiration)} |`);
 
-  return `## Details\n\n${rows.join("\n")}`;
+  return `### Details\n\n${rows.join("\n")}`;
 }
 
 function buildAvailabilitySection(availability: AvailabilityState): string {
-  const heading = "## Availability";
+  const heading = "### Availability";
 
   if (availability.isError) return `${heading}\n\n_Failed to load availability data._`;
   if (availability.periods.length === 0) {
@@ -55,7 +55,7 @@ function buildAvailabilitySection(availability: AvailabilityState): string {
 
   const rows: string[] = [
     "| Time Period | Availability | Downtime | Incidents | Longest incident | Avg. incident |",
-    "| --- | --- | --- | --- | --- | --- |",
+    "| ----------- | ------------ | -------- | --------- | ---------------- | ------------- |",
   ];
 
   for (const period of availability.periods) {
