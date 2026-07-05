@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Color, Icon, Image, environment } from "@raycast/api";
 import { getPulseFrames } from "@/ui/pulse-icon";
+import { Optional } from "@/common/utils/optional-utils";
 
 const FRAME_INTERVAL_MS = 500;
 
@@ -36,4 +37,22 @@ export function usePulseIcons<State extends string>(
     },
     {} as Record<State, Image.ImageLike>,
   );
+}
+
+export function usePulseFrame(color: Color.Dynamic): Optional<string> {
+  const [frames, setFrames] = useState<Optional<string[]>>(undefined);
+  const [frameIndex, setFrameIndex] = useState(0);
+
+  useEffect(() => {
+    void getPulseFrames(color, environment.appearance)
+      .then(setFrames)
+      .catch(() => {});
+  }, [color]);
+
+  useEffect(() => {
+    const interval = setInterval(() => setFrameIndex((index) => index + 1), FRAME_INTERVAL_MS);
+    return () => clearInterval(interval);
+  }, []);
+
+  return frames?.[frameIndex % frames.length];
 }
