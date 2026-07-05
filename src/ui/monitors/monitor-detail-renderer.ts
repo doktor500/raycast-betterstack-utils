@@ -19,9 +19,11 @@ export function buildMonitorDetailMarkdown(
   availability: AvailabilityState,
   statusIconUri?: Optional<string>,
 ): string {
-  return [buildHeader(monitor, statusIconUri), buildAvailabilitySection(availability), buildDetailsSection(monitor)].join(
-    "\n\n",
-  );
+  return [
+    buildHeader(monitor, statusIconUri),
+    buildAvailabilitySection(availability),
+    buildDetailsSection(monitor),
+  ].join("\n\n");
 }
 
 function buildHeader(monitor: Monitor, statusIconUri: Optional<string>): string {
