@@ -16,18 +16,10 @@ export interface AvailabilityState {
 export function buildMonitorDetailMarkdown(
   monitor: Monitor,
   availability: AvailabilityState,
-  statusIconUri?: Optional<string>,
+  headerMarkdown?: Optional<string>,
 ): string {
-  return [
-    buildHeader(monitor, statusIconUri),
-    buildAvailabilitySection(availability),
-    buildDetailsSection(monitor),
-  ].join("\n\n");
-}
-
-function buildHeader(monitor: Monitor, statusIconUri: Optional<string>): string {
-  const icon = statusIconUri ? `<img src="${statusIconUri}" style="vertical-align: middle" /> ` : "";
-  return `<h2 style="text-align: center">${icon}${monitor.name}</h2>`;
+  const header = headerMarkdown ?? `## ${monitor.name}`;
+  return [header, buildAvailabilitySection(availability), buildDetailsSection(monitor)].join("\n\n");
 }
 
 function buildDetailsSection(monitor: Monitor): string {
