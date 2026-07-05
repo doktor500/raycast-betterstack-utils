@@ -4,6 +4,8 @@ import { Monitor } from "@/domain/monitor";
 import { useMonitorAvailability } from "@/hooks/use-monitor-availability";
 import { buildMonitorDetailMarkdown } from "@/ui/monitors/monitor-detail-renderer";
 import { MonitorActionPanel } from "@/ui/monitors/action-panel/monitor-action-panel";
+import { MONITOR_STATUS_COLOR } from "@/ui/monitors/monitor-status";
+import { usePulseFrame } from "@/ui/use-pulse-icons";
 
 const queryClient = new QueryClient();
 
@@ -21,7 +23,8 @@ export function MonitorDetail({ monitor }: MonitorDetailProps) {
 
 function MonitorDetailContent({ monitor }: MonitorDetailProps) {
   const { periods, isLoading, isError, refresh } = useMonitorAvailability(monitor.id, monitor.createdAt);
-  const markdown = buildMonitorDetailMarkdown(monitor, { periods, isLoading, isError });
+  const statusIconUri = usePulseFrame(MONITOR_STATUS_COLOR[monitor.status]);
+  const markdown = buildMonitorDetailMarkdown(monitor, { periods, isLoading, isError }, statusIconUri);
 
   return (
     <Detail
