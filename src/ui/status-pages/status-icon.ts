@@ -1,7 +1,7 @@
 import { environment } from "@raycast/api";
 import { toImageDataUri } from "@/common/utils/svg-utils";
 import { StatusPageState } from "@/domain/status-page";
-import { STATE_HEX } from "@/ui/status-pages/status-colors";
+import { STATE_COLOR } from "@/ui/status-pages/status-colors";
 
 const FRAME_COUNT = 2;
 
@@ -25,7 +25,7 @@ export function getPulseFrames(state: StatusPageState): Promise<string[]> {
   const cached = framesCache.get(state);
   if (cached) return cached;
 
-  const frames = buildPulseFrames(STATE_HEX[state]);
+  const frames = buildPulseFrames(STATE_COLOR[state]);
   const images = Promise.all(
     frames.map((svg) => toImageDataUri(svg, environment.supportPath, environment.raycastVersion)),
   ).catch((error) => {
