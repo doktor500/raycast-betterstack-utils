@@ -5,7 +5,7 @@ import { capitalize } from "@/common/utils/string-utils";
 import { stripProtocol } from "@/common/utils/url-utils";
 import { Optional } from "@/common/utils/optional-utils";
 import { formatDuration } from "@/common/utils/date-utils";
-import { MONITOR_STATUS_EMOJI, MONITOR_STATUS_LABEL } from "@/ui/monitors/monitor-status";
+import { MONITOR_STATUS_EMOJI } from "@/ui/monitors/monitor-status";
 
 export interface AvailabilityState {
   periods: MonitorAvailabilityPeriod[];
@@ -18,8 +18,8 @@ export function buildMonitorDetailMarkdown(monitor: Monitor, availability: Avail
 }
 
 function buildHeader(monitor: Monitor): string {
-  const status = `${MONITOR_STATUS_EMOJI[monitor.status]} ${MONITOR_STATUS_LABEL[monitor.status]}`;
-  return `## ${monitor.name}\n\n**Status:** ${status}`;
+  const status = `${MONITOR_STATUS_EMOJI[monitor.status]}`;
+  return `## ${status} ${monitor.name}`;
 }
 
 function buildDetailsSection(monitor: Monitor): string {
