@@ -1,8 +1,6 @@
-import { environment } from "@raycast/api";
+import { Color, environment } from "@raycast/api";
 import { toImageDataUri } from "@/common/utils/svg-utils";
 import { Appearance } from "@/common/colors";
-import { StatusPageState } from "@/domain/status-page";
-import { STATE_COLOR } from "@/ui/status-pages/status-colors";
 import { rangeOf } from "@/common/utils/collection-utils";
 
 const FRAME_COUNT = 2;
@@ -19,9 +17,9 @@ export function buildPulseFrames(color: string): string[] {
   });
 }
 
-export function getPulseFrames(state: StatusPageState, appearance: Appearance): Promise<string[]> {
-  const color = appearance === Appearance.LIGHT ? STATE_COLOR[state].light : STATE_COLOR[state].dark;
-  const frames = buildPulseFrames(color);
+export function getPulseFrames(color: Color.Dynamic, appearance: Appearance): Promise<string[]> {
+  const hex = appearance === Appearance.LIGHT ? color.light : color.dark;
+  const frames = buildPulseFrames(hex);
 
   return Promise.all(frames.map((svg) => toImageDataUri(svg, environment.supportPath, environment.raycastVersion)));
 }

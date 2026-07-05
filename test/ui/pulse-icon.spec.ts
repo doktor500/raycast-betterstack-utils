@@ -6,7 +6,7 @@ vi.mock("@raycast/api", () => ({
 }));
 
 import { describe, expect, it } from "vitest";
-import { buildPulseFrames } from "@/ui/status-pages/status-icon";
+import { buildPulseFrames } from "@/ui/pulse-icon";
 
 describe("buildPulseFrames", () => {
   it("builds a sequence of frames with a growing, fading ring in the given color", () => {
