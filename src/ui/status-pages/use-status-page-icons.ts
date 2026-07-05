@@ -24,9 +24,9 @@ export function useStatusPageIcons(): Record<StatusPageState, Image.ImageLike> {
 
   useEffect(() => {
     NON_OPERATIONAL_STATES.forEach((state) => {
-      void getPulseRingIcon(state).then((dataUri) => {
-        setIcons((current) => ({ ...current, [state]: dataUri }));
-      });
+      void getPulseRingIcon(state)
+        .then((dataUri) => setIcons((current) => ({ ...current, [state]: dataUri })))
+        .catch(() => {});
     });
   }, []);
 

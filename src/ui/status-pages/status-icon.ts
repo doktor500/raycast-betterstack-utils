@@ -19,7 +19,10 @@ export function getPulseRingIcon(state: StatusPageState): Promise<string> {
   if (cached) return cached;
 
   const svg = buildPulseRingSvg(STATE_HEX[state]);
-  const icon = toImageDataUri(svg, environment.supportPath, environment.raycastVersion);
+  const icon = toImageDataUri(svg, environment.supportPath, environment.raycastVersion).catch((error) => {
+    iconCache.delete(state);
+    throw error;
+  });
   iconCache.set(state, icon);
   return icon;
 }
