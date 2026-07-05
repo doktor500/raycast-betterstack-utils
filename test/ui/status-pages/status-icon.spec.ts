@@ -12,7 +12,7 @@ describe("buildPulseFrames", () => {
   it("builds a sequence of frames with a growing, fading ring in the given color", () => {
     const frames = buildPulseFrames("#FF6363");
 
-    expect(frames).toHaveLength(6);
+    expect(frames).toHaveLength(5);
     frames.forEach((svg) => {
       expect(svg).toContain("<svg");
       expect(svg).toContain('fill="#FF6363"');
@@ -21,7 +21,7 @@ describe("buildPulseFrames", () => {
 
     expect(frames[0]).toContain('r="6"');
     expect(frames[0]).toContain('opacity="0.45"');
-    expect(frames[frames.length - 1]).toContain('r="11"');
+    expect(frames[frames.length - 1]).toContain('r="10"');
     expect(frames[frames.length - 1]).toContain('opacity="0.00"');
   });
 });
