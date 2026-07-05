@@ -54,7 +54,7 @@ async function copyAsPng(props: { statusPage: StatusPage; sections: StatusPageSe
   const toast = await showToast({ style: Toast.Style.Animated, title: "Copying to clipboard..." });
 
   try {
-    const svg = await buildStatusPageDetailSvg({ statusPage, sections });
+    const svg = await buildStatusPageDetailSvg({ statusPage, sections, forExport: true });
     await exportSvgToClipboard(svg, environment.supportPath);
     toast.style = Toast.Style.Success;
     toast.title = "Status page copied to clipboard";

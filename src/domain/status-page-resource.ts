@@ -31,10 +31,14 @@ export interface StatusPageSectionGroup {
   resources: StatusPageResource[];
 }
 
+const UNGROUPED_SECTION_ID = "ungrouped";
+const UNGROUPED_SECTION_NAME = "Other";
+
 export function groupResourcesBySection(
   sections: StatusPageSection[],
   resources: StatusPageResource[],
 ): StatusPageSectionGroup[] {
+  const knownSectionIds = new Set(sections.map((section) => section.id));
   const resourcesBySectionId = new Map<string, StatusPageResource[]>();
 
   resources.forEach((resource) => {
@@ -43,7 +47,7 @@ export function groupResourcesBySection(
     resourcesBySectionId.set(resource.sectionId, bucket);
   });
 
-  return [...sections]
+  const groups = [...sections]
     .sort((a, b) => a.position - b.position)
     .map((section) => ({
       id: section.id,
@@ -51,4 +55,14 @@ export function groupResourcesBySection(
       resources: (resourcesBySectionId.get(section.id) ?? []).sort((a, b) => a.position - b.position),
     }))
     .filter((group) => group.resources.length > 0);
+
+  const ungroupedResources = resources
+    .filter((resource) => !knownSectionIds.has(resource.sectionId))
+    .sort((a, b) => a.position - b.position);
+
+  if (ungroupedResources.length > 0) {
+    groups.push({ id: UNGROUPED_SECTION_ID, name: UNGROUPED_SECTION_NAME, resources: ungroupedResources });
+  }
+
+  return groups;
 }

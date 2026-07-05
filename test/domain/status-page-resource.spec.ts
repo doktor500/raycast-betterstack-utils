@@ -43,11 +43,11 @@ describe("groupResourcesBySection", () => {
     expect(groups.map((group) => group.id)).toEqual(["10"]);
   });
 
-  it("drops resources whose section id doesn't match any known section", () => {
+  it("puts resources whose section id doesn't match any known section into an 'Other' group", () => {
     const resources = [resource({ id: "1", sectionId: "999" })];
 
     const groups = groupResourcesBySection(sections, resources);
 
-    expect(groups).toEqual([]);
+    expect(groups).toEqual([{ id: "ungrouped", name: "Other", resources: [resources[0]] }]);
   });
 });
