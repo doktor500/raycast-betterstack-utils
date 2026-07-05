@@ -10,7 +10,7 @@ const FRAME_COUNT = 2;
 export function buildPulseFrames(color: string): string[] {
   return rangeOf(FRAME_COUNT).map((frame) => {
     const radius = 6 + frame;
-    const opacity = (0.5 * (1 - frame / (FRAME_COUNT - 1))).toFixed(2);
+    const opacity = (0.45 * (1 - frame / (FRAME_COUNT - 1))).toFixed(2);
 
     return `<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
         <circle cx="8" cy="8" r="${radius}" fill="none" stroke="${color}" stroke-width="1.5" opacity="${opacity}" />
