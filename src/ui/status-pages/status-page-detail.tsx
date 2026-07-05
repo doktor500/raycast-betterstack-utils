@@ -1,6 +1,7 @@
 import { Detail, environment, showToast, Toast } from "@raycast/api";
 import * as os from "node:os";
 import { useEffect, useState } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StatusPage } from "@/domain/status-page";
 import { StatusPageSectionGroup } from "@/domain/status-page-resource";
 import { useStatusPageDetail } from "@/hooks/use-status-page-detail";
@@ -8,6 +9,8 @@ import { renderStatusPageDetail } from "@/ui/status-pages/status-page-detail-ren
 import { buildStatusPageDetailSvg } from "@/ui/status-pages/components/detail/status-page-detail-view";
 import { exportSvgToClipboard } from "@/common/utils/svg-utils";
 import { StatusPageActionPanel } from "@/ui/status-pages/action-panel/status-page-action-panel";
+
+const queryClient = new QueryClient();
 
 const LOAD_ERROR_TITLE = "## Failed to load status page details";
 const LOAD_ERROR_MESSAGE = "Check your API token and network connection, then reopen the extension.";
@@ -17,6 +20,14 @@ interface StatusPageDetailProps {
 }
 
 export function StatusPageDetail({ statusPage }: StatusPageDetailProps) {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <StatusPageDetailContent statusPage={statusPage} />
+    </QueryClientProvider>
+  );
+}
+
+function StatusPageDetailContent({ statusPage }: StatusPageDetailProps) {
   const { sections, isLoading, isError, refresh } = useStatusPageDetail(statusPage.id);
   const [markdown, setMarkdown] = useState("");
 
