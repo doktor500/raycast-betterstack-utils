@@ -22,6 +22,7 @@ export interface CreateIncidentInput {
   summary: string;
   description: Optional<string>;
   requesterEmail: Optional<string>;
+  teamId: Optional<string>;
   email: boolean;
   sms: boolean;
   call: boolean;
@@ -47,6 +48,7 @@ export async function createIncident(input: CreateIncidentInput): Promise<Incide
     summary: input.summary,
     description: input.description,
     requester_email: input.requesterEmail,
+    better_stack_team_id: input.teamId,
     email: input.email,
     sms: input.sms,
     call: input.call,

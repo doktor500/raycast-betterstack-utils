@@ -1,7 +1,11 @@
 # betterstack-utils Changelog
 
-## [Monitors and status pages] - {PR_MERGE_DATE}
+## [Bugfixes, Monitors and status pages] - {PR_MERGE_DATE}
 
+- Fixed incident creation failing with a `422 Unprocessable Entity` error for API tokens with access to multiple
+  teams by sending the **Team Id** preference along with the request.
+- Improved BetterStack API error messages to include the validation details returned by the API instead of just the
+  HTTP status code.
 - Added a **Monitors** command to view your BetterStack monitors, see availability and status details, and open them
   in the browser.
 - Added a **Status Pages** command to view your BetterStack status pages, their sections and resources, and open
