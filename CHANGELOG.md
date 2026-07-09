@@ -11,7 +11,7 @@
 - Added a **Status Pages** command to view your BetterStack status pages, their sections and resources, and open
   them in the browser.
 
-## [Bugfix] - {PR_MERGE_DATE}
+## [Bugfix] - 2026-07-06
 
 - Fixed an issue where light themes were not displaying the schedule grid colors and borders properly.
 - Fixed the weekend rendering as a solid black block by replacing Satori's `repeating-linear-gradient`
