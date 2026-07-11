@@ -65,7 +65,7 @@
     }
   ],
   "dependencies": {
-    "@raycast/api": "^1.104.21",
+    "@raycast/api": "^1.104.22",
     "@tanstack/react-query": "^5.101.2",
     "clsx": "^2.1.1",
     "luxon": "^3.7.2",
@@ -78,13 +78,13 @@
   "devDependencies": {
     "@raycast/eslint-config": "^2.2.0",
     "@types/luxon": "^3.7.2",
-    "@types/node": "~26.1.0",
+    "@types/node": "~26.1.1",
     "@types/react": "~19.2.17",
     "@types/react-dom": "19.2.3",
-    "eslint": "^10.6.0",
-    "prettier": "^3.9.4",
-    "typescript": "^6.0.3",
-    "vitest": "^4.1.9",
+    "eslint": "^10.7.0",
+    "prettier": "^3.9.5",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10",
     "vitest-tsconfig-paths": "^3.4.1"
   },
   "overrides": {
