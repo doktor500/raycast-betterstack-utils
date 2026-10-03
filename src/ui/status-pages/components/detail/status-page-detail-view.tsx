@@ -36,7 +36,7 @@ function StatusPageDetailView({ statusPage, sections, forExport = false }: Statu
           <div tw={`flex w-[24px] h-[24px] rounded-full bg-[${badgeColor}]`} />
           <span tw={`text-[24px] font-bold text-[${palette.heading}]`}>{statusPage.name}</span>
           {singleResource && (
-            <span tw={`text-[18px] font-semibold text-[${palette.heading}]`}>{singleResource.name}</span>
+            <span tw={`text-[24px] font-semibold text-[${palette.heading}]`}>{singleResource.name}</span>
           )}
         </div>
         <div tw="flex items-center" style={{ gap: "16px" }}>
