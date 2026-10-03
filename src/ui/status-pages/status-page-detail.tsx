@@ -53,7 +53,7 @@ function StatusPageDetailContent({ statusPage }: StatusPageDetailProps) {
         <StatusPageActionPanel
           url={statusPage.url}
           onRefresh={refresh}
-          onCopyAsPng={() => copyAsPng({ statusPage, sections })}
+          onCopyAsPng={isLoading ? undefined : () => copyAsPng({ statusPage, sections })}
         />
       }
     />
