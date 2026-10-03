@@ -16,6 +16,13 @@ const COLUMNS = [
 ];
 
 const SKELETON_BAR_WIDTHS = [72, 56, 24, 64, 72];
+const ROW_HEIGHT = 56;
+const BORDER_WIDTH = 1;
+
+/** Rendered height of a table with the given number of period rows, plus the header row. */
+export function getMonitorAvailabilityTableHeight(rowCount: number): number {
+  return ROW_HEIGHT * (rowCount + 1) + BORDER_WIDTH * 2;
+}
 
 export async function buildMonitorAvailabilityTableSvg(periods: MonitorAvailabilityPeriod[]): Promise<string> {
   return renderToSvg(<AvailabilityTable rows={periods.map(toCells)} />);
@@ -49,7 +56,7 @@ function TableRow(props: { cells: ReactNode[]; palette: SchedulePalette; isHeade
 
   return (
     <div
-      tw={cn(`flex h-[56px]`, {
+      tw={cn(`flex h-[${ROW_HEIGHT}px]`, {
         [`bg-[${palette.skeletonOverlay}]`]: isHeader,
         [`border-t border-[${palette.gridLine}]`]: !isHeader,
       })}

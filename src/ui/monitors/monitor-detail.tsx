@@ -41,10 +41,8 @@ function MonitorDetailContent({ monitor }: MonitorDetailProps) {
       .catch(() => setAvailabilityMarkdown("_Failed to render availability data._"));
   }, [monitor, periods, isLoading, isError]);
 
-  // Hold the content back until both images are ready; swapping a text placeholder for a
-  // taller image afterwards would push everything below it down.
   const isRendered = headerMarkdown !== undefined && availabilityMarkdown !== undefined;
-  const markdown = isRendered ? buildMonitorDetailMarkdown(monitor, availabilityMarkdown, headerMarkdown) : "";
+  const markdown = buildMonitorDetailMarkdown(monitor, availabilityMarkdown, headerMarkdown);
 
   return (
     <Detail

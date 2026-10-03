@@ -7,13 +7,15 @@ vi.mock("@raycast/api", () => ({
   environment: { supportPath: "/tmp", raycastVersion: "2.0.0", appearance: "dark" },
 }));
 
-vi.mock("@/common/utils/svg-utils", () => ({
+vi.mock("@/common/utils/svg-utils", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/common/utils/svg-utils")>()),
   toImageDataUri: vi.fn(async (svg: string) => `data:${svg}`),
 }));
 
 vi.mock("@/ui/monitors/components/monitor-availability-table", () => ({
   buildMonitorAvailabilityTableSvg: vi.fn(async () => "table"),
   buildMonitorAvailabilitySkeletonSvg: vi.fn(async () => "skeleton"),
+  getMonitorAvailabilityTableHeight: vi.fn((rowCount: number) => rowCount * 100),
 }));
 
 import { describe, expect, it } from "vitest";
@@ -54,9 +56,22 @@ const periods: MonitorAvailabilityPeriod[] = [
 ];
 
 describe("buildMonitorDetailMarkdown", () => {
-  it("renders the header with just the name when no header markdown is given", () => {
+  it("holds the header's space with a blank image of the same size while it renders", () => {
     const markdown = buildMonitorDetailMarkdown(monitor, "availability", undefined);
-    expect(markdown).toContain("## Homepage");
+    expect(markdown).toMatch(/^!\[status\]\(data:image\/svg\+xml;charset=utf-8,[^)]*\)/);
+    expect(decodeURIComponent(markdown)).toContain('width="1160" height="48"');
+    expect(markdown).not.toContain("## Homepage");
+  });
+
+  it("holds the availability table's space with a blank image sized for every period while it renders", () => {
+    const markdown = buildMonitorDetailMarkdown(monitor, undefined, "![status](data:header)");
+    expect(markdown).toContain("### Availability\n\n![availability](data:image/svg+xml;charset=utf-8,");
+    expect(decodeURIComponent(markdown)).toContain('width="1160" height="500"');
+  });
+
+  it("always renders the details while the images are still rendering", () => {
+    const markdown = buildMonitorDetailMarkdown(monitor, undefined, undefined);
+    expect(markdown).toContain("| URL | example.com |");
   });
 
   it("uses the given header markdown when provided", () => {

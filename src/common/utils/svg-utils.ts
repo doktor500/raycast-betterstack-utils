@@ -10,6 +10,14 @@ export function toSvgDataUri(svg: string): string {
 }
 
 /**
+ * An empty, transparent image of the given size. Built synchronously, so it can hold the space
+ * of an image that is still rendering.
+ */
+export function buildBlankSvg(width: number, height: number): string {
+  return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg"></svg>`;
+}
+
+/**
  * Rasterizes to a PNG data URI on macOS instead of embedding raw SVG, working around SVG
  * rendering issues in Raycast v1 (colored fills rendering as black). Raycast v2's SVG
  * renderer doesn't have that bug and also supports the SMIL pulse animation that a static
