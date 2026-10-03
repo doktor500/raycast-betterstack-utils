@@ -16,7 +16,7 @@ function MonitorStatusHeader({ monitor }: { monitor: Monitor }) {
   return (
     <div tw="flex items-center w-[1160px] h-[48px]">
       <div tw={`w-[24px] h-[24px] rounded-full bg-[${color}]`} />
-      <span tw={`text-[28px] font-bold pl-4 text-[${palette.heading}]`}>{monitor.name}</span>
+      <span tw={`text-[24px] font-bold pl-4 text-[${palette.heading}]`}>{monitor.name}</span>
     </div>
   );
 }
