@@ -39,7 +39,7 @@ function MonitorDetailContent({ monitor, images }: MonitorDetailProps) {
     <Detail
       isLoading={isLoading}
       navigationTitle={monitor.name}
-      markdown={buildMonitorDetailMarkdown(monitor, images.headerMarkdown, availabilityMarkdown)}
+      markdown={buildMonitorDetailMarkdown(monitor, images, availabilityMarkdown)}
       actions={<MonitorActionPanel webUrl={monitor.webUrl} onRefresh={refresh} />}
     />
   );

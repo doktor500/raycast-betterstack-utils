@@ -12,8 +12,9 @@ import { buildBlankSvg, toImageDataUri, toSvgDataUri } from "@/common/utils/svg-
 import {
   buildMonitorAvailabilitySkeletonSvg,
   buildMonitorAvailabilityTableSvg,
-  getMonitorAvailabilityTableHeight,
 } from "@/ui/monitors/components/monitor-availability-table";
+import { buildMonitorDetailsTableSvg } from "@/ui/monitors/components/monitor-details-table";
+import { getMonitorTableHeight } from "@/ui/monitors/components/monitor-table";
 import { buildMonitorStatusHeaderSvg } from "@/ui/monitors/components/monitor-status-header";
 import { VIEWPORT_WIDTH } from "@/ui/svg-renderer";
 
@@ -27,35 +28,38 @@ export interface AvailabilityState {
 export interface MonitorDetailImages {
   headerMarkdown: string;
   availabilitySkeletonMarkdown: string;
+  detailsMarkdown: Optional<string>;
 }
 
 const renderedImages = new Map<string, Promise<string>>();
 
 /**
- * Renders the status header and the availability skeleton ahead of time, so the detail page
- * opens with the pulse and the table frame already in place instead of fading them in. Results
- * are cached, so calling this when a monitor is selected makes opening its detail instant.
+ * Renders the status header, the availability skeleton and the details table ahead of time, so
+ * the detail page opens with the pulse and the table frames already in place instead of fading
+ * them in. Results are cached, so calling this when a monitor is selected makes opening its
+ * detail instant.
  */
 export async function prerenderMonitorDetailImages(monitor: Monitor): Promise<MonitorDetailImages> {
-  const [headerMarkdown, availabilitySkeletonMarkdown] = await Promise.all([
+  const [headerMarkdown, availabilitySkeletonMarkdown, detailsMarkdown] = await Promise.all([
     renderMonitorHeader(monitor),
     renderMonitorAvailabilitySkeleton(monitor),
+    renderMonitorDetails(monitor),
   ]);
-  return { headerMarkdown, availabilitySkeletonMarkdown };
+  return { headerMarkdown, availabilitySkeletonMarkdown, detailsMarkdown };
 }
 
 export function buildMonitorDetailMarkdown(
   monitor: Monitor,
-  headerMarkdown: string,
+  images: Omit<MonitorDetailImages, "availabilitySkeletonMarkdown">,
   availabilityMarkdown: string,
 ): string {
   return [
-    headerMarkdown,
+    images.headerMarkdown,
     buildUrlLine(monitor),
     `### Availability\n\n${availabilityMarkdown}`,
-    buildDetailsSection(monitor),
+    images.detailsMarkdown && `### Details\n\n${images.detailsMarkdown}`,
   ]
-    .filter((section) => section !== undefined)
+    .filter((section) => section !== undefined && section !== "")
     .join("\n\n");
 }
 
@@ -87,7 +91,21 @@ function renderMonitorAvailabilitySkeleton(monitor: Monitor): Promise<string> {
   const cacheKey = ["skeleton", environment.appearance, ...labels].join(":");
   return renderOnce(cacheKey, async () =>
     toImage("availability", await buildMonitorAvailabilitySkeletonSvg(labels)),
-  ).catch(() => toBlankImage("availability", getMonitorAvailabilityTableHeight(labels.length)));
+  ).catch(() => toBlankImage("availability", getMonitorTableHeight(labels.length)));
+}
+
+/**
+ * Renders the details table as an image so its text matches the availability table, which
+ * markdown tables can't do: Raycast draws them at its own, larger font size.
+ */
+async function renderMonitorDetails(monitor: Monitor): Promise<Optional<string>> {
+  const rows = buildDetailsRows(monitor);
+  if (rows.length === 0) return undefined;
+
+  const cacheKey = ["details", environment.appearance, ...rows.flat()].join(":");
+  return renderOnce(cacheKey, async () => toImage("details", await buildMonitorDetailsTableSvg(rows))).catch(() =>
+    buildDetailsMarkdownTable(rows),
+  );
 }
 
 /** Failed renders are dropped from the cache so the next call retries them. */
@@ -119,22 +137,24 @@ function getAvailabilityLabels(monitor: Monitor): string[] {
   return buildAvailabilityWindows(DateTime.now(), monitor.createdAt).map((window) => window.label);
 }
 
-function buildDetailsSection(monitor: Monitor): Optional<string> {
-  const rows: string[] = [];
+function buildDetailsRows(monitor: Monitor): [string, string][] {
+  const rows: [string, string][] = [];
 
-  if (monitor.monitorType) rows.push(`| Type | ${capitalize(monitor.monitorType)} |`);
-  if (monitor.httpMethod) rows.push(`| Method | ${monitor.httpMethod.toUpperCase()} |`);
-  if (monitor.checkFrequency) rows.push(`| Check frequency | ${formatDuration(monitor.checkFrequency)} |`);
-  if (monitor.requestTimeout) rows.push(`| Request timeout | ${formatDuration(monitor.requestTimeout)} |`);
-  if (monitor.recoveryPeriod) rows.push(`| Recovery period | ${formatDuration(monitor.recoveryPeriod)} |`);
-  if (monitor.lastCheckedAt) rows.push(`| Last checked | ${formatLastChecked(monitor.lastCheckedAt)} |`);
-  if (isNotEmpty(monitor.regions)) rows.push(`| Regions | ${monitor.regions.join(", ").toUpperCase()} |`);
-  if (monitor.sslExpiration) rows.push(`| SSL expiration | ${formatDays(monitor.sslExpiration)} |`);
-  if (monitor.domainExpiration) rows.push(`| Domain expiration | ${formatDays(monitor.domainExpiration)} |`);
+  if (monitor.monitorType) rows.push(["Type", capitalize(monitor.monitorType)]);
+  if (monitor.httpMethod) rows.push(["Method", monitor.httpMethod.toUpperCase()]);
+  if (monitor.checkFrequency) rows.push(["Check frequency", formatDuration(monitor.checkFrequency)]);
+  if (monitor.requestTimeout) rows.push(["Request timeout", formatDuration(monitor.requestTimeout)]);
+  if (monitor.recoveryPeriod) rows.push(["Recovery period", formatDuration(monitor.recoveryPeriod)]);
+  if (monitor.lastCheckedAt) rows.push(["Last checked", formatLastChecked(monitor.lastCheckedAt)]);
+  if (isNotEmpty(monitor.regions)) rows.push(["Regions", monitor.regions.join(", ").toUpperCase()]);
+  if (monitor.sslExpiration) rows.push(["SSL expiration", formatDays(monitor.sslExpiration)]);
+  if (monitor.domainExpiration) rows.push(["Domain expiration", formatDays(monitor.domainExpiration)]);
 
-  if (rows.length === 0) return undefined;
+  return rows;
+}
 
-  return `### Details\n\n${["| Field | Value |", "| --- | --- |", ...rows].join("\n")}`;
+function buildDetailsMarkdownTable(rows: [string, string][]): string {
+  return ["| Field | Value |", "| --- | --- |", ...rows.map(([field, value]) => `| ${field} | ${value} |`)].join("\n");
 }
 
 function formatDays(days: number): string {

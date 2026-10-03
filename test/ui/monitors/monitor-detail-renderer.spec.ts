@@ -19,7 +19,10 @@ vi.mock("@/ui/monitors/components/monitor-status-header", () => ({
 vi.mock("@/ui/monitors/components/monitor-availability-table", () => ({
   buildMonitorAvailabilityTableSvg: vi.fn(async () => "table"),
   buildMonitorAvailabilitySkeletonSvg: vi.fn(async () => "skeleton"),
-  getMonitorAvailabilityTableHeight: vi.fn((rowCount: number) => rowCount * 100),
+}));
+
+vi.mock("@/ui/monitors/components/monitor-details-table", () => ({
+  buildMonitorDetailsTableSvg: vi.fn(async () => "details"),
 }));
 
 import { describe, expect, it } from "vitest";
@@ -33,6 +36,7 @@ import {
   buildMonitorAvailabilitySkeletonSvg,
   buildMonitorAvailabilityTableSvg,
 } from "@/ui/monitors/components/monitor-availability-table";
+import { buildMonitorDetailsTableSvg } from "@/ui/monitors/components/monitor-details-table";
 import { Monitor, MonitorStatus } from "@/domain/monitor";
 import { MonitorAvailabilityPeriod } from "@/domain/monitor-sla";
 
@@ -64,75 +68,73 @@ const periods: MonitorAvailabilityPeriod[] = [
   },
 ];
 
+const bareMonitor: Monitor = {
+  ...monitor,
+  monitorType: undefined,
+  httpMethod: undefined,
+  checkFrequency: undefined,
+  requestTimeout: undefined,
+  recoveryPeriod: undefined,
+  regions: [],
+  sslExpiration: undefined,
+  domainExpiration: undefined,
+};
+
 describe("buildMonitorDetailMarkdown", () => {
   it("shows the URL right under the header, before the availability table", () => {
-    const markdown = buildMonitorDetailMarkdown(monitor, "![status](data:header)", "![availability](data:table)");
+    const markdown = buildMonitorDetailMarkdown(
+      monitor,
+      { headerMarkdown: "![status](data:header)", detailsMarkdown: undefined },
+      "![availability](data:table)",
+    );
     expect(markdown).toMatch(/^!\[status\]\(data:header\)\n\nexample\.com\n\n### Availability/);
     expect(markdown).not.toContain("| URL |");
   });
 
   it("does not repeat the URL when the monitor is named after it", () => {
     const unnamedMonitor: Monitor = { ...monitor, name: "https://example.com" };
-    const markdown = buildMonitorDetailMarkdown(unnamedMonitor, "![status](data:header)", "availability");
+    const markdown = buildMonitorDetailMarkdown(
+      unnamedMonitor,
+      { headerMarkdown: "![status](data:header)", detailsMarkdown: undefined },
+      "availability",
+    );
     expect(markdown).not.toContain("example.com");
   });
 
   it("uses the given header markdown", () => {
-    const markdown = buildMonitorDetailMarkdown(monitor, "![status](data:image/png;base64,AAAA)", "availability");
+    const markdown = buildMonitorDetailMarkdown(
+      monitor,
+      { headerMarkdown: "![status](data:image/png;base64,AAAA)", detailsMarkdown: undefined },
+      "availability",
+    );
     expect(markdown).toContain("![status](data:image/png;base64,AAAA)");
     expect(markdown).not.toContain("## Homepage");
   });
 
-  it("renders the details table with formatted values", () => {
-    const markdown = buildMonitorDetailMarkdown(monitor, "header", "availability");
-    expect(markdown).toContain("### Details");
-    expect(markdown).toContain("| Type | Http |");
-    expect(markdown).toContain("| Method | GET |");
-    expect(markdown).toContain("| Check frequency | 3m |");
-    expect(markdown).toContain("| Request timeout | 30s |");
-    expect(markdown).toContain("| Regions | US, EU |");
-    expect(markdown).toContain("| SSL expiration | 30 days |");
-    expect(markdown).toContain("| Domain expiration | 365 days |");
+  it("places the details markdown under its heading, after the availability table", () => {
+    const markdown = buildMonitorDetailMarkdown(
+      monitor,
+      { headerMarkdown: "header", detailsMarkdown: "![details](data:details)" },
+      "availability",
+    );
+    expect(markdown).toMatch(/### Availability\n\navailability\n\n### Details\n\n!\[details\]\(data:details\)$/);
   });
 
-  it("omits detail rows for absent fields", () => {
-    const bareMonitor: Monitor = {
-      ...monitor,
-      monitorType: undefined,
-      httpMethod: undefined,
-      checkFrequency: undefined,
-      requestTimeout: undefined,
-      recoveryPeriod: undefined,
-      regions: [],
-      sslExpiration: undefined,
-      domainExpiration: undefined,
-    };
-    const markdown = buildMonitorDetailMarkdown(bareMonitor, "header", "availability");
-    expect(markdown).not.toContain("| Type |");
-    expect(markdown).not.toContain("| Method |");
-    expect(markdown).not.toContain("| Regions |");
-    expect(markdown).not.toContain("| Recovery period |");
-    expect(markdown).not.toContain("| Last checked |");
-  });
-
-  it("omits the details section when no details are known", () => {
-    const bareMonitor: Monitor = {
-      ...monitor,
-      monitorType: undefined,
-      httpMethod: undefined,
-      checkFrequency: undefined,
-      requestTimeout: undefined,
-      recoveryPeriod: undefined,
-      regions: [],
-      sslExpiration: undefined,
-      domainExpiration: undefined,
-    };
-    const markdown = buildMonitorDetailMarkdown(bareMonitor, "header", "availability");
+  it("omits the details section when there is no details markdown", () => {
+    const markdown = buildMonitorDetailMarkdown(
+      monitor,
+      { headerMarkdown: "header", detailsMarkdown: undefined },
+      "availability",
+    );
     expect(markdown).not.toContain("### Details");
   });
 
   it("places the availability markdown under its heading", () => {
-    const markdown = buildMonitorDetailMarkdown(monitor, "header", "![availability](data:table)");
+    const markdown = buildMonitorDetailMarkdown(
+      monitor,
+      { headerMarkdown: "header", detailsMarkdown: undefined },
+      "![availability](data:table)",
+    );
     expect(markdown).toContain("### Availability\n\n![availability](data:table)");
   });
 });
@@ -168,12 +170,38 @@ describe("renderMonitorAvailability", () => {
 });
 
 describe("prerenderMonitorDetailImages", () => {
-  it("renders the status header and the availability skeleton", async () => {
+  it("renders the status header, the availability skeleton and the details table", async () => {
     const images = await prerenderMonitorDetailImages(monitor);
     expect(images).toEqual({
       headerMarkdown: "![status](data:header)",
       availabilitySkeletonMarkdown: "![availability](data:skeleton)",
+      detailsMarkdown: "![details](data:details)",
     });
+  });
+
+  it("renders the details table with formatted values", async () => {
+    await prerenderMonitorDetailImages({ ...monitor, domainExpiration: 1 });
+    expect(buildMonitorDetailsTableSvg).toHaveBeenLastCalledWith([
+      ["Type", "Http"],
+      ["Method", "GET"],
+      ["Check frequency", "3m"],
+      ["Request timeout", "30s"],
+      ["Regions", "US, EU"],
+      ["SSL expiration", "30 days"],
+      ["Domain expiration", "1 day"],
+    ]);
+  });
+
+  it("skips the details table when no details are known", async () => {
+    const images = await prerenderMonitorDetailImages(bareMonitor);
+    expect(images.detailsMarkdown).toBeUndefined();
+  });
+
+  it("falls back to a markdown details table when the image fails to render", async () => {
+    vi.mocked(buildMonitorDetailsTableSvg).mockRejectedValueOnce(new Error("satori failed"));
+    const images = await prerenderMonitorDetailImages({ ...monitor, checkFrequency: 60 });
+    expect(images.detailsMarkdown).toContain("| Field | Value |");
+    expect(images.detailsMarkdown).toContain("| Check frequency | 1m |");
   });
 
   it("reuses the images rendered for the same monitor", async () => {
