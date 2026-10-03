@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Color, Icon, Image, environment } from "@raycast/api";
-import { getPulseFrames } from "@/ui/pulse-icon";
+import { getPulseFrames, supportsAnimatedPulse } from "@/ui/pulse-icon";
 
 const FRAME_INTERVAL_MS = 500;
 
@@ -24,6 +24,8 @@ export function usePulseIcons<State extends string>(
   }, [states, colors]);
 
   useEffect(() => {
+    if (supportsAnimatedPulse()) return;
+
     const interval = setInterval(() => setFrameIndex((index) => index + 1), FRAME_INTERVAL_MS);
     return () => clearInterval(interval);
   }, []);

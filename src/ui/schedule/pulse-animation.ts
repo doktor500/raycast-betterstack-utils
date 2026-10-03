@@ -16,27 +16,12 @@ export function pulseAnimation(svg: string): string {
       const fill = getAttr(attrs, "fill") ?? Colors.WHITE;
       const textColor = getThemeColor(fill);
       const half = size / 2;
-      const cx = x + half;
-      const cy = y + half;
-
-      const pulseRing =
-        `<circle cx="${cx}" cy="${cy}" r="${half}" fill="none" stroke="${fill}" stroke-width="3">` +
-        `<animate attributeName="r" values="${half};${half + 12}" dur="1.5s" repeatCount="indefinite" />` +
-        `<animate attributeName="opacity" values="0.7;0" dur="1.5s" repeatCount="indefinite" />` +
-        `</circle>`;
-
-      const pulseRingBorder =
-        `<circle cx="${cx}" cy="${cy}" r="${half + 2}" fill="none" stroke="${textColor}" stroke-width="1">` +
-        `<animate attributeName="r" values="${half + 2};${half + 14}" dur="1.5s" repeatCount="indefinite" />` +
-        `<animate attributeName="opacity" values="0.5;0" dur="1.5s" repeatCount="indefinite" />` +
-        `</circle>`;
 
       const borderedAvatar = `<path ${attrs} stroke="${textColor}" stroke-width="1" stroke-opacity="0.5" />`;
 
       return (
         svg.slice(0, match.index) +
-        pulseRing +
-        pulseRingBorder +
+        buildPulseRings(x + half, y + half, half, fill) +
         borderedAvatar +
         svg.slice(match.index + match[0].length)
       );
@@ -44,6 +29,24 @@ export function pulseAnimation(svg: string): string {
   }
 
   return svg;
+}
+
+export function buildPulseRings(cx: number, cy: number, radius: number, fill: string): string {
+  const textColor = getThemeColor(fill);
+
+  const pulseRing =
+    `<circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="${fill}" stroke-width="3">` +
+    `<animate attributeName="r" values="${radius};${radius + 12}" dur="1.5s" repeatCount="indefinite" />` +
+    `<animate attributeName="opacity" values="0.7;0" dur="1.5s" repeatCount="indefinite" />` +
+    `</circle>`;
+
+  const pulseRingBorder =
+    `<circle cx="${cx}" cy="${cy}" r="${radius + 2}" fill="none" stroke="${textColor}" stroke-width="1">` +
+    `<animate attributeName="r" values="${radius + 2};${radius + 14}" dur="1.5s" repeatCount="indefinite" />` +
+    `<animate attributeName="opacity" values="0.5;0" dur="1.5s" repeatCount="indefinite" />` +
+    `</circle>`;
+
+  return pulseRing + pulseRingBorder;
 }
 
 function getAttr(attrs: string, name: string): Optional<string> {
