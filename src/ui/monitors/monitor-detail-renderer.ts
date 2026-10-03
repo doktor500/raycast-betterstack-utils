@@ -1,3 +1,4 @@
+import { environment } from "@raycast/api";
 import { DateTime } from "luxon";
 import { Monitor } from "@/domain/monitor";
 import { MonitorAvailabilityPeriod } from "@/domain/monitor-sla";
@@ -7,6 +8,11 @@ import { Optional } from "@/common/utils/optional-utils";
 import { formatDuration } from "@/common/utils/date-utils";
 import { isNotEmpty } from "@/common/utils/collection-utils";
 import { buildAvailabilityWindows } from "@/api/betterstack-monitor-sla-api";
+import { toImageDataUri } from "@/common/utils/svg-utils";
+import {
+  buildMonitorAvailabilitySkeletonSvg,
+  buildMonitorAvailabilityTableSvg,
+} from "@/ui/monitors/components/monitor-availability-table";
 
 export interface AvailabilityState {
   periods: MonitorAvailabilityPeriod[];
@@ -16,11 +22,32 @@ export interface AvailabilityState {
 
 export function buildMonitorDetailMarkdown(
   monitor: Monitor,
-  availability: AvailabilityState,
+  availabilityMarkdown: string,
   headerMarkdown?: Optional<string>,
 ): string {
   const header = headerMarkdown ?? `## ${monitor.name}`;
-  return [header, buildAvailabilitySection(monitor, availability), buildDetailsSection(monitor)].join("\n\n");
+  return [header, `### Availability\n\n${availabilityMarkdown}`, buildDetailsSection(monitor)].join("\n\n");
+}
+
+/**
+ * Renders the availability table as an image rather than a markdown table: Raycast sizes
+ * markdown columns by their content, so the columns would shift once the numbers load.
+ */
+export async function renderMonitorAvailability(monitor: Monitor, availability: AvailabilityState): Promise<string> {
+  if (availability.isError) return "_Failed to load availability data._";
+
+  if (availability.periods.length === 0) {
+    if (!availability.isLoading) return "_No availability data._";
+
+    const labels = buildAvailabilityWindows(DateTime.now(), monitor.createdAt).map((window) => window.label);
+    return toAvailabilityImage(await buildMonitorAvailabilitySkeletonSvg(labels));
+  }
+
+  return toAvailabilityImage(await buildMonitorAvailabilityTableSvg(availability.periods));
+}
+
+async function toAvailabilityImage(svg: string): Promise<string> {
+  return `![availability](${await toImageDataUri(svg, environment.supportPath, environment.raycastVersion)})`;
 }
 
 function buildDetailsSection(monitor: Monitor): string {
@@ -38,47 +65,6 @@ function buildDetailsSection(monitor: Monitor): string {
   if (monitor.domainExpiration) rows.push(`| Domain expiration | ${formatDays(monitor.domainExpiration)} |`);
 
   return `### Details\n\n${rows.join("\n")}`;
-}
-
-function buildAvailabilitySection(monitor: Monitor, availability: AvailabilityState): string {
-  const heading = "### Availability";
-
-  if (availability.isError) return `${heading}\n\n_Failed to load availability data._`;
-  if (availability.periods.length === 0) {
-    return availability.isLoading
-      ? `${heading}\n\n${buildPlaceholderAvailabilityTable(monitor)}`
-      : `${heading}\n\n_No availability data._`;
-  }
-
-  const rows: string[] = [...AVAILABILITY_TABLE_HEADER];
-
-  for (const period of availability.periods) {
-    const { sla } = period;
-    rows.push(
-      `| ${period.label} | ${formatAvailability(sla.availability)} | ${formatDuration(sla.totalDowntime)} | ${sla.numberOfIncidents} | ${formatDuration(sla.longestIncident)} | ${formatDuration(sla.averageIncident)} |`,
-    );
-  }
-
-  return `${heading}\n\n${rows.join("\n")}`;
-}
-
-/**
- * Renders the same rows the loaded table will have, so the details section below doesn't
- * jump down once the availability data arrives.
- */
-function buildPlaceholderAvailabilityTable(monitor: Monitor): string {
-  const windows = buildAvailabilityWindows(DateTime.now(), monitor.createdAt);
-  const rows = windows.map((window) => `| ${window.label} | — | — | — | — | — |`);
-  return [...AVAILABILITY_TABLE_HEADER, ...rows].join("\n");
-}
-
-const AVAILABILITY_TABLE_HEADER = [
-  "| Time Period | Availability | Downtime | Incidents | Longest incident | Avg. incident |",
-  "| ----------- | ------------ | -------- | --------- | ---------------- | ------------- |",
-];
-
-function formatAvailability(percentage: number): string {
-  return `${parseFloat(percentage.toFixed(3))}%`;
 }
 
 function formatDays(days: number): string {

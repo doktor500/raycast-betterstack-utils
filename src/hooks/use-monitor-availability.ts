@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { showToast, Toast } from "@raycast/api";
 import { DateTime } from "luxon";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -24,8 +24,11 @@ export function useMonitorAvailability(monitorId: string, createdAt: Optional<st
     }
   }, [isError, error]);
 
+  // Stable reference so effects keyed on the periods don't re-run every render while loading.
+  const periods = useMemo(() => toList(data), [data]);
+
   return {
-    periods: toList(data),
+    periods,
     isLoading,
     isError,
     refresh: () => void queryClient.invalidateQueries({ queryKey: [MONITOR_SLA_QUERY_KEY, monitorId] }),

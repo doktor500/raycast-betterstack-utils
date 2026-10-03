@@ -4,10 +4,24 @@ vi.mock("@raycast/api", () => ({
   getPreferenceValues: vi.fn(() => ({
     apiToken: "test-token",
   })),
+  environment: { supportPath: "/tmp", raycastVersion: "2.0.0", appearance: "dark" },
+}));
+
+vi.mock("@/common/utils/svg-utils", () => ({
+  toImageDataUri: vi.fn(async (svg: string) => `data:${svg}`),
+}));
+
+vi.mock("@/ui/monitors/components/monitor-availability-table", () => ({
+  buildMonitorAvailabilityTableSvg: vi.fn(async () => "table"),
+  buildMonitorAvailabilitySkeletonSvg: vi.fn(async () => "skeleton"),
 }));
 
 import { describe, expect, it } from "vitest";
-import { buildMonitorDetailMarkdown } from "@/ui/monitors/monitor-detail-renderer";
+import { buildMonitorDetailMarkdown, renderMonitorAvailability } from "@/ui/monitors/monitor-detail-renderer";
+import {
+  buildMonitorAvailabilitySkeletonSvg,
+  buildMonitorAvailabilityTableSvg,
+} from "@/ui/monitors/components/monitor-availability-table";
 import { Monitor, MonitorStatus } from "@/domain/monitor";
 import { MonitorAvailabilityPeriod } from "@/domain/monitor-sla";
 
@@ -41,22 +55,18 @@ const periods: MonitorAvailabilityPeriod[] = [
 
 describe("buildMonitorDetailMarkdown", () => {
   it("renders the header with just the name when no header markdown is given", () => {
-    const markdown = buildMonitorDetailMarkdown(monitor, { periods, isLoading: false, isError: false }, undefined);
+    const markdown = buildMonitorDetailMarkdown(monitor, "availability", undefined);
     expect(markdown).toContain("## Homepage");
   });
 
   it("uses the given header markdown when provided", () => {
-    const markdown = buildMonitorDetailMarkdown(
-      monitor,
-      { periods, isLoading: false, isError: false },
-      "![status](data:image/png;base64,AAAA)",
-    );
+    const markdown = buildMonitorDetailMarkdown(monitor, "availability", "![status](data:image/png;base64,AAAA)");
     expect(markdown).toContain("![status](data:image/png;base64,AAAA)");
     expect(markdown).not.toContain("## Homepage");
   });
 
   it("renders the details table with formatted values", () => {
-    const markdown = buildMonitorDetailMarkdown(monitor, { periods, isLoading: false, isError: false });
+    const markdown = buildMonitorDetailMarkdown(monitor, "availability");
     expect(markdown).toContain("### Details");
     expect(markdown).toContain("| URL | example.com |");
     expect(markdown).toContain("| Type | Http |");
@@ -80,7 +90,7 @@ describe("buildMonitorDetailMarkdown", () => {
       sslExpiration: undefined,
       domainExpiration: undefined,
     };
-    const markdown = buildMonitorDetailMarkdown(bareMonitor, { periods, isLoading: false, isError: false });
+    const markdown = buildMonitorDetailMarkdown(bareMonitor, "availability");
     expect(markdown).not.toContain("| Type |");
     expect(markdown).not.toContain("| Method |");
     expect(markdown).not.toContain("| Regions |");
@@ -89,30 +99,38 @@ describe("buildMonitorDetailMarkdown", () => {
     expect(markdown).toContain("| URL |");
   });
 
-  it("renders the availability table with formatted values", () => {
-    const markdown = buildMonitorDetailMarkdown(monitor, { periods, isLoading: false, isError: false });
-    expect(markdown).toContain("### Availability");
-    expect(markdown).toContain(
-      "| Time Period | Availability | Downtime | Incidents | Longest incident | Avg. incident |",
-    );
-    expect(markdown).toContain("| Today | 100% | 0s | 0 | 0s | 0s |");
-    expect(markdown).toContain("| Last 7 days | 99.98% | 10m | 3 | 5m | 3m 20s |");
+  it("places the availability markdown under its heading", () => {
+    const markdown = buildMonitorDetailMarkdown(monitor, "![availability](data:table)");
+    expect(markdown).toContain("### Availability\n\n![availability](data:table)");
+  });
+});
+
+describe("renderMonitorAvailability", () => {
+  it("renders the loaded table as an image", async () => {
+    const markdown = await renderMonitorAvailability(monitor, { periods, isLoading: false, isError: false });
+    expect(buildMonitorAvailabilityTableSvg).toHaveBeenCalledWith(periods);
+    expect(markdown).toBe("![availability](data:table)");
   });
 
-  it("renders placeholder rows for every period while availability is loading", () => {
-    const markdown = buildMonitorDetailMarkdown(monitor, { periods: [], isLoading: true, isError: false });
-    expect(markdown).toContain(
-      "| Time Period | Availability | Downtime | Incidents | Longest incident | Avg. incident |",
-    );
-    expect(markdown).toContain("| Today | — | — | — | — | — |");
-    expect(markdown).toContain("| Last 7 days | — | — | — | — | — |");
-    expect(markdown).toContain("| Last 30 days | — | — | — | — | — |");
-    expect(markdown).toContain("| Last 365 days | — | — | — | — | — |");
-    expect(markdown).toContain("| All time | — | — | — | — | — |");
+  it("renders a skeleton with every period label while loading", async () => {
+    const markdown = await renderMonitorAvailability(monitor, { periods: [], isLoading: true, isError: false });
+    expect(buildMonitorAvailabilitySkeletonSvg).toHaveBeenCalledWith([
+      "Today",
+      "Last 7 days",
+      "Last 30 days",
+      "Last 365 days",
+      "All time",
+    ]);
+    expect(markdown).toBe("![availability](data:skeleton)");
   });
 
-  it("shows an error note when availability failed to load", () => {
-    const markdown = buildMonitorDetailMarkdown(monitor, { periods: [], isLoading: false, isError: true });
-    expect(markdown).toContain("_Failed to load availability data._");
+  it("shows a note when there is no availability data", async () => {
+    const markdown = await renderMonitorAvailability(monitor, { periods: [], isLoading: false, isError: false });
+    expect(markdown).toBe("_No availability data._");
+  });
+
+  it("shows an error note when availability failed to load", async () => {
+    const markdown = await renderMonitorAvailability(monitor, { periods: [], isLoading: false, isError: true });
+    expect(markdown).toBe("_Failed to load availability data._");
   });
 });

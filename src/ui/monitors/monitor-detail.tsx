@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Monitor } from "@/domain/monitor";
 import { useMonitorAvailability } from "@/hooks/use-monitor-availability";
-import { buildMonitorDetailMarkdown } from "@/ui/monitors/monitor-detail-renderer";
+import { buildMonitorDetailMarkdown, renderMonitorAvailability } from "@/ui/monitors/monitor-detail-renderer";
 import { buildMonitorStatusHeaderSvg } from "@/ui/monitors/components/monitor-status-header";
 import { MonitorActionPanel } from "@/ui/monitors/action-panel/monitor-action-panel";
 import { toImageDataUri } from "@/common/utils/svg-utils";
@@ -26,6 +26,7 @@ export function MonitorDetail({ monitor }: MonitorDetailProps) {
 function MonitorDetailContent({ monitor }: MonitorDetailProps) {
   const { periods, isLoading, isError, refresh } = useMonitorAvailability(monitor.id, monitor.createdAt);
   const [headerMarkdown, setHeaderMarkdown] = useState<Optional<string>>(undefined);
+  const [availabilityMarkdown, setAvailabilityMarkdown] = useState<Optional<string>>(undefined);
 
   useEffect(() => {
     buildMonitorStatusHeaderSvg(monitor)
@@ -34,16 +35,20 @@ function MonitorDetailContent({ monitor }: MonitorDetailProps) {
       .catch(() => setHeaderMarkdown(`## ${monitor.name}`));
   }, [monitor]);
 
-  // Hold the content back until the header settles; swapping the text heading for the taller
-  // image header afterwards would push everything below it down.
-  const markdown =
-    headerMarkdown === undefined
-      ? ""
-      : buildMonitorDetailMarkdown(monitor, { periods, isLoading, isError }, headerMarkdown);
+  useEffect(() => {
+    renderMonitorAvailability(monitor, { periods, isLoading, isError })
+      .then(setAvailabilityMarkdown)
+      .catch(() => setAvailabilityMarkdown("_Failed to render availability data._"));
+  }, [monitor, periods, isLoading, isError]);
+
+  // Hold the content back until both images are ready; swapping a text placeholder for a
+  // taller image afterwards would push everything below it down.
+  const isRendered = headerMarkdown !== undefined && availabilityMarkdown !== undefined;
+  const markdown = isRendered ? buildMonitorDetailMarkdown(monitor, availabilityMarkdown, headerMarkdown) : "";
 
   return (
     <Detail
-      isLoading={isLoading || headerMarkdown === undefined}
+      isLoading={isLoading || !isRendered}
       navigationTitle={monitor.name}
       markdown={markdown}
       actions={<MonitorActionPanel webUrl={monitor.webUrl} onRefresh={refresh} />}
