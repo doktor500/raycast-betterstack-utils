@@ -6,6 +6,7 @@ import { stripProtocol } from "@/common/utils/url-utils";
 import { Optional } from "@/common/utils/optional-utils";
 import { formatDuration } from "@/common/utils/date-utils";
 import { isNotEmpty } from "@/common/utils/collection-utils";
+import { buildAvailabilityWindows } from "@/api/betterstack-monitor-sla-api";
 
 export interface AvailabilityState {
   periods: MonitorAvailabilityPeriod[];
@@ -19,7 +20,7 @@ export function buildMonitorDetailMarkdown(
   headerMarkdown?: Optional<string>,
 ): string {
   const header = headerMarkdown ?? `## ${monitor.name}`;
-  return [header, buildAvailabilitySection(availability), buildDetailsSection(monitor)].join("\n\n");
+  return [header, buildAvailabilitySection(monitor, availability), buildDetailsSection(monitor)].join("\n\n");
 }
 
 function buildDetailsSection(monitor: Monitor): string {
@@ -39,18 +40,17 @@ function buildDetailsSection(monitor: Monitor): string {
   return `### Details\n\n${rows.join("\n")}`;
 }
 
-function buildAvailabilitySection(availability: AvailabilityState): string {
+function buildAvailabilitySection(monitor: Monitor, availability: AvailabilityState): string {
   const heading = "### Availability";
 
   if (availability.isError) return `${heading}\n\n_Failed to load availability data._`;
   if (availability.periods.length === 0) {
-    return availability.isLoading ? `${heading}\n\n_Loading availability…_` : `${heading}\n\n_No availability data._`;
+    return availability.isLoading
+      ? `${heading}\n\n${buildPlaceholderAvailabilityTable(monitor)}`
+      : `${heading}\n\n_No availability data._`;
   }
 
-  const rows: string[] = [
-    "| Time Period | Availability | Downtime | Incidents | Longest incident | Avg. incident |",
-    "| ----------- | ------------ | -------- | --------- | ---------------- | ------------- |",
-  ];
+  const rows: string[] = [...AVAILABILITY_TABLE_HEADER];
 
   for (const period of availability.periods) {
     const { sla } = period;
@@ -61,6 +61,21 @@ function buildAvailabilitySection(availability: AvailabilityState): string {
 
   return `${heading}\n\n${rows.join("\n")}`;
 }
+
+/**
+ * Renders the same rows the loaded table will have, so the details section below doesn't
+ * jump down once the availability data arrives.
+ */
+function buildPlaceholderAvailabilityTable(monitor: Monitor): string {
+  const windows = buildAvailabilityWindows(DateTime.now(), monitor.createdAt);
+  const rows = windows.map((window) => `| ${window.label} | — | — | — | — | — |`);
+  return [...AVAILABILITY_TABLE_HEADER, ...rows].join("\n");
+}
+
+const AVAILABILITY_TABLE_HEADER = [
+  "| Time Period | Availability | Downtime | Incidents | Longest incident | Avg. incident |",
+  "| ----------- | ------------ | -------- | --------- | ---------------- | ------------- |",
+];
 
 function formatAvailability(percentage: number): string {
   return `${parseFloat(percentage.toFixed(3))}%`;

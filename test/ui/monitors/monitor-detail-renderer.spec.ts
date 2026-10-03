@@ -29,8 +29,14 @@ const monitor: Monitor = {
 };
 
 const periods: MonitorAvailabilityPeriod[] = [
-  { label: "Today", sla: { availability: 100, totalDowntime: 0, numberOfIncidents: 0, longestIncident: 0, averageIncident: 0 } },
-  { label: "Last 7 days", sla: { availability: 99.98, totalDowntime: 600, numberOfIncidents: 3, longestIncident: 300, averageIncident: 200 } },
+  {
+    label: "Today",
+    sla: { availability: 100, totalDowntime: 0, numberOfIncidents: 0, longestIncident: 0, averageIncident: 0 },
+  },
+  {
+    label: "Last 7 days",
+    sla: { availability: 99.98, totalDowntime: 600, numberOfIncidents: 3, longestIncident: 300, averageIncident: 200 },
+  },
 ];
 
 describe("buildMonitorDetailMarkdown", () => {
@@ -86,15 +92,23 @@ describe("buildMonitorDetailMarkdown", () => {
   it("renders the availability table with formatted values", () => {
     const markdown = buildMonitorDetailMarkdown(monitor, { periods, isLoading: false, isError: false });
     expect(markdown).toContain("### Availability");
-    expect(markdown).toContain("| Time Period | Availability | Downtime | Incidents | Longest incident | Avg. incident |");
+    expect(markdown).toContain(
+      "| Time Period | Availability | Downtime | Incidents | Longest incident | Avg. incident |",
+    );
     expect(markdown).toContain("| Today | 100% | 0s | 0 | 0s | 0s |");
     expect(markdown).toContain("| Last 7 days | 99.98% | 10m | 3 | 5m | 3m 20s |");
   });
 
-  it("shows a loading note when availability is loading with no data", () => {
+  it("renders placeholder rows for every period while availability is loading", () => {
     const markdown = buildMonitorDetailMarkdown(monitor, { periods: [], isLoading: true, isError: false });
-    expect(markdown).toContain("_Loading availability…_");
-    expect(markdown).not.toContain("| Time Period |");
+    expect(markdown).toContain(
+      "| Time Period | Availability | Downtime | Incidents | Longest incident | Avg. incident |",
+    );
+    expect(markdown).toContain("| Today | — | — | — | — | — |");
+    expect(markdown).toContain("| Last 7 days | — | — | — | — | — |");
+    expect(markdown).toContain("| Last 30 days | — | — | — | — | — |");
+    expect(markdown).toContain("| Last 365 days | — | — | — | — | — |");
+    expect(markdown).toContain("| All time | — | — | — | — | — |");
   });
 
   it("shows an error note when availability failed to load", () => {

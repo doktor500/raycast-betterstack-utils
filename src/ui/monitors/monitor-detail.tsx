@@ -31,10 +31,15 @@ function MonitorDetailContent({ monitor }: MonitorDetailProps) {
     buildMonitorStatusHeaderSvg(monitor)
       .then((svg) => toImageDataUri(svg, environment.supportPath, environment.raycastVersion))
       .then((uri) => setHeaderMarkdown(`![status](${uri})`))
-      .catch(() => setHeaderMarkdown(undefined));
+      .catch(() => setHeaderMarkdown(`## ${monitor.name}`));
   }, [monitor]);
 
-  const markdown = buildMonitorDetailMarkdown(monitor, { periods, isLoading, isError }, headerMarkdown);
+  // Hold the content back until the header settles; swapping the text heading for the taller
+  // image header afterwards would push everything below it down.
+  const markdown =
+    headerMarkdown === undefined
+      ? ""
+      : buildMonitorDetailMarkdown(monitor, { periods, isLoading, isError }, headerMarkdown);
 
   return (
     <Detail
