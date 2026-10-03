@@ -19,9 +19,13 @@ export function ResourceRow({ resource, appearance }: ResourceRowProps) {
           <div tw={`flex w-[10px] h-[10px] rounded-full bg-[${dotColor}]`} />
           <span tw={`text-[18px] font-semibold text-[${palette.heading}]`}>{resource.name}</span>
         </div>
-        <span tw={`text-[16px] font-semibold text-[${dotColor}]`}>{`${resource.availability.toFixed(3)}% uptime`}</span>
+        <span tw={`text-[16px] font-semibold text-[${dotColor}]`}>{formatUptime(resource)}</span>
       </div>
       <TimelineBars history={resource.history} appearance={appearance} />
     </div>
   );
+}
+
+export function formatUptime(resource: StatusPageResource): string {
+  return `${resource.availability.toFixed(3)}% uptime`;
 }
