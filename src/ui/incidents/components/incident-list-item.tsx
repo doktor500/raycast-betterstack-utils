@@ -41,7 +41,10 @@ export function IncidentListItem({ incident, webUrl, onAcknowledge, onResolve, o
       subtitle={incident.cause}
       accessories={[
         { date: new Date(incident.startedAt), tooltip: "Started" },
-        { tag: { value: STATUS_LABEL[incident.status], color: STATUS_COLOR[incident.status] }, tooltip: incident.status },
+        {
+          tag: { value: STATUS_LABEL[incident.status], color: STATUS_COLOR[incident.status] },
+          tooltip: incident.status,
+        },
       ]}
       actions={
         <IncidentActionPanel
