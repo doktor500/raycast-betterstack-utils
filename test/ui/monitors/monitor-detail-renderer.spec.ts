@@ -12,6 +12,10 @@ vi.mock("@/common/utils/svg-utils", async (importOriginal) => ({
   toImageDataUri: vi.fn(async (svg: string) => `data:${svg}`),
 }));
 
+vi.mock("@/ui/monitors/components/monitor-status-header", () => ({
+  buildMonitorStatusHeaderSvg: vi.fn(async () => "header"),
+}));
+
 vi.mock("@/ui/monitors/components/monitor-availability-table", () => ({
   buildMonitorAvailabilityTableSvg: vi.fn(async () => "table"),
   buildMonitorAvailabilitySkeletonSvg: vi.fn(async () => "skeleton"),
@@ -19,7 +23,12 @@ vi.mock("@/ui/monitors/components/monitor-availability-table", () => ({
 }));
 
 import { describe, expect, it } from "vitest";
-import { buildMonitorDetailMarkdown, renderMonitorAvailability } from "@/ui/monitors/monitor-detail-renderer";
+import {
+  buildMonitorDetailMarkdown,
+  prerenderMonitorDetailImages,
+  renderMonitorAvailability,
+} from "@/ui/monitors/monitor-detail-renderer";
+import { buildMonitorStatusHeaderSvg } from "@/ui/monitors/components/monitor-status-header";
 import {
   buildMonitorAvailabilitySkeletonSvg,
   buildMonitorAvailabilityTableSvg,
@@ -56,34 +65,27 @@ const periods: MonitorAvailabilityPeriod[] = [
 ];
 
 describe("buildMonitorDetailMarkdown", () => {
-  it("holds the header's space with a blank image of the same size while it renders", () => {
-    const markdown = buildMonitorDetailMarkdown(monitor, "availability", undefined);
-    expect(markdown).toMatch(/^!\[status\]\(data:image\/svg\+xml;charset=utf-8,[^)]*\)/);
-    expect(decodeURIComponent(markdown)).toContain('width="1160" height="48"');
-    expect(markdown).not.toContain("## Homepage");
+  it("shows the URL right under the header, before the availability table", () => {
+    const markdown = buildMonitorDetailMarkdown(monitor, "![status](data:header)", "![availability](data:table)");
+    expect(markdown).toMatch(/^!\[status\]\(data:header\)\n\nexample\.com\n\n### Availability/);
+    expect(markdown).not.toContain("| URL |");
   });
 
-  it("holds the availability table's space with a blank image sized for every period while it renders", () => {
-    const markdown = buildMonitorDetailMarkdown(monitor, undefined, "![status](data:header)");
-    expect(markdown).toContain("### Availability\n\n![availability](data:image/svg+xml;charset=utf-8,");
-    expect(decodeURIComponent(markdown)).toContain('width="1160" height="500"');
+  it("does not repeat the URL when the monitor is named after it", () => {
+    const unnamedMonitor: Monitor = { ...monitor, name: "https://example.com" };
+    const markdown = buildMonitorDetailMarkdown(unnamedMonitor, "![status](data:header)", "availability");
+    expect(markdown).not.toContain("example.com");
   });
 
-  it("always renders the details while the images are still rendering", () => {
-    const markdown = buildMonitorDetailMarkdown(monitor, undefined, undefined);
-    expect(markdown).toContain("| URL | example.com |");
-  });
-
-  it("uses the given header markdown when provided", () => {
-    const markdown = buildMonitorDetailMarkdown(monitor, "availability", "![status](data:image/png;base64,AAAA)");
+  it("uses the given header markdown", () => {
+    const markdown = buildMonitorDetailMarkdown(monitor, "![status](data:image/png;base64,AAAA)", "availability");
     expect(markdown).toContain("![status](data:image/png;base64,AAAA)");
     expect(markdown).not.toContain("## Homepage");
   });
 
   it("renders the details table with formatted values", () => {
-    const markdown = buildMonitorDetailMarkdown(monitor, "availability");
+    const markdown = buildMonitorDetailMarkdown(monitor, "header", "availability");
     expect(markdown).toContain("### Details");
-    expect(markdown).toContain("| URL | example.com |");
     expect(markdown).toContain("| Type | Http |");
     expect(markdown).toContain("| Method | GET |");
     expect(markdown).toContain("| Check frequency | 3m |");
@@ -105,17 +107,32 @@ describe("buildMonitorDetailMarkdown", () => {
       sslExpiration: undefined,
       domainExpiration: undefined,
     };
-    const markdown = buildMonitorDetailMarkdown(bareMonitor, "availability");
+    const markdown = buildMonitorDetailMarkdown(bareMonitor, "header", "availability");
     expect(markdown).not.toContain("| Type |");
     expect(markdown).not.toContain("| Method |");
     expect(markdown).not.toContain("| Regions |");
     expect(markdown).not.toContain("| Recovery period |");
     expect(markdown).not.toContain("| Last checked |");
-    expect(markdown).toContain("| URL |");
+  });
+
+  it("omits the details section when no details are known", () => {
+    const bareMonitor: Monitor = {
+      ...monitor,
+      monitorType: undefined,
+      httpMethod: undefined,
+      checkFrequency: undefined,
+      requestTimeout: undefined,
+      recoveryPeriod: undefined,
+      regions: [],
+      sslExpiration: undefined,
+      domainExpiration: undefined,
+    };
+    const markdown = buildMonitorDetailMarkdown(bareMonitor, "header", "availability");
+    expect(markdown).not.toContain("### Details");
   });
 
   it("places the availability markdown under its heading", () => {
-    const markdown = buildMonitorDetailMarkdown(monitor, "![availability](data:table)");
+    const markdown = buildMonitorDetailMarkdown(monitor, "header", "![availability](data:table)");
     expect(markdown).toContain("### Availability\n\n![availability](data:table)");
   });
 });
@@ -147,5 +164,29 @@ describe("renderMonitorAvailability", () => {
   it("shows an error note when availability failed to load", async () => {
     const markdown = await renderMonitorAvailability(monitor, { periods: [], isLoading: false, isError: true });
     expect(markdown).toBe("_Failed to load availability data._");
+  });
+});
+
+describe("prerenderMonitorDetailImages", () => {
+  it("renders the status header and the availability skeleton", async () => {
+    const images = await prerenderMonitorDetailImages(monitor);
+    expect(images).toEqual({
+      headerMarkdown: "![status](data:header)",
+      availabilitySkeletonMarkdown: "![availability](data:skeleton)",
+    });
+  });
+
+  it("reuses the images rendered for the same monitor", async () => {
+    const cachedMonitor: Monitor = { ...monitor, name: "Cached" };
+    const callCountBefore = vi.mocked(buildMonitorStatusHeaderSvg).mock.calls.length;
+    await prerenderMonitorDetailImages(cachedMonitor);
+    await prerenderMonitorDetailImages(cachedMonitor);
+    expect(vi.mocked(buildMonitorStatusHeaderSvg).mock.calls.length - callCountBefore).toBe(1);
+  });
+
+  it("falls back to a text header when the header fails to render", async () => {
+    vi.mocked(buildMonitorStatusHeaderSvg).mockRejectedValueOnce(new Error("satori failed"));
+    const images = await prerenderMonitorDetailImages({ ...monitor, name: "Broken" });
+    expect(images.headerMarkdown).toBe("## Broken");
   });
 });

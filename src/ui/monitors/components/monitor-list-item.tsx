@@ -12,6 +12,7 @@ interface MonitorListItemProps {
 export function MonitorListItem({ monitor, icon, onRefresh }: MonitorListItemProps) {
   return (
     <List.Item
+      id={monitor.id}
       title={monitor.name}
       subtitle={monitor.url}
       icon={icon}
