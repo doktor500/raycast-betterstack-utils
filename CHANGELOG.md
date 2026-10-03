@@ -6,6 +6,8 @@
   teams by sending the **Team Id** preference along with the request.
 - Improved BetterStack API error messages to include the validation details returned by the API instead of just the
   HTTP status code.
+- Fixed the on-call schedule losing its live pulse animation on the stable release of Raycast v2, which was being
+  rasterized to PNG like Raycast v1.
 - Added a **Monitors** command to view your BetterStack monitors, see availability and status details, and open them
   in the browser.
 - Added a **Status Pages** command to view your BetterStack status pages, their sections and resources, and open
